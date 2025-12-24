@@ -10,37 +10,22 @@
         :root { --accent: #00d4ff; --bg: #0b0b0b; --panel: #1a1a1a; --btn: #262626; --green: #34c759; --btc: #f7931a; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; }
         body { background: var(--bg); color: white; margin: 0; overflow: hidden; height: 100vh; }
-
-        /* HEADER & NAV */
         .header { padding: 40px 20px 10px; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
         .nav { background: var(--panel); display: flex; border-radius: 15px; padding: 4px; position: relative; }
         .nav-btn { flex: 1; padding: 12px; border: none; background: none; color: #777; font-weight: 800; font-size: 11px; z-index: 2; transition: 0.3s; }
         .nav-btn.active { color: white; }
         .nav-pill { position: absolute; width: 33.33%; height: calc(100% - 8px); background: #333; border-radius: 12px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; }
-
-        /* MAIN STAGE */
         .stage { display: flex; width: 300%; height: 80vh; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
         .room { width: 33.33%; padding: 20px; display: flex; flex-direction: column; }
-
-        /* DISPLAYS */
         .display { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; text-align: right; padding-bottom: 20px; }
-        .val { font-size: 60px; font-weight: 300; margin: 0; letter-spacing: -2px; }
+        .val { font-size: 55px; font-weight: 300; margin: 0; letter-spacing: -2px; overflow: hidden; }
         .sub { color: var(--accent); font-size: 14px; margin-bottom: 5px; font-weight: 600; }
-        .status-dot { display: inline-block; width: 8px; height: 8px; background: var(--green); border-radius: 50%; margin-left: 5px; box-shadow: 0 0 10px var(--green); }
-
-        /* GRID */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        button { height: 70px; border-radius: 15px; border: none; background: var(--btn); color: white; font-size: 22px; font-weight: 600; }
-        button:active { background: #444; transform: scale(0.95); }
+        button { height: 65px; border-radius: 15px; border: none; background: var(--btn); color: white; font-size: 22px; font-weight: 600; }
         .op { color: var(--accent); background: #1e2a2d; }
         .action { background: var(--accent); color: black; }
-        
-        /* MIC ANIMATION */
         .mic-active { background: #ff3b30 !important; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-
-        /* BTC STYLING */
-        .btc-text { color: var(--btc) !important; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     </style>
 </head>
 <body>
@@ -61,14 +46,11 @@
                 <div class="val" id="c-main">0</div>
             </div>
             <div class="grid">
-                <button class="op" onclick="cClr()">AC</button>
-                <button class="op" onclick="cIn('/')">÷</button>
-                <button class="op" onclick="cIn('*')">×</button>
-                <button class="op" onclick="cDel()">⌫</button>
+                <button class="op" onclick="cClr()">AC</button><button class="op" onclick="cIn('/')">÷</button><button class="op" onclick="cIn('*')">×</button><button class="op" onclick="cDel()">⌫</button>
                 <button onclick="cIn('7')">7</button><button onclick="cIn('8')">8</button><button onclick="cIn('9')">9</button><button class="op" onclick="cIn('-')">-</button>
                 <button onclick="cIn('4')">4</button><button onclick="cIn('5')">5</button><button onclick="cIn('6')">6</button><button class="op" onclick="cIn('+')">+</button>
                 <button onclick="cIn('1')">1</button><button onclick="cIn('2')">2</button><button onclick="cIn('3')">3</button><button class="action" onclick="cSolve()">=</button>
-                <button id="mic" onclick="startVoice()" style="background:#1a1a1a">🎙️</button>
+                <button id="mic" onclick="startVoice()">🎙️</button>
                 <button onclick="cIn('0')">0</button><button onclick="cIn('.')">.</button>
                 <button class="op" onclick="move(1)">₦</button>
             </div>
@@ -76,10 +58,10 @@
 
         <div class="room">
             <div class="display">
-                <div class="sub">LIVE MARKET <span id="dot" class="status-dot"></span></div>
+                <div class="sub">LIVE MARKET</div>
                 <div class="val" id="f-val">₦0</div>
             </div>
-            <div style="display:flex; gap:10px; margin-bottom:15px;">
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
                 <button style="flex:1; font-size:12px;" id="b-USD" class="action" onclick="setCurr('USD')">USD</button>
                 <button style="flex:1; font-size:12px;" id="b-GBP" onclick="setCurr('GBP')">GBP</button>
                 <button style="flex:1; font-size:12px;" id="b-EUR" onclick="setCurr('EUR')">EUR</button>
@@ -94,11 +76,11 @@
 
         <div class="room">
             <div class="display">
-                <div class="sub btc-text">BITCOIN LIVE <span class="status-dot" style="background:var(--btc); box-shadow:0 0 10px var(--btc)"></span></div>
+                <div class="sub" style="color:var(--btc)">BITCOIN LIVE</div>
                 <div class="val" id="crypto-val">₦0</div>
             </div>
             <div class="grid">
-                <button style="grid-column: span 4; background:var(--btc); color:black; font-weight:800;">1 BTC = <span id="btc-price">...</span></button>
+                <button style="grid-column: span 4; background:var(--btc); color:black; font-size:14px;" id="btc-price">FETCHING BTC...</button>
                 <button onclick="cryptoIn('7')">7</button><button onclick="cryptoIn('8')">8</button><button onclick="cryptoIn('9')">9</button><button class="op" onclick="cryptoClr()">AC</button>
                 <button onclick="cryptoIn('4')">4</button><button onclick="cryptoIn('5')">5</button><button onclick="cryptoIn('6')">6</button><button class="op" onclick="cryptoDel()">⌫</button>
                 <button onclick="cryptoIn('1')">1</button><button onclick="cryptoIn('2')">2</button><button onclick="cryptoIn('3')">3</button><button class="action" onclick="move(0)">BACK</button>
@@ -119,15 +101,13 @@
                 rates.USD = data.rates.NGN;
                 rates.GBP = rates.USD / data.rates.GBP;
                 rates.EUR = rates.USD / data.rates.EUR;
-                
                 const btcRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
                 const btcData = await btcRes.json();
                 rates.BTC = btcData.bitcoin.usd * rates.USD;
-                document.getElementById('btc-price').innerText = "₦" + Math.round(rates.BTC).toLocaleString();
-            } catch(e) { console.log("Offline"); }
+                document.getElementById('btc-price').innerText = "1 BTC = ₦" + Math.round(rates.BTC).toLocaleString();
+            } catch(e) { document.getElementById('btc-price').innerText = "OFFLINE RATES"; }
         }
-
-        window.onload = () => { fetchAll(); setInterval(fetchAll, 30000); };
+        window.onload = fetchAll;
 
         function move(idx) {
             document.getElementById('stage').style.transform = `translateX(-${idx * 33.33}%)`;
@@ -135,45 +115,13 @@
             document.querySelectorAll('.nav-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
         }
 
-        // CALC
         function cIn(v) { cData += v; cUp(); }
         function cClr() { cData = ""; cUp(); }
         function cDel() { cData = cData.slice(0,-1); cUp(); }
         function cUp() { document.getElementById('c-main').innerText = cData || "0"; }
-        function cSolve() { try { cData = eval(cData).toString(); cUp(); } catch(e) { cData = ""; } }
+        function cSolve() { try { cData = eval(cData.replace('×','*').replace('÷','/')).toString(); cUp(); } catch(e) { cData = "Error"; cUp(); } }
 
-        // CASH
-        function setCurr(c) { 
-            active = c; 
-            document.querySelectorAll('[id^="b-"]').forEach(b => b.classList.remove('action'));
-            document.getElementById('b-'+c).classList.add('action');
-            fUp(); 
-        }
+        function setCurr(c) { active = c; document.querySelectorAll('[id^="b-"]').forEach(b => b.classList.remove('action')); document.getElementById('b-'+c).classList.add('action'); fUp(); }
         function fIn(v) { fData += v; fUp(); }
         function fClr() { fData = ""; fUp(); }
-        function fDel() { fData = fData.slice(0,-1); fUp(); }
-        function fUp() { document.getElementById('f-val').innerText = "₦" + (parseFloat(fData||0) * rates[active]).toLocaleString(undefined,{maximumFractionDigits:0}); }
-
-        // CRYPTO
-        function cryptoIn(v) { cryptoData += v; cryptoUp(); }
-        function cryptoClr() { cryptoData = ""; cryptoUp(); }
-        function cryptoDel() { cryptoData = cryptoData.slice(0,-1); cryptoUp(); }
-        function cryptoUp() { document.getElementById('crypto-val').innerText = "₦" + (parseFloat(cryptoData||0) * rates.BTC).toLocaleString(undefined,{maximumFractionDigits:0}); }
-
-        // VOICE
-        function startVoice() {
-            const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if(!Speech) return alert("Browser Not Supported");
-            const rec = new Speech();
-            rec.onstart = () => document.getElementById('mic').classList.add('mic-active');
-            rec.onend = () => document.getElementById('mic').classList.remove('mic-active');
-            rec.onresult = (e) => {
-                let text = e.results[0][0].transcript;
-                cData += text.replace(/plus/g,'+').replace(/minus/g,'-').replace(/times/g,'*').replace(/divided/g,'/');
-                cUp();
-            };
-            rec.start();
-        }
-    </script>
-</body>
-</html>
+        function fDel() { fData =
