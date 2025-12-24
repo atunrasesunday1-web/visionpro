@@ -12,60 +12,68 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600;900&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #00d4ff; --bg: #050505; --panel: rgba(255, 255, 255, 0.05); --neon: 0 0 20px rgba(0, 212, 255, 0.6); }
+        :root { --accent: #00d4ff; --bg: #050505; --panel: rgba(255, 255, 255, 0.05); --neon: 0 0 20px rgba(0, 212, 255, 0.4); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; }
-        
         body { background: var(--bg); color: white; margin: 0; overflow: hidden; height: 100vh; }
 
-        /* SPLASH SCREEN ANIMATION */
+        /* SPLASH SCREEN */
         #splash {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 9999; display: flex; flex-direction: column;
             align-items: center; justify-content: center; transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .splash-logo {
-            width: 120px; height: auto; 
-            animation: breathe 2s infinite ease-in-out;
-            filter: drop-shadow(var(--neon));
-        }
+        .splash-logo { width: 120px; height: auto; animation: breathe 2s infinite ease-in-out; filter: drop-shadow(var(--neon)); }
+        .splash-logo[onerror] { display: none; }
         @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } }
         .loader-bar { width: 100px; height: 2px; background: #222; margin-top: 20px; border-radius: 10px; overflow: hidden; }
         .loader-progress { width: 0%; height: 100%; background: var(--accent); animation: load 1.5s forwards; }
         @keyframes load { to { width: 100%; } }
 
-        /* NEON UI */
+        /* NAV PILL FIX */
         .header { padding: 50px 20px 10px; background: rgba(0,0,0,0.5); backdrop-filter: blur(20px); }
-        .nav { background: var(--panel); display: flex; border-radius: 20px; padding: 5px; border: 1px solid rgba(255,255,255,0.1); }
-        .nav-btn { flex: 1; padding: 14px; border: none; background: none; color: #666; font-weight: 800; font-size: 10px; letter-spacing: 1px; transition: 0.3s; z-index: 2; }
+        .nav { 
+            background: var(--panel); display: flex; border-radius: 18px; padding: 4px; 
+            border: 1px solid rgba(255,255,255,0.08); position: relative; width: 100%; 
+            overflow: hidden;
+        }
+        .nav-btn { 
+            flex: 1; padding: 12px; border: none; background: none; color: #666; 
+            font-weight: 800; font-size: 10px; letter-spacing: 1px; transition: 0.3s; z-index: 2; 
+        }
         .nav-btn.active { color: white; text-shadow: var(--neon); }
-        .nav-pill { position: absolute; width: 33.33%; height: calc(100% - 10px); background: rgba(255,255,255,0.1); border-radius: 15px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1; }
+        .nav-pill { 
+            position: absolute; top: 4px; left: 4px; 
+            width: calc(33.33% - 8px); height: calc(100% - 8px); 
+            background: rgba(255,255,255,0.12); border-radius: 14px; 
+            transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1); z-index: 1; 
+        }
 
+        /* LAYOUT */
         .stage { display: flex; width: 300%; height: 80vh; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
         .room { width: 33.33%; padding: 25px; display: flex; flex-direction: column; }
-        
         .display { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; text-align: right; padding-bottom: 30px; }
-        .val { font-size: 65px; font-weight: 300; margin: 0; letter-spacing: -3px; color: white; }
-        .sub { color: var(--accent); font-size: 12px; font-weight: 900; letter-spacing: 2px; margin-bottom: 8px; }
+        .val { font-size: 60px; font-weight: 300; margin: 0; letter-spacing: -3px; color: white; }
+        .sub { color: var(--accent); font-size: 11px; font-weight: 900; letter-spacing: 2px; margin-bottom: 8px; }
 
-        /* BUTTONS */
+        /* KEYPAD */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
         button { 
-            height: 70px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); 
-            background: var(--panel); color: white; font-size: 24px; font-weight: 600; 
+            height: 68px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.03); 
+            background: var(--panel); color: white; font-size: 22px; font-weight: 600; 
             transition: 0.2s; backdrop-filter: blur(10px);
         }
-        button:active { background: var(--accent); color: black; transform: scale(0.9); }
-        .op { color: var(--accent); font-weight: 900; }
-        .action { background: var(--accent); color: black; box-shadow: var(--neon); }
-
-        /* BTC SPECIAL */
-        .btc-card { background: linear-gradient(135deg, #f7931a, #ffab40); color: black !important; font-size: 14px !important; }
+        button:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
+        .op { color: var(--accent); font-weight: 800; }
+        .action { background: var(--accent); color: black; box-shadow: var(--neon); border: none; }
+        .btc-card { background: linear-gradient(135deg, #f7931a, #ffab40); color: black !important; font-size: 13px !important; border: none; }
+        .mic-active { background: #ff3b30 !important; animation: pulse 1s infinite; border: none; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(0.95); } }
     </style>
 </head>
 <body>
 
     <div id="splash">
-        <img src="logo.png" class="splash-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2150/2150150.png'">
+        <img src="logo.png" class="splash-logo" onerror="this.style.display='none'">
         <div class="loader-bar"><div class="loader-progress"></div></div>
     </div>
 
@@ -81,7 +89,7 @@
     <div class="stage" id="stage">
         <div class="room">
             <div class="display">
-                <div class="sub" id="c-sub">SYSTEM CORE</div>
+                <div class="sub" id="c-sub">VISION CORE</div>
                 <div class="val" id="c-main">0</div>
             </div>
             <div class="grid">
@@ -97,13 +105,13 @@
 
         <div class="room">
             <div class="display">
-                <div class="sub" id="f-sub">MARKET CONVERT</div>
+                <div class="sub" id="f-sub">USD TO NAIRA</div>
                 <div class="val" id="f-val">₦0</div>
             </div>
-            <div style="display:flex; gap:10px; margin-bottom:15px;">
-                <button style="flex:1; font-size:12px;" id="b-USD" class="action" onclick="setCurr('USD')">USD</button>
-                <button style="flex:1; font-size:12px;" id="b-GBP" onclick="setCurr('GBP')">GBP</button>
-                <button style="flex:1; font-size:12px;" id="b-EUR" onclick="setCurr('EUR')">EUR</button>
+            <div style="display:flex; gap:8px; margin-bottom:12px;">
+                <button style="flex:1; font-size:11px; height:45px;" id="b-USD" class="action" onclick="setCurr('USD')">USD</button>
+                <button style="flex:1; font-size:11px; height:45px;" id="b-GBP" onclick="setCurr('GBP')">GBP</button>
+                <button style="flex:1; font-size:11px; height:45px;" id="b-EUR" onclick="setCurr('EUR')">EUR</button>
             </div>
             <div class="grid">
                 <button onclick="fIn('7')">7</button><button onclick="fIn('8')">8</button><button onclick="fIn('9')">9</button><button class="op" onclick="fClr()">AC</button>
@@ -115,11 +123,11 @@
 
         <div class="room">
             <div class="display">
-                <div class="sub" style="color:#f7931a">BITCOIN PRICE</div>
+                <div class="sub" style="color:#f7931a">BITCOIN MARKET</div>
                 <div class="val" id="crypto-val">₦0</div>
             </div>
             <div class="grid">
-                <button style="grid-column: span 4; height:50px;" id="btc-price" class="btc-card">LIVE SYNC...</button>
+                <button style="grid-column: span 4; height:45px;" id="btc-price" class="btc-card">SYNCING BTC...</button>
                 <button onclick="cryptoIn('7')">7</button><button onclick="cryptoIn('8')">8</button><button onclick="cryptoIn('9')">9</button><button class="op" onclick="cryptoClr()">AC</button>
                 <button onclick="cryptoIn('4')">4</button><button onclick="cryptoIn('5')">5</button><button onclick="cryptoIn('6')">6</button><button class="op" onclick="cryptoDel()">⌫</button>
                 <button onclick="cryptoIn('1')">1</button><button onclick="cryptoIn('2')">2</button><button onclick="cryptoIn('3')">3</button><button class="action" onclick="move(0)">BACK</button>
@@ -129,8 +137,10 @@
     </div>
 
     <script>
-        // HIDE SPLASH AFTER 2 SECONDS
-        setTimeout(() => { document.getElementById('splash').style.opacity = '0'; setTimeout(() => document.getElementById('splash').style.display = 'none', 800); }, 2000);
+        setTimeout(() => { 
+            document.getElementById('splash').style.opacity = '0'; 
+            setTimeout(() => document.getElementById('splash').style.display = 'none', 800); 
+        }, 2200);
 
         let rates = { USD: 1650, GBP: 2100, EUR: 1800, BTC: 0 };
         let active = 'USD';
@@ -153,7 +163,8 @@
 
         function move(idx) {
             document.getElementById('stage').style.transform = `translateX(-${idx * 33.33}%)`;
-            document.getElementById('pill').style.transform = `translateX(${idx * 100}%)`;
+            // Fixed the pill offset here
+            document.getElementById('pill').style.left = `calc(${idx * 33.33}% + 4px)`;
             document.querySelectorAll('.nav-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
         }
 
@@ -176,10 +187,10 @@
 
         function startVoice() {
             const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if(!Speech) return alert("Use Safari/Chrome");
+            if(!Speech) return;
             const rec = new Speech();
             rec.onstart = () => { document.getElementById('mic').classList.add('mic-active'); document.getElementById('c-sub').innerText = "LISTENING..."; };
-            rec.onend = () => { document.getElementById('mic').classList.remove('mic-active'); document.getElementById('c-sub').innerText = "SYSTEM CORE"; };
+            rec.onend = () => { document.getElementById('mic').classList.remove('mic-active'); document.getElementById('c-sub').innerText = "VISION CORE"; };
             rec.onresult = (e) => {
                 let t = e.results[0][0].transcript.toLowerCase();
                 cData = t.replace(/plus/g,'+').replace(/minus/g,'-').replace(/times|x/g,'*').replace(/divided by/g,'/').replace(/ /g,'');
