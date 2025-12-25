@@ -19,9 +19,17 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
-        body { background: var(--bg); color: var(--text); overflow: hidden; height: 100svh; transition: 0.3s ease; }
+        
+        /* THE UNIVERSAL FIX: Accounts for ChromeOS shelf and mobile address bars */
+        html, body { 
+            background: var(--bg); color: var(--text); 
+            overflow: hidden; 
+            height: 100%; /* Fallback */
+            height: 100dvh; /* Dynamic height detection */
+            transition: 0.3s ease; 
+        }
 
-        /* SIDEBAR SYSTEM */
+        /* SIDEBAR */
         #sidebar { 
             position: fixed; top: 0; left: -320px; width: 320px; height: 100%; 
             background: var(--bg); z-index: 3000; transition: 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.1);
@@ -31,57 +39,59 @@
         #sidebar.open { left: 0; box-shadow: 20px 0 80px rgba(0,0,0,0.8); }
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2900; display: none; backdrop-filter: blur(4px); }
 
-        .market-btn {
-            width: 100%; height: 55px; background: var(--accent); color: #fff;
-            border-radius: 16px; border: none; font-weight: 800; font-size: 12px;
-            letter-spacing: 1.2px; cursor: pointer; display: flex; align-items: center;
-            justify-content: center; gap: 10px; text-decoration: none; margin-top: 10px;
-        }
-
-        .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
-        .theme-btn { 
-            height: 65px; border-radius: 16px; border: 1px solid var(--border);
-            background: var(--card); color: var(--text); cursor: pointer;
-            display: flex; align-items: center; justify-content: center; transition: 0.2s;
-        }
-        .theme-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(29, 155, 240, 0.05); }
-
         /* NAVIGATION */
-        .top-nav { position: fixed; top: 0; width: 100%; height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; z-index: 2000; }
-        .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 7px; width: 28px; }
-        .menu-btn span { height: 2px; background: var(--text); width: 100%; border-radius: 10px; }
-        .tab-bar { display: flex; gap: 20px; background: var(--card); padding: 10px 25px; border-radius: 100px; border: 1px solid var(--border); }
-        .tab { font-size: 11px; font-weight: 800; opacity: 0.4; cursor: pointer; letter-spacing: 1.5px; }
+        .top-nav { position: fixed; top: 0; width: 100%; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; z-index: 2000; }
+        .tab-bar { display: flex; gap: 20px; background: var(--card); padding: 8px 20px; border-radius: 100px; border: 1px solid var(--border); }
+        .tab { font-size: 10px; font-weight: 800; opacity: 0.4; cursor: pointer; letter-spacing: 1.2px; }
         .tab.active { opacity: 1; color: var(--accent); }
 
         /* STAGE */
         .stage { display: flex; width: 200vw; height: 100%; transition: 0.6s cubic-bezier(0.2, 0, 0, 1); }
-        .room { width: 100vw; height: 100%; padding: 100px 25px 30px; display: flex; flex-direction: column; }
+        .room { 
+            width: 100vw; height: 100%; 
+            padding: 70px 20px 30px; 
+            display: flex; flex-direction: column;
+            max-width: 500px; margin: 0 auto; /* Keeps desktop look clean */
+        }
         
-        /* DISPLAY & DYNAMIC COPY BUTTON */
-        .display-container { flex: 0.35; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; padding-bottom: 25px; position: relative; }
+        /* DISPLAY */
+        .display-container { 
+            flex: 1; display: flex; flex-direction: column; 
+            justify-content: flex-end; align-items: flex-end; 
+            padding-bottom: 20px; position: relative;
+        }
         .copy-trigger { 
-            position: absolute; top: 0; right: 0; background: var(--card); 
-            border: 1px solid var(--border); color: var(--text); padding: 8px 12px; 
-            border-radius: 10px; cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 6px;
-            transition: 0.3s ease; opacity: 0; pointer-events: none; /* Hidden by default */
+            position: absolute; top: 10px; right: 0; background: var(--accent); 
+            color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 10px; 
+            font-weight: 800; cursor: pointer; opacity: 0; pointer-events: none;
+            transition: 0.3s;
         }
         .copy-trigger.visible { opacity: 1; pointer-events: auto; }
-        .copy-trigger:active { transform: scale(0.9); background: var(--accent); color: white; }
-        .val { font-size: 70px; font-weight: 200; color: var(--accent); letter-spacing: -3px; }
+        .val { font-size: clamp(45px, 9dvh, 75px); font-weight: 200; color: var(--accent); letter-spacing: -2px; }
 
-        /* GRID */
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; max-width: 450px; margin: 0 auto; }
-        button { height: 68px; border-radius: 20px; border: 1px solid var(--border); background: var(--btn-num); color: var(--btn-text); font-size: 24px; cursor: pointer; transition: 0.1s; }
-        button:active { transform: scale(0.92); background: var(--accent); color: #fff; }
-        
-        .op { background: #ff9f0a; color: #fff; border: none; font-size: 28px; }
-        .fn { background: #a5a5a5; color: #000; font-size: 16px; font-weight: 800; border: none; }
-        .sci { color: var(--accent); font-size: 15px; font-weight: 800; }
+        /* BUTTONS: Scaling rows */
+        .grid { 
+            display: grid; grid-template-columns: repeat(4, 1fr); 
+            gap: 12px; width: 100%;
+            grid-auto-rows: minmax(50px, 7.5dvh); 
+        }
+        button { 
+            border-radius: 18px; border: 1px solid var(--border); 
+            background: var(--btn-num); color: var(--btn-text); 
+            font-size: clamp(18px, 2.5dvh, 24px); cursor: pointer;
+        }
+        button:active { background: var(--accent); color: #fff; transform: scale(0.95); }
+        .op { background: #ff9f0a; color: #fff; border: none; }
+        .fn { background: #a5a5a5; color: #000; font-size: 0.7em; font-weight: 800; }
+        .sci { color: var(--accent); font-size: 0.6em; font-weight: 800; }
 
-        .box { background: var(--card); border-radius: 24px; padding: 30px; border: 1px solid var(--border); margin-bottom: 20px; text-align: center; position: relative; }
-        .box p { font-size: 12px; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; }
-        .box h2 { font-size: 38px; color: var(--accent); font-weight: 300; }
+        /* TRADE BOXES */
+        .box { 
+            background: var(--card); border-radius: 20px; padding: 20px; 
+            border: 1px solid var(--border); text-align: center; 
+            position: relative; margin-bottom: 12px;
+        }
+        .box h2 { font-size: clamp(28px, 5dvh, 40px); color: var(--accent); font-weight: 300; }
     </style>
 </head>
 <body>
@@ -89,47 +99,25 @@
     <div class="overlay" id="overlay" onclick="toggleSide()"></div>
     
     <div id="sidebar">
-        <h2 style="font-weight: 800; font-size: 24px; margin-bottom: 40px;">Vision Elite</h2>
-        <div style="margin-bottom: 40px;">
-            <p style="font-size: 11px; font-weight: 800; color: var(--accent); margin-bottom: 15px; letter-spacing: 1.5px;">LIVE TERMINAL</p>
-            <a href="https://finance.yahoo.com/currencies" target="_blank" class="market-btn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
-                FETCH LIVE NEWS
-            </a>
-        </div>
-        <div style="margin-bottom: 40px;">
-            <p style="font-size: 11px; font-weight: 800; color: var(--accent); margin-bottom: 10px; letter-spacing: 1.5px;">APPEARANCE</p>
-            <div class="theme-grid">
-                <div class="theme-btn active" id="btn-dark" onclick="setTheme('dark')">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                </div>
-                <div class="theme-btn" id="btn-light" onclick="setTheme('light')">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                </div>
-            </div>
-        </div>
-        <div>
-            <p style="font-size: 11px; font-weight: 800; color: var(--accent); margin-bottom: 15px; letter-spacing: 1.5px;">SESSION LOG</p>
-            <div id="hist-list" style="font-size: 13px; opacity: 0.5; line-height: 1.8;">No entries.</div>
-        </div>
+        <h2 style="margin-bottom: 30px;">Vision Elite</h2>
+        <button onclick="setTheme('dark')" style="height: 50px; margin-bottom: 10px;">DARK MODE</button>
+        <button onclick="setTheme('light')" style="height: 50px; background: #eee; color: #000;">LIGHT MODE</button>
+        <div id="hist-list" style="margin-top: 20px; font-size: 12px; opacity: 0.5;"></div>
     </div>
 
     <nav class="top-nav">
-        <div class="menu-btn" onclick="toggleSide()"><span></span><span style="width: 70%"></span><span></span></div>
+        <div onclick="toggleSide()" style="cursor:pointer">☰</div>
         <div class="tab-bar">
             <div class="tab active" onclick="move(0)">CALC</div>
             <div class="tab" onclick="move(1)">TRADE</div>
         </div>
-        <div style="width: 28px"></div>
+        <div></div>
     </nav>
 
     <div class="stage" id="stage">
         <div class="room">
             <div class="display-container">
-                <div class="copy-trigger" id="copy-calc" onclick="copyToClipboard('disp')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                    COPY
-                </div>
+                <div class="copy-trigger" id="copy-calc" onclick="copyToClipboard('disp')">COPY RESULT</div>
                 <div class="val" id="disp">0</div>
             </div>
             <div class="grid">
@@ -138,18 +126,20 @@
                 <button onclick="inp('7')">7</button><button onclick="inp('8')">8</button><button onclick="inp('9')">9</button><button class="op" onclick="inp('*')">×</button>
                 <button onclick="inp('4')">4</button><button onclick="inp('5')">5</button><button onclick="inp('6')">6</button><button class="op" onclick="inp('-')">−</button>
                 <button onclick="inp('1')">1</button><button onclick="inp('2')">2</button><button onclick="inp('3')">3</button><button class="op" onclick="inp('+')">+</button>
-                <button style="grid-column: span 2; border-radius: 40px; text-align: left; padding-left: 35px;" onclick="inp('0')">0</button><button onclick="inp('.')">.</button><button class="op" onclick="solve()">=</button>
+                <button style="grid-column: span 2; border-radius: 40px;" onclick="inp('0')">0</button><button onclick="inp('.')">.</button><button class="op" onclick="solve()">=</button>
             </div>
         </div>
 
         <div class="room">
             <div class="box">
-                <div class="copy-trigger" id="copy-tin" onclick="copyToClipboard('t-in')" style="top: 15px; right: 15px;">COPY</div>
-                <p>USD Portfolio</p><h2 id="t-in">0</h2>
+                <div class="copy-trigger" id="copy-tin" onclick="copyToClipboard('t-in')" style="top:10px; right:10px;">COPY</div>
+                <p style="font-size: 10px; opacity: 0.5;">PORTFOLIO USD</p>
+                <h2 id="t-in">0</h2>
             </div>
             <div class="box">
-                <div class="copy-trigger" id="copy-tout" onclick="copyToClipboard('t-out')" style="top: 15px; right: 15px;">COPY</div>
-                <p>EUR Exchange</p><h2 id="t-out">0.00</h2>
+                <div class="copy-trigger" id="copy-tout" onclick="copyToClipboard('t-out')" style="top:10px; right:10px;">COPY</div>
+                <p style="font-size: 10px; opacity: 0.5;">EXCHANGE EUR</p>
+                <h2 id="t-out">0.00</h2>
             </div>
             <div class="grid">
                 <button onclick="tIn('7')">7</button><button onclick="tIn('8')">8</button><button onclick="tIn('9')">9</button>
@@ -161,7 +151,7 @@
     </div>
 
     <script>
-        let d = "", td = "", hist = [];
+        let d = "", td = "";
 
         function toggleSide() {
             const s = document.getElementById('sidebar');
@@ -172,8 +162,7 @@
 
         function setTheme(m) {
             document.body.classList.toggle('light-mode', m === 'light');
-            document.getElementById('btn-dark').classList.toggle('active', m === 'dark');
-            document.getElementById('btn-light').classList.toggle('active', m === 'light');
+            toggleSide();
         }
 
         function move(i) {
@@ -182,53 +171,37 @@
         }
 
         function copyToClipboard(id) {
-            const val = document.getElementById(id).innerText;
-            navigator.clipboard.writeText(val);
+            navigator.clipboard.writeText(document.getElementById(id).innerText);
             const btn = event.currentTarget;
-            const original = btn.innerHTML;
-            btn.innerHTML = "SAVED!";
-            setTimeout(() => { btn.innerHTML = original; }, 1500);
+            btn.innerText = "COPIED!";
+            setTimeout(() => { btn.innerText = "COPY"; }, 1500);
         }
 
-        // CALC
         function inp(v) { d += v; document.getElementById('disp').innerText = d; setCopy('calc', false); }
         function clr() { d = ""; document.getElementById('disp').innerText = "0"; setCopy('calc', false); }
         function solve() {
             try {
-                let res = eval(d.replace('×', '*').replace('÷', '/'));
-                addHist(d + " = " + res);
-                d = res.toString();
+                d = eval(d.replace('×', '*').replace('÷', '/')).toString();
                 document.getElementById('disp').innerText = d;
-                setCopy('calc', true); // Show copy after solve
-            } catch { d = ""; document.getElementById('disp').innerText = "Error"; }
+                setCopy('calc', true);
+            } catch { clr(); }
         }
         function sci(t) {
             let n = parseFloat(d || "0");
             if(t==='sqrt') n = Math.sqrt(n); if(t==='pm') n *= -1; if(t==='pct') n /= 100;
-            if(t==='sin') n = Math.sin(n); if(t==='cos') n = Math.cos(n);
-            d = n.toFixed(2).toString(); document.getElementById('disp').innerText = d;
-            setCopy('calc', true); // Show copy after sci function
+            d = n.toFixed(2); document.getElementById('disp').innerText = d;
+            setCopy('calc', true);
         }
-        function setCopy(type, show) {
-            const btn = document.getElementById('copy-' + type);
-            if(btn) btn.classList.toggle('visible', show);
-        }
+        function setCopy(t, s) { document.getElementById('copy-'+t).classList.toggle('visible', s); }
 
-        function addHist(e) {
-            hist.unshift(e); if(hist.length > 5) hist.pop();
-            document.getElementById('hist-list').innerHTML = hist.map(h => `<div style="padding:5px 0; border-bottom:1px solid var(--border)">${h}</div>`).join('');
-        }
-
-        // TRADE
         function tIn(v) { td += v; tUp(); }
         function tClr() { td = ""; tUp(); }
         function tBack() { td = td.slice(0,-1); tUp(); }
         function tUp() {
             document.getElementById('t-in').innerText = td || "0";
             document.getElementById('t-out').innerText = (parseFloat(td||0)*0.94).toFixed(2);
-            const hasValue = td.length > 0;
-            document.getElementById('copy-tin').classList.toggle('visible', hasValue);
-            document.getElementById('copy-tout').classList.toggle('visible', hasValue);
+            setCopy('tin', td.length > 0);
+            setCopy('tout', td.length > 0);
         }
     </script>
 </body>
