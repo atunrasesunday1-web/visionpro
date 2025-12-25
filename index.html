@@ -20,45 +20,45 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); overflow: hidden; height: 100dvh; }
 
-        /* NAVIGATION */
+        /* NAV */
         .top-nav { position: fixed; top: 45px; width: 100%; padding: 0 25px; display: flex; justify-content: space-between; z-index: 1000; align-items: center; }
         .menu-icon { display: flex; flex-direction: column; gap: 4px; cursor: pointer; filter: drop-shadow(var(--glow)); }
         .menu-icon span { display: block; width: 22px; height: 2px; background: var(--accent); border-radius: 2px; }
         .nav-link { font-size: 11px; font-weight: 900; opacity: 0.4; letter-spacing: 2px; cursor: pointer; transition: 0.3s; }
         .nav-link.active { opacity: 1; color: var(--accent); text-shadow: var(--glow); }
 
-        /* STAGE SYSTEM */
+        /* STAGE */
         .stage { display: flex; width: 300vw; height: 100%; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-        .room { width: 100vw; height: 100%; padding: 110px 25px 40px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .room { width: 100vw; height: 100%; padding: 110px 20px 40px; display: flex; flex-direction: column; flex-shrink: 0; }
 
         /* DISPLAYS */
         .display { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; text-align: right; padding-bottom: 20px; }
-        .val { font-size: clamp(50px, 12vw, 90px); font-weight: 200; color: var(--accent); text-shadow: var(--glow); }
+        .val { font-size: clamp(50px, 12vw, 90px); font-weight: 200; color: var(--accent); text-shadow: var(--glow); letter-spacing: -2px; }
         .sub { color: var(--accent); font-size: 10px; font-weight: 900; letter-spacing: 2px; margin-bottom: 5px; opacity: 0.6; }
 
-        /* GRID SYSTEM (Shared) */
+        /* CALC GRID (46 Signs) */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; max-width: 480px; margin: 0 auto; }
-        button { height: 75px; border-radius: 20px; border: 1px solid rgba(0, 212, 255, 0.1); color: #fff; font-size: 26px; font-weight: 500; cursor: pointer; background: var(--btn-num); transition: 0.2s; }
+        button { height: 75px; border-radius: 20px; border: 1px solid rgba(0, 212, 255, 0.1); color: #fff; font-size: 24px; font-weight: 500; cursor: pointer; background: var(--btn-num); transition: 0.2s; }
         button:active { background: var(--accent); color: #000; box-shadow: var(--glow); transform: scale(0.95); }
         .btn-fn { color: var(--accent); font-size: 18px; font-weight: 900; }
         .btn-op { background: var(--btn-op); color: white; border: none; }
         .digit { color: var(--accent); text-shadow: 0 0 10px rgba(0, 212, 255, 0.3); }
 
-        /* TRADE INTERFACE */
+        @media (min-width: 600px) or (orientation: landscape) {
+            .grid { grid-template-columns: repeat(10, 1fr); max-width: 950px; gap: 8px; }
+            .sci { display: flex !important; align-items: center; justify-content: center; }
+            button { height: 50px !important; font-size: 14px !important; border-radius: 12px !important; }
+            .room { padding-top: 80px; }
+        }
+        .sci { display: none; }
+
+        /* TRADE UI */
         .trade-box { background: rgba(255,255,255,0.03); border-radius: 25px; padding: 20px; border: 1px solid rgba(0,212,255,0.15); margin-bottom: 20px; }
         .trade-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
         select { background: transparent; color: var(--accent); border: none; font-size: 18px; font-weight: 900; outline: none; }
         .trade-val { font-size: 28px; font-weight: 200; color: #fff; }
-        
         .trade-numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; max-width: 400px; margin: 0 auto; }
         .trade-numpad button { height: 60px; font-size: 22px; border-radius: 15px; }
-
-        @media (orientation: landscape) {
-            .grid { grid-template-columns: repeat(10, 1fr); max-width: 950px; gap: 8px; }
-            button { height: 50px !important; font-size: 14px !important; }
-            .room { padding-top: 80px; }
-            .trade-numpad { grid-template-columns: repeat(6, 1fr); }
-        }
     </style>
 </head>
 <body>
@@ -76,20 +76,39 @@
     <div class="stage" id="stage">
         <section class="room">
             <div class="display">
-                <div class="sub">VISION CORE SYSTEM</div>
+                <div class="sub">VISION CORE SCIENTIFIC</div>
                 <div class="val" id="c-main">0</div>
             </div>
             <div class="grid">
+                <button class="sci btn-fn" onclick="cIn('(')">(</button><button class="sci btn-fn" onclick="cIn(')')">)</button>
+                <button class="sci btn-fn">mc</button><button class="sci btn-fn">m+</button>
+                <button class="sci btn-fn">m-</button><button class="sci btn-fn">mr</button>
                 <button class="btn-fn" onclick="cClr()">AC</button>
-                <button class="btn-fn" onclick="cSci('pm')">+/-</button>
+                <button class="btn-fn" onclick="cSci('pm')">⁺/₋</button>
                 <button class="btn-fn" onclick="cSci('pct')">%</button>
                 <button class="btn-op" onclick="cIn('/')">÷</button>
+                
+                <button class="sci btn-fn">2nd</button><button class="sci btn-fn" onclick="cSci('sq')">x²</button>
+                <button class="sci btn-fn" onclick="cSci('cu')">x³</button><button class="sci btn-fn" onclick="cIn('**')">xʸ</button>
+                <button class="sci btn-fn" onclick="cSci('ex')">eˣ</button><button class="sci btn-fn" onclick="cSci('10x')">10ˣ</button>
                 <button class="digit" onclick="cIn('7')">7</button><button class="digit" onclick="cIn('8')">8</button><button class="digit" onclick="cIn('9')">9</button>
                 <button class="btn-op" onclick="cIn('*')">×</button>
+
+                <button class="sci btn-fn">1/x</button><button class="sci btn-fn" onclick="cSci('sqrt')">²√</button>
+                <button class="sci btn-fn">³√</button><button class="sci btn-fn">ʸ√</button>
+                <button class="sci btn-fn" onclick="cSci('ln')">ln</button><button class="sci btn-fn">log</button>
                 <button class="digit" onclick="cIn('4')">4</button><button class="digit" onclick="cIn('5')">5</button><button class="digit" onclick="cIn('6')">6</button>
                 <button class="btn-op" onclick="cIn('-')">−</button>
+
+                <button class="sci btn-fn">x!</button><button class="sci btn-fn" onclick="cSci('sin')">sin</button>
+                <button class="sci btn-fn" onclick="cSci('cos')">cos</button><button class="sci btn-fn" onclick="cSci('tan')">tan</button>
+                <button class="sci btn-fn" onclick="cIn('2.718')">e</button><button class="sci btn-fn">EE</button>
                 <button class="digit" onclick="cIn('1')">1</button><button class="digit" onclick="cIn('2')">2</button><button class="digit" onclick="cIn('3')">3</button>
                 <button class="btn-op" onclick="cIn('+')">+</button>
+
+                <button class="sci btn-fn">Rad</button><button class="sci btn-fn">sinh</button>
+                <button class="sci btn-fn">cosh</button><button class="sci btn-fn">tanh</button>
+                <button class="sci btn-fn" onclick="cIn('3.141')">π</button><button class="sci btn-fn">Rand</button>
                 <button class="digit" style="grid-column: span 2; text-align: left; padding-left: 35px;" onclick="cIn('0')">0</button>
                 <button class="digit" onclick="cIn('.')">.</button>
                 <button class="btn-op" onclick="cSolve()">=</button>
@@ -98,10 +117,9 @@
 
         <section class="room">
             <div class="display">
-                <div class="sub">MARKET CONVERSION</div>
+                <div class="sub">CURRENCY PORTAL</div>
                 <div class="val" id="t-display">0</div>
             </div>
-            
             <div class="trade-box">
                 <div class="trade-row">
                     <select id="from-cur"><option>USD</option><option>EUR</option><option>GBP</option></select>
@@ -113,7 +131,6 @@
                     <div class="trade-val" style="color: var(--accent); text-shadow: var(--glow);" id="t-output-text">0.00</div>
                 </div>
             </div>
-
             <div class="trade-numpad">
                 <button class="digit" onclick="tIn('7')">7</button><button class="digit" onclick="tIn('8')">8</button><button class="digit" onclick="tIn('9')">9</button>
                 <button class="digit" onclick="tIn('4')">4</button><button class="digit" onclick="tIn('5')">5</button><button class="digit" onclick="tIn('6')">6</button>
@@ -135,7 +152,7 @@
             document.querySelectorAll('.nav-link').forEach((l, i) => l.classList.toggle('active', i === idx));
         }
 
-        // CALC
+        // CALC LOGIC
         function cIn(v) { cData += v; cUp(); }
         function cUp() { document.getElementById('c-main').innerText = cData || "0"; }
         function cClr() { cData = ""; cUp(); }
@@ -144,10 +161,15 @@
             let n = parseFloat(cData || "0");
             if(type === 'pct') cData = (n/100).toString();
             if(type === 'pm') cData = (n*-1).toString();
+            if(type === 'sq') cData = (n*n).toString();
+            if(type === 'sqrt') cData = Math.sqrt(n).toString();
+            if(type === 'sin') cData = Math.sin(n).toString();
+            if(type === 'cos') cData = Math.cos(n).toString();
+            if(type === 'tan') cData = Math.tan(n).toString();
             cUp();
         }
 
-        // TRADE
+        // TRADE LOGIC
         function tIn(v) { tData += v; tUp(); }
         function tClr() { tData = ""; tUp(); }
         function tUp() {
@@ -155,7 +177,6 @@
             const to = document.getElementById('to-cur').value;
             const amt = parseFloat(tData || "0");
             const res = (amt / rates[from]) * rates[to];
-            
             document.getElementById('t-input-text').innerText = tData || "0";
             document.getElementById('t-output-text').innerText = res.toFixed(2);
             document.getElementById('t-display').innerText = res.toFixed(2);
