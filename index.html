@@ -3,213 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="icon" type="image/png" href="logo.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Vision Pro Max AI</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600;900&display=swap" rel="stylesheet">
+
+    <title>Vision Core Max</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
+    
     <style>
         :root { 
-            --accent: #00d4ff; --bg: #050505; --text: #ffffff;
-            --panel: rgba(255, 255, 255, 0.08); --border: rgba(255, 255, 255, 0.1);
-            --warning: #ffb300; --success: #34c759;
+            --accent: #00d4ff; --bg: #000; --text: #fff;
+            --btn-num: #333; --btn-fn: #a5a5a5; --btn-op: #ff9f0a;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; outline: none; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        body { height: 100dvh; margin: 0; background: var(--bg); color: var(--text); overflow: hidden; display: flex; }
-        
-        /* FRIENDLY TOAST ALERT */
-        #status-toast { 
-            position: fixed; top: 60px; left: 50%; transform: translateX(-50%) translateY(-180px);
-            background: rgba(255, 179, 0, 0.15); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border: 1px solid var(--warning); color: var(--warning);
-            padding: 12px 24px; border-radius: 50px; font-size: 13px; font-weight: 600;
-            z-index: 5000; display: flex; align-items: center; gap: 10px; opacity: 0;
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; }
+        body { margin: 0; background: var(--bg); color: var(--text); overflow: hidden; height: 100dvh; }
+
+        /* THE CUSTOM BREATHING LOGO */
+        .logo-container {
+            width: 38px; height: 38px; position: relative;
+            display: flex; align-items: center; justify-content: center;
         }
-        #status-toast.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
-        #status-toast.online { border-color: var(--success); color: var(--success); background: rgba(52, 199, 89, 0.15); }
+        .logo-main {
+            width: 100%; height: 100%; object-fit: contain; z-index: 2;
+            /* This filter adds a glow that matches the shape of YOUR logo png */
+            filter: drop-shadow(0 0 8px var(--accent));
+            animation: logo-breath 4s infinite ease-in-out;
+        }
+        .logo-aura {
+            position: absolute; width: 60%; height: 60%;
+            background: var(--accent); filter: blur(20px);
+            border-radius: 50%; opacity: 0; z-index: 1;
+            animation: aura-pulse 4s infinite ease-in-out;
+        }
 
-        /* MODAL PICKER */
-        #curr-picker { position: fixed; bottom: -100%; left: 0; width: 100%; height: 75%; background: var(--bg); border-top: 2px solid var(--accent); z-index: 6000; border-radius: 30px 30px 0 0; padding: 25px; overflow-y: auto; }
-        #curr-picker.open { bottom: 0; }
-        .curr-item { padding: 20px; background: var(--panel); border-radius: 18px; margin-bottom: 10px; display: flex; justify-content: space-between; border: 1px solid var(--border); }
+        @keyframes logo-breath {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px var(--accent)); }
+            50% { transform: scale(1.15); filter: drop-shadow(0 0 15px var(--accent)); }
+        }
+        @keyframes aura-pulse {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(2.5); }
+        }
 
-        /* UI STRUCTURE */
-        .stage { display: flex; width: 300%; height: 100%; }
-        .room { width: 33.33%; padding: 120px 25px 40px; display: flex; flex-direction: column; }
-        .display { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; text-align: right; padding-bottom: 30px; }
-        .val { font-size: 64px; font-weight: 300; letter-spacing: -4px; }
-        .sub { color: var(--accent); font-size: 11px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
-
-        /* TOP NAV */
-        .top-nav { position: fixed; top: 50px; width: 100%; padding: 0 25px; display: flex; justify-content: space-between; z-index: 1000; align-items: center; }
-        .nav-link { font-size: 11px; font-weight: 900; opacity: 0.4; letter-spacing: 1px; cursor: pointer; }
+        /* NAVIGATION & STAGE */
+        .top-nav { position: fixed; top: 45px; width: 100%; padding: 0 25px; display: flex; justify-content: space-between; z-index: 1000; align-items: center; }
+        .nav-link { font-size: 11px; font-weight: 900; opacity: 0.4; letter-spacing: 2px; cursor: pointer; transition: 0.3s; }
         .nav-link.active { opacity: 1; color: var(--accent); }
 
-        /* TRADE INTERFACE */
-        .trade-ui { display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin-bottom: 15px; }
-        .tag-btn { background: var(--panel); border: 1px solid var(--border); padding: 10px 22px; border-radius: 16px; font-weight: 900; cursor: pointer; }
-        .tag-btn.editing { border-color: var(--accent); color: var(--accent); }
+        .stage { display: flex; width: 300vw; height: 100%; transition: 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+        .room { width: 100vw; height: 100%; padding: 110px 20px 30px; display: flex; flex-direction: column; flex-shrink: 0; }
 
-        .woven-swap { width: 54px; height: 54px; background: var(--panel); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); cursor: pointer; }
-        .woven-swap.flipped { transform: rotate(180deg); }
-        .woven-swap svg { width: 28px; height: 28px; fill: none; stroke: var(--accent); stroke-width: 2.2; }
+        /* IPHONE SCIENTIFIC GRID */
+        .display { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; text-align: right; padding: 20px; }
+        .val { font-size: clamp(54px, 11vw, 90px); font-weight: 300; letter-spacing: -4px; color: #fff; }
+        .sub { color: var(--accent); font-size: 10px; font-weight: 900; letter-spacing: 2px; margin-bottom: 5px; }
+
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; max-width: 480px; margin: 0 auto; }
         
-        .syncing { animation: breathe 1.2s infinite; }
-        @keyframes breathe { 50% { opacity: 0.5; } }
+        @media (min-width: 500px) or (orientation: landscape) {
+            .grid { grid-template-columns: repeat(10, 1fr); max-width: 1000px; gap: 8px; }
+            .sci-only { display: flex !important; align-items: center; justify-content: center; }
+            button { height: 50px !important; font-size: 16px !important; }
+        }
+        .sci-only { display: none; }
 
-        /* GRID */
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; max-width: 600px; margin: 0 auto; width: 100%; }
-        button { height: 75px; border-radius: 22px; border: 1px solid var(--border); background: var(--panel); color: #fff; font-size: 24px; font-weight: 600; cursor: pointer; }
-        button:active { transform: scale(0.9); background: var(--accent); color: #000; }
-        .action { background: var(--accent); color: #000; border: none; font-weight: 900; }
-
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 5500; opacity: 0; pointer-events: none; }
-        .overlay.active { opacity: 1; pointer-events: auto; }
+        button { height: 75px; border-radius: 50px; border: none; color: #fff; font-size: 26px; font-weight: 500; cursor: pointer; transition: 0.1s; display: flex; align-items: center; justify-content: center; }
+        .btn-num { background: var(--btn-num); }
+        .btn-fn { background: var(--btn-fn); color: #000; font-size: 20px; }
+        .btn-op { background: var(--btn-op); font-size: 32px; }
+        .btn-zero { grid-column: span 2; justify-content: flex-start; padding-left: 35px; }
+        button:active { filter: brightness(1.5); transform: scale(0.94); }
     </style>
 </head>
-<body data-theme="dark">
-
-    <div id="status-toast">
-        <span id="toast-icon">☁️</span>
-        <span id="toast-msg">Working offline. Rates are cached.</span>
-    </div>
+<body>
 
     <div class="top-nav">
-        <div style="font-size: 24px;">☰</div>
+        <div class="logo-container">
+            <div class="logo-aura"></div>
+            <img src="logo.png" class="logo-main" id="app-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/825/825590.png'">
+        </div>
+        
         <div style="display: flex; gap: 20px;">
             <span class="nav-link active" onclick="move(0)">CALC</span>
             <span class="nav-link" onclick="move(1)">TRADE</span>
             <span class="nav-link" onclick="move(2)">CRYP</span>
         </div>
+        <div style="width: 38px;"></div>
     </div>
-
-    <div id="curr-picker">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <b style="color:var(--accent); font-size:20px;">VISION CORE ASSETS</b>
-            <span onclick="closeAll()" style="font-size:12px; opacity:0.6;">CLOSE</span>
-        </div>
-        <div id="picker-list"></div>
-    </div>
-
-    <div class="overlay" onclick="closeAll()"></div>
 
     <div class="stage" id="stage">
         <div class="room">
-            <div class="display"><div class="sub">VISION CORE</div><div class="val" id="c-main">0</div></div>
-            <div class="grid">
-                <button onclick="cClr()">AC</button><button onclick="cDel()">⌫</button><button onclick="cIn('/')">÷</button><button class="action" onclick="cIn('*')">×</button>
-                <button onclick="cIn('7')">7</button><button onclick="cIn('8')">8</button><button onclick="cIn('9')">9</button><button class="action" onclick="cIn('-')">-</button>
-                <button onclick="cIn('4')">4</button><button onclick="cIn('5')">5</button><button onclick="cIn('6')">6</button><button class="action" onclick="cIn('+')">+</button>
-                <button onclick="cIn('1')">1</button><button onclick="cIn('2')">2</button><button onclick="cIn('3')">3</button><button class="action" onclick="cSolve()">=</button>
-            </div>
-        </div>
-
-        <div class="room">
             <div class="display">
-                <div class="trade-ui">
-                    <div id="base-tag" class="tag-btn" onclick="openPicker('base')">USD</div>
-                    <div class="woven-swap" id="swap-icon" onclick="swapTags()">
-                        <svg viewBox="0 0 24 24" id="swap-svg"><path d="M16 3c0 0 3 0 3 3s-3 3-3 3M19 6H5M8 21c0 0-3 0-3-3s3-3 3-3M5 18h14"/></svg>
-                    </div>
-                    <div id="target-tag" class="tag-btn" onclick="openPicker('target')">NGN</div>
-                </div>
-                <div class="val" id="f-val">0.00</div>
-                <div class="sub" id="f-rate-label">Syncing Markets...</div>
+                <div class="sub">VISION CORE SYSTEM</div>
+                <div class="val" id="c-main">0</div>
             </div>
             <div class="grid">
-                <button onclick="fIn('7')">7</button><button onclick="fIn('8')">8</button><button onclick="fIn('9')">9</button><button onclick="fClr()">AC</button>
-                <button onclick="fIn('4')">4</button><button onclick="fIn('5')">5</button><button onclick="fIn('6')">6</button><button onclick="fDel()">⌫</button>
-                <button onclick="fIn('1')">1</button><button onclick="fIn('2')">2</button><button onclick="fIn('3')">3</button><button class="action" onclick="swapTags()">⇄</button>
-                <button style="grid-column: span 4;" onclick="fIn('0')">0</button>
+                <button class="btn-num sci-only" onclick="cIn('(')">(</button><button class="btn-num sci-only" onclick="cIn(')')">)</button>
+                <button class="btn-num sci-only">mc</button><button class="btn-num sci-only">m+</button>
+                <button class="btn-num sci-only">m-</button><button class="btn-num sci-only">mr</button>
+                <button class="btn-fn" onclick="cClr()">AC</button><button class="btn-fn" onclick="cSci('pm')">⁺/₋</button>
+                <button class="btn-fn" onclick="cSci('pct')">%</button><button class="btn-op" onclick="cIn('/')">÷</button>
+                <button class="btn-num sci-only" onclick="cSci('sq')">x²</button><button class="btn-num sci-only" onclick="cSci('cu')">x³</button>
+                <button class="btn-num sci-only" onclick="cIn('**')">xʸ</button><button class="btn-num sci-only" onclick="cSci('ex')">eˣ</button>
+                <button class="btn-num sci-only">10ˣ</button><button class="btn-num sci-only">ln</button>
+                <button class="btn-num" onclick="cIn('7')">7</button><button class="btn-num" onclick="cIn('8')">8</button>
+                <button class="btn-num" onclick="cIn('9')">9</button><button class="btn-op" onclick="cIn('*')">×</button>
+                <button class="btn-num sci-only">1/x</button><button class="btn-num sci-only" onclick="cSci('sqrt')">√</button>
+                <button class="btn-num sci-only">³√</button><button class="btn-num sci-only">ʸ√</button>
+                <button class="btn-num sci-only">log</button><button class="btn-num sci-only">x!</button>
+                <button class="btn-num" onclick="cIn('4')">4</button><button class="btn-num" onclick="cIn('5')">5</button>
+                <button class="btn-num" onclick="cIn('6')">6</button><button class="btn-op" onclick="cIn('-')">−</button>
+                <button class="btn-num sci-only">sin</button><button class="btn-num sci-only">cos</button>
+                <button class="btn-num sci-only">tan</button><button class="btn-num sci-only">e</button>
+                <button class="btn-num sci-only">EE</button><button class="btn-num sci-only">Rad</button>
+                <button class="btn-num" onclick="cIn('1')">1</button><button class="btn-num" onclick="cIn('2')">2</button>
+                <button class="btn-num" onclick="cIn('3')">3</button><button class="btn-op" onclick="cIn('+')">+</button>
+                <button class="btn-num sci-only">sinh</button><button class="btn-num sci-only">cosh</button>
+                <button class="btn-num sci-only">tanh</button><button class="btn-num sci-only">π</button>
+                <button class="btn-num sci-only">Rand</button><button class="btn-num sci-only">Inv</button>
+                <button class="btn-num btn-zero" onclick="cIn('0')">0</button>
+                <button class="btn-num" onclick="cIn('.')">.</button>
+                <button class="btn-op" onclick="cSolve()">=</button>
             </div>
         </div>
 
-        <div class="room">
-            <div class="display"><div class="sub">VISION CORE CRYPTO</div><div class="val">SYNC...</div></div>
-            <div class="grid"><button style="grid-column: span 4;" onclick="move(1)">BACK TO TRADE</button></div>
-        </div>
+        <div class="room"><div class="display"><div class="val">TRADE TERMINAL</div></div></div>
+        <div class="room"><div class="display"><div class="val">CORE CRYPTO</div></div></div>
     </div>
 
     <script>
-        let rates = {}; 
-        let base = "USD", target = "NGN", editPart = "base", fData = "", cData = "", isOffline = false;
-        const currencies = ["USD", "EUR", "GBP", "NGN", "JPY", "CAD", "AUD", "BTC", "ETH"];
-
-        function vibrate(ms) { if (navigator.vibrate) navigator.vibrate(ms); }
+        let cData = "";
         function move(idx) { 
-            vibrate(10); 
-            document.getElementById('stage').style.transform = `translateX(-${idx * 33.33}%)`;
-            const links = document.querySelectorAll('.nav-link');
-            links.forEach((l, i) => l.classList.toggle('active', i === idx));
+            document.getElementById('stage').style.transform = `translateX(-${idx * 100}vw)`;
+            document.querySelectorAll('.nav-link').forEach((l, i) => l.classList.toggle('active', i === idx));
         }
-
-        function closeAll() { document.getElementById('curr-picker').classList.remove('open'); document.querySelector('.overlay').classList.remove('active'); }
-
-        async function updateMarket(b) {
-            const svg = document.getElementById('swap-svg');
-            const toast = document.getElementById('status-toast');
-            svg.classList.add('syncing');
-            try {
-                const res = await fetch(`https://open.er-api.com/v6/latest/${b}`);
-                if (!res.ok) throw new Error();
-                rates = (await res.json()).rates;
-                if (isOffline) {
-                    isOffline = false;
-                    toast.classList.add('online');
-                    document.getElementById('toast-icon').innerText = "✅";
-                    document.getElementById('toast-msg').innerText = "Market data restored.";
-                    setTimeout(() => toast.classList.remove('visible'), 2500);
-                }
-            } catch(e) {
-                isOffline = true;
-                toast.classList.remove('online');
-                toast.classList.add('visible');
-            } finally {
-                setTimeout(() => svg.classList.remove('syncing'), 800);
-                fUp();
-            }
-        }
-
-        function openPicker(part) {
-            editPart = part;
-            const list = document.getElementById('picker-list');
-            list.innerHTML = currencies.map(c => `<div class="curr-item" onclick="applySelection('${c}')"><b>${c}</b><span>➔</span></div>`).join('');
-            document.getElementById('curr-picker').classList.add('open');
-            document.querySelector('.overlay').classList.add('active');
-        }
-
-        async function applySelection(c) {
-            if (editPart === 'base') { base = c; document.getElementById('base-tag').innerText = c; await updateMarket(c); } 
-            else { target = c; document.getElementById('target-tag').innerText = c; }
-            fUp(); closeAll();
-        }
-
-        function swapTags() {
-            vibrate(40);
-            document.getElementById('swap-icon').classList.toggle('flipped');
-            [base, target] = [target, base];
-            document.getElementById('base-tag').innerText = base;
-            document.getElementById('target-tag').innerText = target;
-            updateMarket(base);
-        }
-
-        function fUp() {
-            let val = parseFloat(fData || 0);
-            let r = rates[target] || 1;
-            document.getElementById('f-val').innerText = (val * r).toLocaleString(undefined, {minimumFractionDigits: 2});
-            document.getElementById('f-rate-label').innerText = isOffline ? "⚠️ DATA CACHED" : `1 ${base} = ${r.toFixed(4)} ${target}`;
-        }
-
-        function fIn(v) { fData += v; fUp(); vibrate(5); }
-        function fClr() { fData = ""; fUp(); vibrate(10); }
-        function fDel() { fData = fData.slice(0,-1); fUp(); }
-        function cIn(v) { cData += v; cUp(); vibrate(5); }
+        function cIn(v) { cData += v; cUp(); }
         function cUp() { document.getElementById('c-main').innerText = cData || "0"; }
-        function cClr() { cData = ""; cUp(); vibrate(10); }
-        function cDel() { cData = cData.slice(0,-1); cUp(); }
-        function cSolve() { try { cData = eval(cData).toString(); cUp(); } catch { cData = "ERR"; cUp(); } }
-
-        window.onload = () => updateMarket("USD");
+        function cClr() { cData = ""; cUp(); }
+        function cSolve() { try { cData = eval(cData.replace('×','*').replace('÷','/')).toString(); cUp(); } catch { cData = "Error"; cUp(); } }
+        function cSci(type) {
+            let n = parseFloat(cData || "0");
+            if(type === 'pct') cData = (n/100).toString();
+            if(type === 'pm') cData = (n*-1).toString();
+            if(type === 'sq') cData = (n*n).toString();
+            if(type === 'sqrt') cData = Math.sqrt(n).toString();
+            cUp();
+        }
     </script>
 </body>
 </html>
