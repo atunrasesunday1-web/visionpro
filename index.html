@@ -16,51 +16,61 @@
         :root { --accent: #00d4ff; --bg: #050505; --panel: rgba(255, 255, 255, 0.05); --neon: 0 0 20px rgba(0, 212, 255, 0.4); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; outline: none; -webkit-user-select: none; }
         
-        /* Command 4: No floating/scrolling */
         html, body { height: 100dvh; width: 100vw; margin: 0; padding: 0; overflow: hidden; background: var(--bg); position: fixed; touch-action: none; }
 
-        /* Command 1 & 2: Fast Splash + Logo Display */
-        #splash { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
+        /* SPLASH */
+        #splash { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
         .splash-logo { width: 100px; height: auto; animation: breathe 2s infinite; filter: drop-shadow(var(--neon)); }
         @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.05); opacity: 1; } }
-        .loader-bar { width: 120px; height: 2px; background: #222; margin-top: 25px; border-radius: 10px; overflow: hidden; }
-        .loader-progress { width: 0%; height: 100%; background: var(--accent); animation: load 1.2s forwards ease-in-out; }
-        @keyframes load { to { width: 100%; } }
 
-        /* Header & Navigation */
+        /* NAVIGATION - HIDDEN IN LANDSCAPE */
         .header { padding: 55px 20px 10px; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); z-index: 100; position: relative; }
         .nav { background: var(--panel); display: flex; border-radius: 18px; padding: 4px; border: 1px solid rgba(255,255,255,0.08); position: relative; }
-        .nav-btn { flex: 1; padding: 12px; border: none; background: none; color: #555; font-weight: 800; font-size: 10px; letter-spacing: 1px; transition: 0.3s; z-index: 2; }
+        .nav-btn { flex: 1; padding: 12px; border: none; background: none; color: #555; font-weight: 800; font-size: 10px; letter-spacing: 1px; z-index: 2; }
         .nav-btn.active { color: white; }
         .nav-pill { position: absolute; top: 4px; left: 4px; width: calc(33.33% - 8px); height: calc(100% - 8px); background: rgba(255,255,255,0.12); border-radius: 14px; transition: 0.4s cubic-bezier(0.2, 1, 0.2, 1); z-index: 1; }
 
-        /* Stage Area */
+        /* STAGE */
         .stage { display: flex; width: 300%; height: calc(100dvh - 135px); transition: 0.5s cubic-bezier(0.2, 1, 0.2, 1); }
-        .room { width: 33.33%; padding: 20px; display: flex; flex-direction: column; height: 100%; }
-        .display { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; text-align: right; padding-bottom: 25px; }
-        .val { font-size: 64px; font-weight: 300; margin: 0; letter-spacing: -3px; color: #fff; }
-        .sub { color: var(--accent); font-size: 11px; font-weight: 900; letter-spacing: 2px; margin-bottom: 5px; }
+        .room { width: 33.33%; padding: 10px 20px; display: flex; flex-direction: column; height: 100%; }
+        
+        .display { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; text-align: right; padding-bottom: 15px; overflow: hidden; }
+        .val { font-size: clamp(35px, 8vw, 60px); font-weight: 300; color: #fff; word-break: break-all; line-height: 1; }
+        .sub { color: var(--accent); font-size: 10px; font-weight: 900; letter-spacing: 2px; margin-bottom: 5px; }
 
-        /* Keypad Grid */
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: env(safe-area-inset-bottom); }
-        button { height: clamp(60px, 8.5vh, 75px); border-radius: 22px; border: 1px solid rgba(255,255,255,0.04); background: var(--panel); color: white; font-size: 24px; font-weight: 600; transition: 0.1s; backdrop-filter: blur(10px); }
-        button:active { background: rgba(255,255,255,0.15); transform: scale(0.92); }
+        /* GRID LOGIC */
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: env(safe-area-inset-bottom); }
+        .scientific-keys { display: none; } /* Hidden in Portrait */
+
+        button { height: clamp(50px, 8vh, 75px); border-radius: 18px; border: 1px solid rgba(255,255,255,0.04); background: var(--panel); color: white; font-size: 20px; font-weight: 600; transition: 0.1s; backdrop-filter: blur(10px); }
+        button:active { background: var(--accent); color: black; transform: scale(0.95); }
+        
         .op { color: var(--accent); font-weight: 800; }
         .action { background: var(--accent); color: black; box-shadow: var(--neon); border: none; }
-        .btc-card { background: linear-gradient(135deg, #f7931a, #ffab40); color: black !important; font-size: 14px !important; border: none; font-weight: 900; }
-        
-        /* Command 5: Gemini-style Mic */
-        .mic-btn { position: relative; display: flex; align-items: center; justify-content: center; }
-        .mic-icon { width: 24px; height: 24px; background: white; clip-path: path('M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z M19 10v1a7 7 0 0 1-14 0v-1 M12 18v4 M8 22h8'); }
+        .btc-card { background: linear-gradient(135deg, #f7931a, #ffab40); color: black !important; font-size: 13px !important; border: none; font-weight: 900; }
+
+        /* LANDSCAPE MODE - THE "TILT" POWER */
+        @media (orientation: landscape) {
+            .header { display: none; }
+            .stage { width: 100% !important; height: 100dvh !important; transform: none !important; }
+            .room:not(:first-child) { display: none; }
+            .room { width: 100% !important; padding: 10px 40px; }
+            .display { padding-bottom: 5px; }
+            .val { font-size: 40px; }
+            .grid { grid-template-columns: repeat(8, 1fr); gap: 6px; }
+            .scientific-keys { display: contents; } /* SHOW ALL PHYSICAL BUTTONS */
+            button { height: 45px; font-size: 14px; border-radius: 12px; }
+            .room:first-child .grid .action { grid-column: span 2; }
+        }
+
         .mic-active { background: #ff3b30 !important; animation: pulse 1s infinite; border: none; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(255, 59, 48, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); } }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255, 59, 48, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); } }
     </style>
 </head>
 <body>
 
     <div id="splash">
-        <img src="logo.png" class="splash-logo" id="logoImg">
-        <div class="loader-bar"><div class="loader-progress"></div></div>
+        <img src="logo.png" class="splash-logo" alt="Vision Pro">
     </div>
 
     <div class="header">
@@ -74,20 +84,57 @@
 
     <div class="stage" id="stage">
         <div class="room">
-            <div class="display"><div class="sub" id="c-sub">VISION CORE</div><div class="val" id="c-main">0</div></div>
+            <div class="display">
+                <div class="sub" id="c-sub">VISION PRO SCIENTIFIC</div>
+                <div class="val" id="c-main">0</div>
+            </div>
+            
             <div class="grid">
-                <button class="op" onclick="tap();cClr()">AC</button><button class="op" onclick="tap();cIn('/')">÷</button><button class="op" onclick="tap();cIn('*')">×</button><button class="op" onclick="tap();cDel()">⌫</button>
-                <button onclick="tap();cIn('7')">7</button><button onclick="tap();cIn('8')">8</button><button onclick="tap();cIn('9')">9</button><button class="op" onclick="tap();cIn('-')">-</button>
-                <button onclick="tap();cIn('4')">4</button><button onclick="tap();cIn('5')">5</button><button onclick="tap();cIn('6')">6</button><button class="op" onclick="tap();cIn('+')">+</button>
-                <button onclick="tap();cIn('1')">1</button><button onclick="tap();cIn('2')">2</button><button onclick="tap();cIn('3')">3</button><button class="action" onclick="tap();cSolve()">=</button>
-                <button id="mic" onclick="tap();startVoice()" class="mic-btn">🎙️</button>
-                <button onclick="tap();cIn('0')">0</button><button onclick="tap();cIn('.')">.</button>
-                <button class="op" onclick="tap();move(1)">₦</button>
+                <div class="scientific-keys">
+                    <button class="op" onclick="tap();cIn('Math.sin(')">sin</button>
+                    <button class="op" onclick="tap();cIn('Math.cos(')">cos</button>
+                    <button class="op" onclick="tap();cIn('Math.tan(')">tan</button>
+                    <button class="op" onclick="tap();cIn('Math.log10(')">log</button>
+                    <button class="op" onclick="tap();cIn('Math.log(')">ln</button>
+                    <button class="op" onclick="tap();cIn('(')">(</button>
+                    <button class="op" onclick="tap();cIn(')')">)</button>
+                    <button class="op" onclick="tap();cIn('**2')">x²</button>
+                    <button class="op" onclick="tap();cIn('Math.sqrt(')">√</button>
+                    <button class="op" onclick="tap();cIn('Math.PI')">π</button>
+                    <button class="op" onclick="tap();cIn('Math.E')">e</button>
+                    <button class="op" onclick="tap();cIn('**')">xʸ</button>
+                    <button class="op" onclick="tap();cIn('Math.exp(')">exp</button>
+                    <button class="op" onclick="tap();factorial()">x!</button>
+                </div>
+
+                <button class="op" onclick="tap();cClr()">AC</button>
+                <button class="op" onclick="tap();cDel()">⌫</button>
+                <button class="op" onclick="tap();cIn('/')">÷</button>
+                <button class="op" onclick="tap();cIn('*')">×</button>
+                
+                <button onclick="tap();cIn('7')">7</button>
+                <button onclick="tap();cIn('8')">8</button>
+                <button onclick="tap();cIn('9')">9</button>
+                <button class="op" onclick="tap();cIn('-')">-</button>
+                
+                <button onclick="tap();cIn('4')">4</button>
+                <button onclick="tap();cIn('5')">5</button>
+                <button onclick="tap();cIn('6')">6</button>
+                <button class="op" onclick="tap();cIn('+')">+</button>
+                
+                <button onclick="tap();cIn('1')">1</button>
+                <button onclick="tap();cIn('2')">2</button>
+                <button onclick="tap();cIn('3')">3</button>
+                <button id="mic" onclick="tap();startVoice()">🎙️</button>
+
+                <button onclick="tap();cIn('0')">0</button>
+                <button onclick="tap();cIn('.')">.</button>
+                <button class="action" onclick="tap();cSolve()" style="grid-column: span 2;">=</button>
             </div>
         </div>
 
         <div class="room">
-            <div class="display"><div class="sub" id="f-sub">OFFICIAL RATES</div><div class="val" id="f-val">₦0</div></div>
+            <div class="display"><div class="sub">CURRENCY INTELLIGENCE</div><div class="val" id="f-val">₦0</div></div>
             <div style="display:flex; gap:10px; margin-bottom:15px;">
                 <button style="flex:1; font-size:12px; height:50px;" id="b-USD" class="action" onclick="tap();setCurr('USD')">USD</button>
                 <button style="flex:1; font-size:12px; height:50px;" id="b-GBP" onclick="tap();setCurr('GBP')">GBP</button>
@@ -102,9 +149,9 @@
         </div>
 
         <div class="room">
-            <div class="display"><div class="sub">BTC MARKET</div><div class="val" id="crypto-val" style="font-size: 45px;">₦0</div></div>
+            <div class="display"><div class="sub">BLOCKCHAIN ASSETS</div><div class="val" id="crypto-val" style="font-size: 35px;">₦0</div></div>
             <div class="grid">
-                <button style="grid-column: span 4; height:50px;" id="btc-price" class="btc-card" onclick="tap();fetchAll()">RE-SYNC MARKET</button>
+                <button style="grid-column: span 4; height:50px;" id="btc-price" class="btc-card" onclick="tap();fetchAll()">SYNC LIVE MARKET</button>
                 <button onclick="tap();cryptoIn('7')">7</button><button onclick="tap();cryptoIn('8')">8</button><button onclick="tap();cryptoIn('9')">9</button><button class="op" onclick="tap();cryptoClr()">AC</button>
                 <button onclick="tap();cryptoIn('4')">4</button><button onclick="tap();cryptoIn('5')">5</button><button onclick="tap();cryptoIn('6')">6</button><button class="op" onclick="tap();cryptoDel()">⌫</button>
                 <button onclick="tap();cryptoIn('1')">1</button><button onclick="tap();cryptoIn('2')">2</button><button onclick="tap();cryptoIn('3')">3</button><button class="action" onclick="tap();move(0)">BACK</button>
@@ -114,28 +161,22 @@
     </div>
 
     <script>
-        // Command 1: Fast Start (Instant splash removal)
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.getElementById('splash').style.opacity = '0';
                 setTimeout(() => document.getElementById('splash').style.display = 'none', 500);
-            }, 1200);
-            fetchAll(); // Start loading data in background
+            }, 1000);
+            fetchAll();
         });
 
-        // Command 3: Haptic Feedback
-        function tap() { if(window.navigator.vibrate) window.navigator.vibrate(10); }
+        function tap() { if(window.navigator.vibrate) window.navigator.vibrate(12); }
 
         let rates = { USD: 1650, GBP: 2100, EUR: 1800, BTC: 0 };
         let active = 'USD';
         let fData = "", cData = "", cryptoData = "";
 
-        // Command 6 & 7: Internet-dependent Live Rates
         async function fetchAll() {
-            if(!navigator.onLine) {
-                document.getElementById('btc-price').innerText = "OFFLINE: Check Connection";
-                return;
-            }
+            if(!navigator.onLine) return;
             try {
                 const res = await fetch('https://open.er-api.com/v6/latest/USD');
                 const data = await res.json();
@@ -147,7 +188,7 @@
                 rates.BTC = btcData.bitcoin.usd * rates.USD;
                 document.getElementById('btc-price').innerText = "1 BTC = ₦" + Math.round(rates.BTC).toLocaleString();
                 fUp(); cryptoUp();
-            } catch(e) { console.log("Rate Sync Failed"); }
+            } catch(e) {}
         }
 
         function move(idx) {
@@ -156,18 +197,12 @@
             document.querySelectorAll('.nav-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
         }
 
-        // Command 5: Working Mic logic
         async function startVoice() {
             const Speech = window.webkitSpeechRecognition || window.SpeechRecognition;
-            if(!Speech) return alert("Please use Safari or Chrome");
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                stream.getTracks().forEach(t => t.stop());
-            } catch(e) { return alert("Mic blocked. Check settings."); }
-
+            if(!Speech) return alert("iPhone Voice requires Safari.");
             const rec = new Speech();
-            rec.onstart = () => { document.getElementById('mic').classList.add('mic-active'); document.getElementById('c-sub').innerText = "LISTENING..."; };
-            rec.onend = () => { document.getElementById('mic').classList.remove('mic-active'); document.getElementById('c-sub').innerText = "VISION CORE"; };
+            rec.onstart = () => { document.getElementById('mic').classList.add('mic-active'); };
+            rec.onend = () => { document.getElementById('mic').classList.remove('mic-active'); };
             rec.onresult = (e) => {
                 let t = e.results[0][0].transcript.toLowerCase();
                 cData = t.replace(/plus/g,'+').replace(/minus/g,'-').replace(/times|x/g,'*').replace(/divided by/g,'/').replace(/ /g,'');
@@ -176,18 +211,53 @@
             rec.start();
         }
 
-        // --- COMMAND 8, 9, 10: Bug-Free Logic ---
-        function cIn(v) { if(cData.length < 12) cData += v; cUp(); }
+        // --- CALC LOGIC ---
+        function cIn(v) { if(cData.length < 50) cData += v; cUp(); }
         function cClr() { cData = ""; cUp(); }
         function cDel() { cData = cData.slice(0,-1); cUp(); }
-        function cUp() { document.getElementById('c-main').innerText = cData || "0"; }
-        function cSolve() { try { cData = eval(cData.replace('×','*').replace('÷','/')).toString(); cUp(); } catch(e) { cData = "0"; } }
+        function cUp() { 
+            let display = cData.replace(/Math\./g, '').replace(/\*\*/g, '^');
+            document.getElementById('c-main').innerText = display || "0"; 
+        }
+
+        function factorial() {
+            try {
+                let n = parseInt(eval(cData));
+                let res = 1;
+                for(let i=1; i<=n; i++) res *= i;
+                cData = res.toString();
+                cUp();
+            } catch(e) { cData = "ERROR"; cUp(); }
+        }
+        
+        function cSolve() { 
+            try { 
+                let expression = cData;
+                // Auto-close brackets
+                let open = (expression.match(/\(/g) || []).length;
+                let close = (expression.match(/\)/g) || []).length;
+                for(let i=0; i < (open-close); i++) expression += ')';
+
+                let res = eval(expression);
+                if (res > 1e12 || res < -1e12) {
+                    cData = res.toExponential(4); 
+                } else {
+                    cData = parseFloat(res.toFixed(8)).toString();
+                }
+                cUp(); 
+            } catch(e) { 
+                document.getElementById('c-main').innerText = "SYNTAX ERROR";
+                setTimeout(cClr, 1000);
+            } 
+        }
+
+        // --- CASH & CRYPTO ---
         function setCurr(c) { active = c; document.querySelectorAll('[id^="b-"]').forEach(b => b.classList.remove('action')); document.getElementById('b-'+c).classList.add('action'); fUp(); }
-        function fIn(v) { if(fData.length < 10) fData += v; fUp(); }
+        function fIn(v) { if(fData.length < 15) fData += v; fUp(); }
         function fClr() { fData = ""; fUp(); }
         function fDel() { fData = fData.slice(0,-1); fUp(); }
         function fUp() { document.getElementById('f-val').innerText = "₦" + Math.round(parseFloat(fData||0) * rates[active]).toLocaleString(); }
-        function cryptoIn(v) { if(cryptoData.length < 8) cryptoData += v; cryptoUp(); }
+        function cryptoIn(v) { if(cryptoData.length < 12) cryptoData += v; cryptoUp(); }
         function cryptoClr() { cryptoData = ""; cryptoUp(); }
         function cryptoDel() { cryptoData = cryptoData.slice(0,-1); cryptoUp(); }
         function cryptoUp() { document.getElementById('crypto-val').innerText = "₦" + Math.round(parseFloat(cryptoData||0) * rates.BTC).toLocaleString(); }
