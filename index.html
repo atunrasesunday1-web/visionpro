@@ -31,17 +31,13 @@
         #sidebar.open { left: 0; box-shadow: 20px 0 80px rgba(0,0,0,0.8); }
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2900; display: none; backdrop-filter: blur(4px); }
 
-        /* LIVE MARKET BUTTON */
         .market-btn {
             width: 100%; height: 55px; background: var(--accent); color: #fff;
             border-radius: 16px; border: none; font-weight: 800; font-size: 12px;
             letter-spacing: 1.2px; cursor: pointer; display: flex; align-items: center;
             justify-content: center; gap: 10px; text-decoration: none; margin-top: 10px;
-            box-shadow: 0 4px 15px rgba(29, 155, 240, 0.3);
         }
-        .market-btn:active { transform: scale(0.96); }
 
-        /* THEME ICON GRID */
         .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
         .theme-btn { 
             height: 65px; border-radius: 16px; border: 1px solid var(--border);
@@ -50,39 +46,40 @@
         }
         .theme-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(29, 155, 240, 0.05); }
 
-        /* TOP NAVIGATION */
+        /* NAVIGATION */
         .top-nav { position: fixed; top: 0; width: 100%; height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; z-index: 2000; }
         .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 7px; width: 28px; }
         .menu-btn span { height: 2px; background: var(--text); width: 100%; border-radius: 10px; }
-        
         .tab-bar { display: flex; gap: 20px; background: var(--card); padding: 10px 25px; border-radius: 100px; border: 1px solid var(--border); }
         .tab { font-size: 11px; font-weight: 800; opacity: 0.4; cursor: pointer; letter-spacing: 1.5px; }
         .tab.active { opacity: 1; color: var(--accent); }
 
-        /* APP STAGE */
+        /* STAGE */
         .stage { display: flex; width: 200vw; height: 100%; transition: 0.6s cubic-bezier(0.2, 0, 0, 1); }
         .room { width: 100vw; height: 100%; padding: 100px 25px 30px; display: flex; flex-direction: column; }
         
-        .display { flex: 0.35; display: flex; align-items: flex-end; justify-content: flex-end; padding-bottom: 25px; }
+        /* DISPLAY & COPY BUTTON */
+        .display-container { flex: 0.35; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; padding-bottom: 25px; position: relative; }
+        .copy-trigger { 
+            position: absolute; top: 0; right: 0; background: var(--card); 
+            border: 1px solid var(--border); color: var(--text); padding: 8px 12px; 
+            border-radius: 10px; cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 6px;
+            transition: 0.2s;
+        }
+        .copy-trigger:active { transform: scale(0.9); background: var(--accent); color: white; }
         .val { font-size: 70px; font-weight: 200; color: var(--accent); letter-spacing: -3px; }
 
-        /* GRID SYSTEM (MASTER LOCK) */
+        /* GRID */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; max-width: 450px; margin: 0 auto; }
-        
-        button { 
-            height: 68px; border-radius: 20px; border: 1px solid var(--border); 
-            background: var(--btn-num); color: var(--btn-text); 
-            font-size: 24px; font-weight: 400; cursor: pointer; transition: 0.1s;
-        }
+        button { height: 68px; border-radius: 20px; border: 1px solid var(--border); background: var(--btn-num); color: var(--btn-text); font-size: 24px; cursor: pointer; transition: 0.1s; }
         button:active { transform: scale(0.92); background: var(--accent); color: #fff; }
         
         .op { background: #ff9f0a; color: #fff; border: none; font-size: 28px; }
         .fn { background: #a5a5a5; color: #000; font-size: 16px; font-weight: 800; border: none; }
         .sci { color: var(--accent); font-size: 15px; font-weight: 800; }
 
-        /* TERMINAL BOXES */
-        .box { background: var(--card); border-radius: 24px; padding: 30px; border: 1px solid var(--border); margin-bottom: 20px; text-align: center; }
-        .box p { font-size: 12px; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .box { background: var(--card); border-radius: 24px; padding: 30px; border: 1px solid var(--border); margin-bottom: 20px; text-align: center; position: relative; }
+        .box p { font-size: 12px; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; }
         .box h2 { font-size: 38px; color: var(--accent); font-weight: 300; }
     </style>
 </head>
@@ -92,7 +89,6 @@
     
     <div id="sidebar">
         <h2 style="font-weight: 800; font-size: 24px; margin-bottom: 40px;">Vision Elite</h2>
-        
         <div style="margin-bottom: 40px;">
             <p style="font-size: 11px; font-weight: 800; color: var(--accent); margin-bottom: 15px; letter-spacing: 1.5px;">LIVE TERMINAL</p>
             <a href="https://finance.yahoo.com/currencies" target="_blank" class="market-btn">
@@ -100,7 +96,6 @@
                 FETCH LIVE NEWS
             </a>
         </div>
-        
         <div style="margin-bottom: 40px;">
             <p style="font-size: 11px; font-weight: 800; color: var(--accent); margin-bottom: 10px; letter-spacing: 1.5px;">APPEARANCE</p>
             <div class="theme-grid">
@@ -112,7 +107,6 @@
                 </div>
             </div>
         </div>
-
         <div>
             <p style="font-size: 11px; font-weight: 800; color: var(--accent); margin-bottom: 15px; letter-spacing: 1.5px;">SESSION LOG</p>
             <div id="hist-list" style="font-size: 13px; opacity: 0.5; line-height: 1.8;">No entries.</div>
@@ -130,36 +124,32 @@
 
     <div class="stage" id="stage">
         <div class="room">
-            <div class="display"><div class="val" id="disp">0</div></div>
+            <div class="display-container">
+                <div class="copy-trigger" onclick="copyToClipboard('disp')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    COPY
+                </div>
+                <div class="val" id="disp">0</div>
+            </div>
             <div class="grid">
-                <button class="sci" onclick="sci('sqrt')">√</button>
-                <button class="sci" onclick="inp('3.141')">π</button>
-                <button class="sci" onclick="sci('sin')">sin</button>
-                <button class="sci" onclick="sci('cos')">cos</button>
-
-                <button class="fn" onclick="clr()">AC</button>
-                <button class="fn" onclick="sci('pm')">+/-</button>
-                <button class="fn" onclick="sci('pct')">%</button>
-                <button class="op" onclick="inp('/')">÷</button>
-
-                <button onclick="inp('7')">7</button><button onclick="inp('8')">8</button><button onclick="inp('9')">9</button>
-                <button class="op" onclick="inp('*')">×</button>
-
-                <button onclick="inp('4')">4</button><button onclick="inp('5')">5</button><button onclick="inp('6')">6</button>
-                <button class="op" onclick="inp('-')">−</button>
-
-                <button onclick="inp('1')">1</button><button onclick="inp('2')">2</button><button onclick="inp('3')">3</button>
-                <button class="op" onclick="inp('+')">+</button>
-
-                <button style="grid-column: span 2; border-radius: 40px; text-align: left; padding-left: 35px;" onclick="inp('0')">0</button>
-                <button onclick="inp('.')">.</button>
-                <button class="op" onclick="solve()">=</button>
+                <button class="sci" onclick="sci('sqrt')">√</button><button class="sci" onclick="inp('3.141')">π</button><button class="sci" onclick="sci('sin')">sin</button><button class="sci" onclick="sci('cos')">cos</button>
+                <button class="fn" onclick="clr()">AC</button><button class="fn" onclick="sci('pm')">+/-</button><button class="fn" onclick="sci('pct')">%</button><button class="op" onclick="inp('/')">÷</button>
+                <button onclick="inp('7')">7</button><button onclick="inp('8')">8</button><button onclick="inp('9')">9</button><button class="op" onclick="inp('*')">×</button>
+                <button onclick="inp('4')">4</button><button onclick="inp('5')">5</button><button onclick="inp('6')">6</button><button class="op" onclick="inp('-')">−</button>
+                <button onclick="inp('1')">1</button><button onclick="inp('2')">2</button><button onclick="inp('3')">3</button><button class="op" onclick="inp('+')">+</button>
+                <button style="grid-column: span 2; border-radius: 40px; text-align: left; padding-left: 35px;" onclick="inp('0')">0</button><button onclick="inp('.')">.</button><button class="op" onclick="solve()">=</button>
             </div>
         </div>
 
         <div class="room">
-            <div class="box"><p>USD Portfolio</p><h2 id="t-in">0</h2></div>
-            <div class="box"><p>EUR Exchange</p><h2 id="t-out">0.00</h2></div>
+            <div class="box">
+                <div class="copy-trigger" onclick="copyToClipboard('t-in')" style="top: 15px; right: 15px;">COPY</div>
+                <p>USD Portfolio</p><h2 id="t-in">0</h2>
+            </div>
+            <div class="box">
+                <div class="copy-trigger" onclick="copyToClipboard('t-out')" style="top: 15px; right: 15px;">COPY</div>
+                <p>EUR Exchange</p><h2 id="t-out">0.00</h2>
+            </div>
             <div class="grid">
                 <button onclick="tIn('7')">7</button><button onclick="tIn('8')">8</button><button onclick="tIn('9')">9</button>
                 <button onclick="tIn('4')">4</button><button onclick="tIn('5')">5</button><button onclick="tIn('6')">6</button>
@@ -190,6 +180,16 @@
             document.querySelectorAll('.tab').forEach((t, idx) => t.classList.toggle('active', i === idx));
         }
 
+        function copyToClipboard(id) {
+            const val = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(val);
+            const btn = event.currentTarget;
+            const original = btn.innerHTML;
+            btn.innerHTML = "SAVED!";
+            btn.style.borderColor = "var(--accent)";
+            setTimeout(() => { btn.innerHTML = original; btn.style.borderColor = "var(--border)"; }, 1500);
+        }
+
         function inp(v) { d += v; document.getElementById('disp').innerText = d; }
         function clr() { d = ""; document.getElementById('disp').innerText = "0"; }
         function solve() {
@@ -211,9 +211,13 @@
             document.getElementById('hist-list').innerHTML = hist.map(h => `<div style="padding:5px 0; border-bottom:1px solid var(--border)">${h}</div>`).join('');
         }
 
-        function tIn(v) { td += v; document.getElementById('t-in').innerText = td; document.getElementById('t-out').innerText = (parseFloat(td||0)*0.94).toFixed(2); }
-        function tClr() { td = ""; document.getElementById('t-in').innerText = "0"; document.getElementById('t-out').innerText = "0.00"; }
-        function tBack() { td = td.slice(0,-1); document.getElementById('t-in').innerText = td || "0"; document.getElementById('t-out').innerText = (parseFloat(td||0)*0.94).toFixed(2); }
+        function tIn(v) { td += v; tUp(); }
+        function tClr() { td = ""; tUp(); }
+        function tBack() { td = td.slice(0,-1); tUp(); }
+        function tUp() {
+            document.getElementById('t-in').innerText = td || "0";
+            document.getElementById('t-out').innerText = (parseFloat(td||0)*0.94).toFixed(2);
+        }
     </script>
 </body>
 </html>
