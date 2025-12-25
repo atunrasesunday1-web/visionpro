@@ -3,204 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Vision Pro Max</title>
+    <meta name="apple-mobile-web-app-title" content="VisionPro AI">
+    <meta name="theme-color" content="#050505">
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600;900&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="logo.png">
+    
+    <title>Vision Pro Max AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --accent: #00d4ff; --bg: #050505; --panel: rgba(255, 255, 255, 0.06); --neon: 0 0 20px rgba(0, 212, 255, 0.4); }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; outline: none; -webkit-user-select: none; touch-action: manipulation; }
-        
-        html, body { height: 100dvh; width: 100vw; margin: 0; padding: 0; overflow: hidden; background: var(--bg); position: fixed; display: flex; }
-
-        #splash { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s ease; pointer-events: none; }
-        .splash-logo { width: 80px; height: auto; animation: breathe 2s infinite; }
-        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.05); opacity: 1; } }
-
-        .sidebar { width: 85px; height: 100vh; background: #000; border-right: 1px solid rgba(255,255,255,0.1); display: none; flex-direction: column; align-items: center; padding-top: 60px; gap: 20px; z-index: 2000; }
-        .side-btn { width: 55px; height: 55px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.05); background: var(--panel); color: #444; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; cursor: pointer; transition: 0.3s; }
-        .side-btn.active { color: var(--accent); border-color: var(--accent); box-shadow: var(--neon); }
-
-        .app-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-        .header { padding: 55px 20px 10px; background: rgba(0,0,0,0.85); backdrop-filter: blur(25px); z-index: 1000; }
-        .nav { background: var(--panel); display: flex; border-radius: 18px; padding: 4px; border: 1px solid rgba(255,255,255,0.08); position: relative; }
-        .nav-btn { flex: 1; padding: 12px; border: none; background: none; color: #555; font-weight: 800; font-size: 10px; z-index: 2; cursor: pointer; }
-        .nav-btn.active { color: white; }
-        .nav-pill { position: absolute; top: 4px; left: 4px; width: calc(33.33% - 8px); height: calc(100% - 8px); background: rgba(255,255,255,0.12); border-radius: 14px; transition: 0.4s cubic-bezier(0.2, 1, 0.2, 1); z-index: 1; }
-
-        .stage { display: flex; width: 300%; height: 100%; transition: 0.5s cubic-bezier(0.2, 1, 0.2, 1); }
-        .room { width: 33.3333%; padding: 20px; display: flex; flex-direction: column; height: 100%; max-width: 480px; margin: 0 auto; }
-        
-        .display { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; text-align: right; padding-bottom: 25px; overflow-x: auto; scrollbar-width: none; }
-        .val { font-size: clamp(28px, 7vw, 70px); font-weight: 300; color: #fff; line-height: 1.1; word-wrap: break-word; white-space: normal; }
-        .sub { color: var(--accent); font-size: 10px; font-weight: 900; letter-spacing: 3px; margin-bottom: 8px; }
-
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 30px; }
-        .sci-keys { display: none; } 
-
-        button { height: clamp(55px, 8.5vh, 85px); border-radius: 22px; border: 1px solid rgba(255,255,255,0.05); background: var(--panel); color: white; font-size: 22px; font-weight: 600; cursor: pointer; }
-        button:active { background: var(--accent); color: black; transform: scale(0.92); }
-        .op { color: var(--accent); font-weight: 800; }
-        .action { background: var(--accent); color: black; box-shadow: var(--neon); border: none; }
-
-        @media (min-width: 1024px) { .sidebar { display: flex; } .header { display: none; } }
-        @media (orientation: landscape) and (max-height: 500px) {
-            .sidebar, .header { display: none !important; }
-            .stage { width: 100% !important; transform: none !important; }
-            .room:not(:first-child) { display: none !important; }
-            .room { width: 100% !important; max-width: 100% !important; padding: 10px 40px; }
-            .grid { grid-template-columns: repeat(10, 1fr); gap: 6px; }
-            .sci-keys { display: contents; } 
-            button { height: 42px; font-size: 13px !important; border-radius: 12px; }
+        :root { 
+            --accent: #00d4ff; --bg: #050505; --text: #ffffff;
+            --panel: rgba(255, 255, 255, 0.08); --border: rgba(255, 255, 255, 0.1);
+            --warning: #ffb300; --success: #34c759;
+            --safe-top: env(safe-area-inset-top);
+            --safe-bottom: env(safe-area-inset-bottom);
         }
 
-        .mic-active { background: #ff3b30 !important; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255, 59, 48, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); } }
+        /* DEVICE RECOGNITION & CENTERING */
+        body { 
+            height: 100dvh; margin: 0; background: #000; 
+            color: var(--text); overflow: hidden; display: flex; justify-content: center; align-items: center;
+        }
+
+        #app-container {
+            width: 100%; height: 100%; background: var(--bg);
+            position: relative; overflow: hidden; display: flex; flex-direction: column;
+        }
+
+        /* Desktop Mode (Phone Frame) */
+        @media (min-width: 500px) {
+            #app-container {
+                width: 395px; height: 850px; 
+                border-radius: 45px; border: 12px solid #1a1a1a;
+                box-shadow: 0 50px 100px rgba(0,0,0,0.9);
+            }
+            body { background: radial-gradient(circle, #222 0%, #000 100%); }
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; outline: none; }
+        
+        /* TOAST ALERT (Adjusted for Notch) */
+        #status-toast { 
+            position: absolute; top: calc(var(--safe-top) + 60px); left: 50%; transform: translateX(-50%) translateY(-180px);
+            background: rgba(255, 179, 0, 0.12); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--warning); color: var(--warning);
+            padding: 12px 24px; border-radius: 50px; font-size: 13px; font-weight: 600;
+            z-index: 5000; display: flex; align-items: center; gap: 10px; transition: 0.6s cubic-bezier(0.2, 1, 0.2, 1); opacity: 0;
+        }
+        #status-toast.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
+        #status-toast.online { border-color: var(--success); color: var(--success); background: rgba(52, 199, 89, 0.12); }
+
+        /* MODAL PICKER */
+        #curr-picker { position: absolute; bottom: -100%; left: 0; width: 100%; height: 80%; background: #080808; border-top: 1px solid var(--accent); z-index: 6000; border-radius: 30px 30px 0 0; padding: 30px; overflow-y: auto; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        #curr-picker.open { bottom: 0; box-shadow: 0 -20px 60px rgba(0,0,0,0.9); }
+        .curr-item { padding: 22px; background: var(--panel); border-radius: 20px; margin-bottom: 12px; display: flex; justify-content: space-between; border: 1px solid var(--border); font-weight: 600; }
+        .curr-item:active { background: var(--accent); color: #000; transform: scale(0.97); }
+
+        /* NAV */
+        .top-nav { position: absolute; top: calc(var(--safe-top) + 20px); width: 100%; padding: 0 25px; display: flex; justify-content: space-between; z-index: 1000; align-items: center; }
+        .nav-link { font-size: 11px; font-weight: 900; opacity: 0.3; letter-spacing: 1.5px; cursor: pointer; transition: 0.3s; }
+        .nav-link.active { opacity: 1; color: var(--accent); }
+
+        /* STAGE */
+        .stage { display: flex; width: 300%; height: 100%; transition: 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+        .room { width: 33.33%; padding: 140px 25px calc(var(--safe-bottom) + 30px); display: flex; flex-direction: column; }
+        .display { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; text-align: right; padding-bottom: 35px; }
+        .val { font-size: 62px; font-weight: 300; letter-spacing: -4px; color: var(--text); }
+        .sub { color: var(--accent); font-size: 11px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+
+        /* PREMIUM WOVEN SWAP */
+        .trade-ui { display: flex; align-items: center; justify-content: flex-end; gap: 15px; margin-bottom: 12px; }
+        .tag-btn { background: var(--panel); border: 1px solid var(--border); padding: 12px 24px; border-radius: 18px; font-weight: 900; cursor: pointer; font-size: 14px; }
+        .tag-btn.editing { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 20px rgba(0,212,255,0.15); }
+        
+        .woven-swap { width: 56px; height: 56px; background: var(--panel); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); cursor: pointer; transition: 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .woven-swap.flipped { transform: rotate(180deg); }
+        .woven-swap svg { width: 30px; stroke: var(--accent); stroke-width: 2.2; fill: none; }
+        
+        .syncing { animation: breathe 1.5s infinite; }
+        @keyframes breathe { 50% { opacity: 0.2; filter: blur(2px); } }
+
+        /* GRID */
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+        button { height: 76px; border-radius: 22px; border: 1px solid var(--border); background: var(--panel); color: #fff; font-size: 26px; font-weight: 600; cursor: pointer; }
+        button:active { transform: scale(0.88); background: var(--accent); color: #000; }
+        .action { background: var(--accent); color: #000; border: none; font-weight: 900; }
+
+        .overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); z-index: 5500; opacity: 0; pointer-events: none; transition: 0.4s; }
+        .overlay.active { opacity: 1; pointer-events: auto; }
     </style>
 </head>
 <body>
 
-    <div id="splash"><img src="logo.png" class="splash-logo"></div>
+    <div id="app-container">
+        <div id="status-toast">
+            <span id="toast-icon">☁️</span>
+            <span id="toast-msg">Market link lost. Using cached rates.</span>
+        </div>
 
-    <div class="sidebar">
-        <div class="side-btn active" onclick="move(0)">CALC</div>
-        <div class="side-btn" onclick="move(1)">CASH</div>
-        <div class="side-btn" onclick="move(2)">CRYP</div>
-    </div>
-
-    <div class="app-container">
-        <div class="header">
-            <div class="nav">
-                <div id="pill" class="nav-pill"></div>
-                <button class="nav-btn active" onclick="move(0)">CALC</button>
-                <button class="nav-btn" onclick="move(1)">CASH</button>
-                <button class="nav-btn" onclick="move(2)">CRYPTO</button>
+        <div class="top-nav">
+            <div style="font-size: 24px; opacity: 0.8;">☰</div>
+            <div style="display: flex; gap: 25px;">
+                <span class="nav-link active" id="n0" onclick="move(0)">MATH</span>
+                <span class="nav-link" id="n1" onclick="move(1)">TRADE</span>
+                <span class="nav-link" id="n2" onclick="move(2)">CRYP</span>
             </div>
         </div>
 
+        <div id="curr-picker">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
+                <div>
+                    <div style="font-size:10px; opacity:0.5; font-weight:900;">ASSET SELECTION</div>
+                    <b style="color:var(--accent); font-size:22px;">GLOBAL MARKET</b>
+                </div>
+                <span onclick="closeAll()" style="font-size:12px; font-weight:900; padding:10px; background:var(--panel); border-radius:10px;">DONE</span>
+            </div>
+            <div id="picker-list"></div>
+        </div>
+
+        <div class="overlay" onclick="closeAll()"></div>
+
         <div class="stage" id="stage">
             <div class="room">
-                <div class="display"><div class="sub">INFINITY ENGINE</div><div class="val" id="c-main">0</div></div>
+                <div class="display"><div class="sub">AI CALCULATOR</div><div class="val" id="c-main">0</div></div>
                 <div class="grid">
-                    <div class="sci-keys">
-                        <button onclick="cIn('(')">(</button><button onclick="cIn(')')">)</button>
-                        <button onclick="memo('mc')">mc</button><button onclick="memo('m+')">m+</button>
-                        <button onclick="memo('m-')">m-</button><button onclick="memo('mr')">mr</button>
-                        <button onclick="cIn('Math.pow(')">2nd</button><button onclick="cIn('**2')">x²</button>
-                        <button onclick="cIn('**3')">x³</button><button onclick="cIn('**')">xʸ</button>
-                        <button onclick="cIn('Math.exp(')">eˣ</button><button onclick="cIn('10**')">10ˣ</button>
-                        <button onclick="cIn('1/')">1/x</button><button onclick="cIn('Math.sqrt(')">²√x</button>
-                        <button onclick="cIn('Math.cbrt(')">³√x</button><button onclick="cIn('Math.pow(')">ʸ√x</button>
-                        <button onclick="cIn('Math.log(')">ln</button><button onclick="cIn('Math.log10(')">log₁₀</button>
-                        <button onclick="factorial()">x!</button><button onclick="cIn('Math.sin(')">sin</button>
-                        <button onclick="cIn('Math.cos(')">cos</button><button onclick="cIn('Math.tan(')">tan</button>
-                        <button onclick="cIn('Math.E')">e</button><button onclick="cIn('*10**')">EE</button>
-                        <button>Rad</button><button onclick="cIn('Math.sinh(')">sinh</button>
-                        <button onclick="cIn('Math.cosh(')">cosh</button><button onclick="cIn('Math.tanh(')">tanh</button>
-                        <button onclick="cIn('Math.PI')">π</button><button onclick="cIn(Math.random())">Rand</button>
-                    </div>
-                    <button class="op" onclick="cClr()">AC</button><button class="op" onclick="cDel()">⌫</button>
-                    <button class="op" onclick="cIn('/')">÷</button><button class="op" onclick="cIn('*')">×</button>
-                    <button onclick="cIn('7')">7</button><button onclick="cIn('8')">8</button><button onclick="cIn('9')">9</button><button class="op" onclick="cIn('-')">-</button>
-                    <button onclick="cIn('4')">4</button><button onclick="cIn('5')">5</button><button onclick="cIn('6')">6</button><button class="op" onclick="cIn('+')">+</button>
-                    <button onclick="cIn('1')">1</button><button onclick="cIn('2')">2</button><button onclick="cIn('3')">3</button><button id="mic" onclick="startVoice()">🎙️</button>
-                    <button onclick="cIn('0')">0</button><button onclick="cIn('.')">.</button><button class="action" onclick="cSolve()" style="grid-column: span 2;">=</button>
+                    <button style="color:var(--accent)" onclick="cClr()">AC</button><button style="color:var(--accent)" onclick="cDel()">⌫</button><button class="action" onclick="cIn('/')">÷</button><button class="action" onclick="cIn('*')">×</button>
+                    <button onclick="cIn('7')">7</button><button onclick="cIn('8')">8</button><button onclick="cIn('9')">9</button><button class="action" onclick="cIn('-')">-</button>
+                    <button onclick="cIn('4')">4</button><button onclick="cIn('5')">5</button><button onclick="cIn('6')">6</button><button class="action" onclick="cIn('+')">+</button>
+                    <button onclick="cIn('1')">1</button><button onclick="cIn('2')">2</button><button onclick="cIn('3')">3</button><button class="action" onclick="cSolve()" style="grid-row: span 2; height: 166px;">=</button>
+                    <button style="grid-column: span 2;" onclick="cIn('0')">0</button><button onclick="cIn('.')">.</button>
                 </div>
             </div>
+
             <div class="room">
-                <div class="display"><div class="sub" id="f-sub">USD TO NAIRA</div><div class="val" id="f-val">₦0</div></div>
-                <div style="display:flex; gap:8px; margin-bottom:15px;"><button id="b-USD" class="action" onclick="setCurr('USD')" style="flex:1; height:45px; font-size:11px;">USD</button><button id="b-GBP" onclick="setCurr('GBP')" style="flex:1; height:45px; font-size:11px;">GBP</button><button id="b-EUR" onclick="setCurr('EUR')" style="flex:1; height:45px; font-size:11px;">EUR</button></div>
-                <div class="grid"><button onclick="fIn('7')">7</button><button onclick="fIn('8')">8</button><button onclick="fIn('9')">9</button><button class="op" onclick="fClr()">AC</button><button onclick="fIn('4')">4</button><button onclick="fIn('5')">5</button><button onclick="fIn('6')">6</button><button class="op" onclick="fDel()">⌫</button><button onclick="fIn('1')">1</button><button onclick="fIn('2')">2</button><button onclick="fIn('3')">3</button><button class="action" onclick="move(0)">DONE</button><button style="grid-column: span 4;" onclick="fIn('0')">0</button></div>
+                <div class="display">
+                    <div class="trade-ui">
+                        <div id="base-tag" class="tag-btn" onclick="openPicker('base')">USD</div>
+                        <div class="woven-swap" id="swap-icon" onclick="swapTags()">
+                            <svg viewBox="0 0 24 24" id="swap-svg">
+                                <path d="M17 4l3 3-3 3M7 20l-3-3 3-3"/>
+                                <path d="M20 7H8c-2.2 0-4 1.8-4 4v2M4 17h12c2.2 0 4-1.8 4-4v-2" opacity="0.9"/>
+                            </svg>
+                        </div>
+                        <div id="target-tag" class="tag-btn" onclick="openPicker('target')">NGN</div>
+                    </div>
+                    <div class="val" id="f-val">0.00</div>
+                    <div class="sub" id="f-rate-label">Live Market Pulse</div>
+                </div>
+                <div class="grid">
+                    <button onclick="fIn('7')">7</button><button onclick="fIn('8')">8</button><button onclick="fIn('9')">9</button><button style="color:var(--accent)" onclick="fClr()">AC</button>
+                    <button onclick="fIn('4')">4</button><button onclick="fIn('5')">5</button><button onclick="fIn('6')">6</button><button style="color:var(--accent)" onclick="fDel()">⌫</button>
+                    <button onclick="fIn('1')">1</button><button onclick="fIn('2')">2</button><button onclick="fIn('3')">3</button><button class="action" onclick="swapTags()">⇄</button>
+                    <button style="grid-column: span 3;" onclick="fIn('0')">0</button><button onclick="fIn('.')">.</button>
+                </div>
             </div>
+
             <div class="room">
-                <div class="display"><div class="sub">BTC MARKET</div><div class="val" id="crypto-val">₦0</div></div>
-                <div class="grid"><button style="grid-column: span 4; height:50px; font-size:13px;" id="btc-price" class="action" onclick="fetchAll()">SYNCING...</button><button onclick="cryptoIn('7')">7</button><button onclick="cryptoIn('8')">8</button><button onclick="cryptoIn('9')">9</button><button class="op" onclick="cryptoClr()">AC</button><button onclick="cryptoIn('4')">4</button><button onclick="cryptoIn('5')">5</button><button onclick="cryptoIn('6')">6</button><button class="op" onclick="cryptoDel()">⌫</button><button onclick="cryptoIn('1')">1</button><button onclick="cryptoIn('2')">2</button><button onclick="cryptoIn('3')">3</button><button class="action" onclick="move(0)">DONE</button><button style="grid-column: span 4;" onclick="cryptoIn('0')">0</button></div>
+                <div class="display"><div class="sub">BTC / USD</div><div class="val" id="crypto-val">$0</div></div>
+                <button class="action" style="width:100%; height:60px; border-radius:20px; margin-bottom:20px; font-weight:900;" onclick="updateMarket(base)">REFRESH MARKETS</button>
+                <div class="grid">
+                    <button style="grid-column: span 4; height: 100px; font-size: 14px; opacity: 0.5;" onclick="move(1)">SWIPE BACK TO TRADE</button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        window.addEventListener('load', () => { setTimeout(() => { document.getElementById('splash').style.opacity = '0'; setTimeout(() => document.getElementById('splash').style.display='none', 500); }, 1000); fetchAll(); });
-        let rates = { USD: 1650, GBP: 2100, EUR: 1850, BTC: 0 };
-        let active = 'USD', fData = "", cData = "", cryptoData = "", memory = 0;
+        let rates = {}; 
+        let base = "USD", target = "NGN", editPart = "base", fData = "", cData = "", isOffline = false;
+        const currencies = ["USD", "EUR", "GBP", "NGN", "JPY", "CAD", "AUD", "BTC", "ETH", "AED", "ZAR"];
 
-        function move(idx) {
-            document.getElementById('stage').style.transform = `translateX(-${idx * 33.3333}%)`;
-            document.getElementById('pill').style.left = `calc(${idx * 33.3333}% + 4px)`;
-            document.querySelectorAll('.nav-btn, .side-btn').forEach((b,i) => b.classList.toggle('active', i%3===idx));
-        }
-
-        async function startVoice() {
-            const Speech = window.webkitSpeechRecognition || window.SpeechRecognition;
-            if(!Speech) return;
-            const rec = new Speech();
-            rec.onstart = () => { document.getElementById('mic').classList.add('mic-active'); };
-            rec.onresult = (e) => {
-                let t = e.results[0][0].transcript.toLowerCase();
-                t = t.replace(/\s*trillions?\s*/g, '*1000000000000').replace(/\s*billions?\s*/g, '*1000000000')
-                     .replace(/\s*millions?\s*/g, '*1000000').replace(/\s*thousands?\s*/g, '*1000')
-                     .replace(/plus/g,'+').replace(/minus/g,'-').replace(/times|multiplied/g,'*').replace(/divided/g,'/')
-                     .replace(/[^0-9+\-*/().*]/g, '');
-                cData = t; cUp(); 
-                setTimeout(() => { try { cSolve(); } catch(err){} }, 600);
-            };
-            rec.start();
-        }
-
-        function cIn(v) { cData += v; cUp(); }
-        function cClr() { cData = ""; cUp(); }
-        function cDel() { cData = cData.slice(0,-1); cUp(); }
-        function cUp() { 
-            document.getElementById('c-main').innerText = cData.replace(/\*\*/g, '^').replace(/\*/g, '×').replace(/\//g, '÷') || "0"; 
-            // Auto-scroll to end for lengthy math
-            const d = document.querySelector('.display');
-            d.scrollLeft = d.scrollWidth;
-        }
+        function vibrate(ms) { if (navigator.vibrate) navigator.vibrate(ms); }
         
-        function cSolve() { 
-            if(!cData) return; 
-            try { 
-                // Advanced Bracket Balancing
-                let openB = (cData.match(/\(/g) || []).length;
-                let closeB = (cData.match(/\)/g) || []).length;
-                let balancedExp = cData + ")".repeat(Math.max(0, openB - closeB));
-                
-                // Floating point fix logic
-                let res = eval(balancedExp); 
-                res = parseFloat(res.toPrecision(12)); 
-                
-                cData = res.toString(); 
-                document.getElementById('c-main').innerText = res.toLocaleString(undefined, {maximumFractionDigits: 6}); 
-            } catch(e) { document.getElementById('c-main').innerText = "SYNTAX ERR"; } 
+        function move(idx) { 
+            vibrate(8); 
+            document.getElementById('stage').style.transform = `translateX(-${idx * 33.33}%)`;
+            document.querySelectorAll('.nav-link').forEach((l, i) => l.classList.toggle('active', i === idx));
         }
 
-        async function fetchAll() {
+        function closeAll() { 
+            document.getElementById('curr-picker').classList.remove('open'); 
+            document.querySelector('.overlay').classList.remove('active'); 
+            document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('editing'));
+        }
+
+        async function updateMarket(b) {
+            const svg = document.getElementById('swap-svg');
+            const toast = document.getElementById('status-toast');
+            svg.classList.add('syncing');
             try {
-                const res = await fetch('https://open.er-api.com/v6/latest/USD');
-                const data = await res.json();
-                rates.USD = data.rates.NGN;
-                rates.GBP = rates.USD / data.rates.GBP;
-                rates.EUR = rates.USD / data.rates.EUR;
-                const btcRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
-                const btcData = await btcRes.json();
-                rates.BTC = btcData.bitcoin.usd * rates.USD;
-                document.getElementById('btc-price').innerText = "1 BTC = ₦" + Math.round(rates.BTC).toLocaleString();
-                fUp(); cryptoUp();
-            } catch(e) { document.getElementById('btc-price').innerText = "OFFLINE"; }
+                const res = await fetch(`https://open.er-api.com/v6/latest/${b}`);
+                if (!res.ok) throw new Error();
+                rates = (await res.json()).rates;
+                if (isOffline) {
+                    isOffline = false;
+                    toast.classList.add('online');
+                    document.getElementById('toast-icon').innerText = "✅";
+                    document.getElementById('toast-msg').innerText = "Market link restored.";
+                    setTimeout(() => toast.classList.remove('visible'), 2500);
+                }
+            } catch(e) {
+                isOffline = true;
+                toast.classList.remove('online');
+                toast.classList.add('visible');
+            } finally {
+                setTimeout(() => svg.classList.remove('syncing'), 1000);
+                fUp();
+            }
         }
 
-        function setCurr(c) { active = c; document.getElementById('f-sub').innerText = c + " TO NAIRA"; fUp(); }
-        function fIn(v) { fData += v; fUp(); }
-        function fClr() { fData = ""; fUp(); }
-        function fDel() { fData = fData.slice(0,-1); fUp(); }
-        function fUp() { document.getElementById('f-val').innerText = "₦" + Math.round(parseFloat(fData||0) * rates[active]).toLocaleString(); }
-        function cryptoIn(v) { cryptoData += v; cryptoUp(); }
-        function cryptoClr() { cryptoData = ""; cryptoUp(); }
-        function cryptoDel() { cryptoData = cryptoData.slice(0,-1); cryptoUp(); }
-        function cryptoUp() { document.getElementById('crypto-val').innerText = "₦" + Math.round(parseFloat(cryptoData||0) * rates.BTC).toLocaleString(); }
-        function factorial() { try { let n = parseInt(eval(cData)), r = 1; if(n > 170) {cData="Infinity"; cUp(); return;} for(let i=1; i<=n; i++) r *= i; cData = r.toString(); cUp(); } catch(e){}}
-        function memo(t) { try { let v = parseFloat(eval(cData||"0")); if(t==='mc') memory=0; if(t==='m+') memory+=v; if(t==='m-') memory-=v; if(t==='mr') { cData=memory.toString(); cUp(); }} catch(e){}}
+        function openPicker(part) {
+            editPart = part; vibrate(12);
+            document.getElementById(part + '-tag').classList.add('editing');
+            const list = document.getElementById('picker-list');
+            list.innerHTML = currencies.map(c => `<div class="curr-item" onclick="applySelection('${c}')"><span>${c}</span><span style="opacity:0.3; font-size:12px;">GLOBAL</span></div>`).join('');
+            document.getElementById('curr-picker').classList.add('open');
+            document.querySelector('.overlay').classList.add('active');
+        }
+
+        async function applySelection(c) {
+            if (editPart === 'base') { base = c; document.getElementById('base-tag').innerText = c; await updateMarket(c); } 
+            else { target = c; document.getElementById('target-tag').innerText = c; }
+            fUp(); closeAll();
+        }
+
+        function swapTags() {
+            vibrate(35);
+            document.getElementById('swap-icon').classList.toggle('flipped');
+            [base, target] = [target, base];
+            document.getElementById('base-tag').innerText = base;
+            document.getElementById('target-tag').innerText = target;
+            updateMarket(base);
+        }
+
+        function fUp() {
+            let val = parseFloat(fData || 0);
+            let r = rates[target] || 1;
+            document.getElementById('f-val').innerText = (val * r).toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('f-rate-label').innerText = isOffline ? "⚠️ OFFLINE DATA" : `1 ${base} = ${r.toFixed(4)} ${target}`;
+        }
+
+        // INPUT LOGIC
+        function fIn(v) { if(fData.length < 12) fData += v; fUp(); vibrate(5); }
+        function fClr() { fData = ""; fUp(); vibrate(15); }
+        function fDel() { fData = fData.slice(0,-1); fUp(); vibrate(5); }
+        function cIn(v) { if(cData.length < 15) cData += v; cUp(); vibrate(5); }
+        function cUp() { document.getElementById('c-main').innerText = cData || "0"; }
+        function cClr() { cData = ""; cUp(); vibrate(15); }
+        function cDel() { cData = cData.slice(0,-1); cUp(); vibrate(5); }
+        function cSolve() { try { let res = eval(cData.replace('×','*').replace('÷','/')); cData = Number.isInteger(res) ? res.toString() : res.toFixed(4).toString(); cUp(); vibrate(20); } catch { cData = "ERROR"; cUp(); } }
+
+        // Service Worker for GitHub Hosting
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(() => {
+                    console.log('SW registration skipped - common on local dev');
+                });
+            });
+        }
+
+        window.onload = () => {
+            updateMarket("USD");
+            setInterval(() => updateMarket(base), 60000); 
+            window.addEventListener('online', () => updateMarket(base));
+        };
     </script>
 </body>
 </html>
