@@ -3,194 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="VisionPro AI">
-    <meta name="theme-color" content="#050505">
-    
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="logo.png">
-    
     <title>Vision Pro Max AI</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600;900&display=swap" rel="stylesheet">
     <style>
         :root { 
             --accent: #00d4ff; --bg: #050505; --text: #ffffff;
             --panel: rgba(255, 255, 255, 0.08); --border: rgba(255, 255, 255, 0.1);
             --warning: #ffb300; --success: #34c759;
-            --safe-top: env(safe-area-inset-top);
-            --safe-bottom: env(safe-area-inset-bottom);
         }
 
-        /* DEVICE RECOGNITION & CENTERING */
-        body { 
-            height: 100dvh; margin: 0; background: #000; 
-            color: var(--text); overflow: hidden; display: flex; justify-content: center; align-items: center;
-        }
-
-        #app-container {
-            width: 100%; height: 100%; background: var(--bg);
-            position: relative; overflow: hidden; display: flex; flex-direction: column;
-        }
-
-        /* Desktop Mode (Phone Frame) */
-        @media (min-width: 500px) {
-            #app-container {
-                width: 395px; height: 850px; 
-                border-radius: 45px; border: 12px solid #1a1a1a;
-                box-shadow: 0 50px 100px rgba(0,0,0,0.9);
-            }
-            body { background: radial-gradient(circle, #222 0%, #000 100%); }
-        }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; outline: none; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; outline: none; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        body { height: 100dvh; margin: 0; background: var(--bg); color: var(--text); overflow: hidden; display: flex; }
         
-        /* TOAST ALERT (Adjusted for Notch) */
+        /* FRIENDLY TOAST ALERT */
         #status-toast { 
-            position: absolute; top: calc(var(--safe-top) + 60px); left: 50%; transform: translateX(-50%) translateY(-180px);
-            background: rgba(255, 179, 0, 0.12); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            position: fixed; top: 60px; left: 50%; transform: translateX(-50%) translateY(-180px);
+            background: rgba(255, 179, 0, 0.15); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
             border: 1px solid var(--warning); color: var(--warning);
             padding: 12px 24px; border-radius: 50px; font-size: 13px; font-weight: 600;
-            z-index: 5000; display: flex; align-items: center; gap: 10px; transition: 0.6s cubic-bezier(0.2, 1, 0.2, 1); opacity: 0;
+            z-index: 5000; display: flex; align-items: center; gap: 10px; opacity: 0;
         }
         #status-toast.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
-        #status-toast.online { border-color: var(--success); color: var(--success); background: rgba(52, 199, 89, 0.12); }
+        #status-toast.online { border-color: var(--success); color: var(--success); background: rgba(52, 199, 89, 0.15); }
 
         /* MODAL PICKER */
-        #curr-picker { position: absolute; bottom: -100%; left: 0; width: 100%; height: 80%; background: #080808; border-top: 1px solid var(--accent); z-index: 6000; border-radius: 30px 30px 0 0; padding: 30px; overflow-y: auto; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        #curr-picker.open { bottom: 0; box-shadow: 0 -20px 60px rgba(0,0,0,0.9); }
-        .curr-item { padding: 22px; background: var(--panel); border-radius: 20px; margin-bottom: 12px; display: flex; justify-content: space-between; border: 1px solid var(--border); font-weight: 600; }
-        .curr-item:active { background: var(--accent); color: #000; transform: scale(0.97); }
+        #curr-picker { position: fixed; bottom: -100%; left: 0; width: 100%; height: 75%; background: var(--bg); border-top: 2px solid var(--accent); z-index: 6000; border-radius: 30px 30px 0 0; padding: 25px; overflow-y: auto; }
+        #curr-picker.open { bottom: 0; }
+        .curr-item { padding: 20px; background: var(--panel); border-radius: 18px; margin-bottom: 10px; display: flex; justify-content: space-between; border: 1px solid var(--border); }
 
-        /* NAV */
-        .top-nav { position: absolute; top: calc(var(--safe-top) + 20px); width: 100%; padding: 0 25px; display: flex; justify-content: space-between; z-index: 1000; align-items: center; }
-        .nav-link { font-size: 11px; font-weight: 900; opacity: 0.3; letter-spacing: 1.5px; cursor: pointer; transition: 0.3s; }
+        /* UI STRUCTURE */
+        .stage { display: flex; width: 300%; height: 100%; }
+        .room { width: 33.33%; padding: 120px 25px 40px; display: flex; flex-direction: column; }
+        .display { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; text-align: right; padding-bottom: 30px; }
+        .val { font-size: 64px; font-weight: 300; letter-spacing: -4px; }
+        .sub { color: var(--accent); font-size: 11px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
+
+        /* TOP NAV */
+        .top-nav { position: fixed; top: 50px; width: 100%; padding: 0 25px; display: flex; justify-content: space-between; z-index: 1000; align-items: center; }
+        .nav-link { font-size: 11px; font-weight: 900; opacity: 0.4; letter-spacing: 1px; cursor: pointer; }
         .nav-link.active { opacity: 1; color: var(--accent); }
 
-        /* STAGE */
-        .stage { display: flex; width: 300%; height: 100%; transition: 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
-        .room { width: 33.33%; padding: 140px 25px calc(var(--safe-bottom) + 30px); display: flex; flex-direction: column; }
-        .display { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; text-align: right; padding-bottom: 35px; }
-        .val { font-size: 62px; font-weight: 300; letter-spacing: -4px; color: var(--text); }
-        .sub { color: var(--accent); font-size: 11px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+        /* TRADE INTERFACE */
+        .trade-ui { display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin-bottom: 15px; }
+        .tag-btn { background: var(--panel); border: 1px solid var(--border); padding: 10px 22px; border-radius: 16px; font-weight: 900; cursor: pointer; }
+        .tag-btn.editing { border-color: var(--accent); color: var(--accent); }
 
-        /* PREMIUM WOVEN SWAP */
-        .trade-ui { display: flex; align-items: center; justify-content: flex-end; gap: 15px; margin-bottom: 12px; }
-        .tag-btn { background: var(--panel); border: 1px solid var(--border); padding: 12px 24px; border-radius: 18px; font-weight: 900; cursor: pointer; font-size: 14px; }
-        .tag-btn.editing { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 20px rgba(0,212,255,0.15); }
-        
-        .woven-swap { width: 56px; height: 56px; background: var(--panel); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); cursor: pointer; transition: 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .woven-swap { width: 54px; height: 54px; background: var(--panel); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); cursor: pointer; }
         .woven-swap.flipped { transform: rotate(180deg); }
-        .woven-swap svg { width: 30px; stroke: var(--accent); stroke-width: 2.2; fill: none; }
+        .woven-swap svg { width: 28px; height: 28px; fill: none; stroke: var(--accent); stroke-width: 2.2; }
         
-        .syncing { animation: breathe 1.5s infinite; }
-        @keyframes breathe { 50% { opacity: 0.2; filter: blur(2px); } }
+        .syncing { animation: breathe 1.2s infinite; }
+        @keyframes breathe { 50% { opacity: 0.5; } }
 
         /* GRID */
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-        button { height: 76px; border-radius: 22px; border: 1px solid var(--border); background: var(--panel); color: #fff; font-size: 26px; font-weight: 600; cursor: pointer; }
-        button:active { transform: scale(0.88); background: var(--accent); color: #000; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; max-width: 600px; margin: 0 auto; width: 100%; }
+        button { height: 75px; border-radius: 22px; border: 1px solid var(--border); background: var(--panel); color: #fff; font-size: 24px; font-weight: 600; cursor: pointer; }
+        button:active { transform: scale(0.9); background: var(--accent); color: #000; }
         .action { background: var(--accent); color: #000; border: none; font-weight: 900; }
 
-        .overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); z-index: 5500; opacity: 0; pointer-events: none; transition: 0.4s; }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 5500; opacity: 0; pointer-events: none; }
         .overlay.active { opacity: 1; pointer-events: auto; }
     </style>
 </head>
-<body>
+<body data-theme="dark">
 
-    <div id="app-container">
-        <div id="status-toast">
-            <span id="toast-icon">☁️</span>
-            <span id="toast-msg">Market link lost. Using cached rates.</span>
+    <div id="status-toast">
+        <span id="toast-icon">☁️</span>
+        <span id="toast-msg">Working offline. Rates are cached.</span>
+    </div>
+
+    <div class="top-nav">
+        <div style="font-size: 24px;">☰</div>
+        <div style="display: flex; gap: 20px;">
+            <span class="nav-link active" onclick="move(0)">CALC</span>
+            <span class="nav-link" onclick="move(1)">TRADE</span>
+            <span class="nav-link" onclick="move(2)">CRYP</span>
         </div>
+    </div>
 
-        <div class="top-nav">
-            <div style="font-size: 24px; opacity: 0.8;">☰</div>
-            <div style="display: flex; gap: 25px;">
-                <span class="nav-link active" id="n0" onclick="move(0)">MATH</span>
-                <span class="nav-link" id="n1" onclick="move(1)">TRADE</span>
-                <span class="nav-link" id="n2" onclick="move(2)">CRYP</span>
+    <div id="curr-picker">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <b style="color:var(--accent); font-size:20px;">VISION CORE ASSETS</b>
+            <span onclick="closeAll()" style="font-size:12px; opacity:0.6;">CLOSE</span>
+        </div>
+        <div id="picker-list"></div>
+    </div>
+
+    <div class="overlay" onclick="closeAll()"></div>
+
+    <div class="stage" id="stage">
+        <div class="room">
+            <div class="display"><div class="sub">VISION CORE</div><div class="val" id="c-main">0</div></div>
+            <div class="grid">
+                <button onclick="cClr()">AC</button><button onclick="cDel()">⌫</button><button onclick="cIn('/')">÷</button><button class="action" onclick="cIn('*')">×</button>
+                <button onclick="cIn('7')">7</button><button onclick="cIn('8')">8</button><button onclick="cIn('9')">9</button><button class="action" onclick="cIn('-')">-</button>
+                <button onclick="cIn('4')">4</button><button onclick="cIn('5')">5</button><button onclick="cIn('6')">6</button><button class="action" onclick="cIn('+')">+</button>
+                <button onclick="cIn('1')">1</button><button onclick="cIn('2')">2</button><button onclick="cIn('3')">3</button><button class="action" onclick="cSolve()">=</button>
             </div>
         </div>
 
-        <div id="curr-picker">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
-                <div>
-                    <div style="font-size:10px; opacity:0.5; font-weight:900;">ASSET SELECTION</div>
-                    <b style="color:var(--accent); font-size:22px;">GLOBAL MARKET</b>
-                </div>
-                <span onclick="closeAll()" style="font-size:12px; font-weight:900; padding:10px; background:var(--panel); border-radius:10px;">DONE</span>
-            </div>
-            <div id="picker-list"></div>
-        </div>
-
-        <div class="overlay" onclick="closeAll()"></div>
-
-        <div class="stage" id="stage">
-            <div class="room">
-                <div class="display"><div class="sub">AI CALCULATOR</div><div class="val" id="c-main">0</div></div>
-                <div class="grid">
-                    <button style="color:var(--accent)" onclick="cClr()">AC</button><button style="color:var(--accent)" onclick="cDel()">⌫</button><button class="action" onclick="cIn('/')">÷</button><button class="action" onclick="cIn('*')">×</button>
-                    <button onclick="cIn('7')">7</button><button onclick="cIn('8')">8</button><button onclick="cIn('9')">9</button><button class="action" onclick="cIn('-')">-</button>
-                    <button onclick="cIn('4')">4</button><button onclick="cIn('5')">5</button><button onclick="cIn('6')">6</button><button class="action" onclick="cIn('+')">+</button>
-                    <button onclick="cIn('1')">1</button><button onclick="cIn('2')">2</button><button onclick="cIn('3')">3</button><button class="action" onclick="cSolve()" style="grid-row: span 2; height: 166px;">=</button>
-                    <button style="grid-column: span 2;" onclick="cIn('0')">0</button><button onclick="cIn('.')">.</button>
-                </div>
-            </div>
-
-            <div class="room">
-                <div class="display">
-                    <div class="trade-ui">
-                        <div id="base-tag" class="tag-btn" onclick="openPicker('base')">USD</div>
-                        <div class="woven-swap" id="swap-icon" onclick="swapTags()">
-                            <svg viewBox="0 0 24 24" id="swap-svg">
-                                <path d="M17 4l3 3-3 3M7 20l-3-3 3-3"/>
-                                <path d="M20 7H8c-2.2 0-4 1.8-4 4v2M4 17h12c2.2 0 4-1.8 4-4v-2" opacity="0.9"/>
-                            </svg>
-                        </div>
-                        <div id="target-tag" class="tag-btn" onclick="openPicker('target')">NGN</div>
+        <div class="room">
+            <div class="display">
+                <div class="trade-ui">
+                    <div id="base-tag" class="tag-btn" onclick="openPicker('base')">USD</div>
+                    <div class="woven-swap" id="swap-icon" onclick="swapTags()">
+                        <svg viewBox="0 0 24 24" id="swap-svg"><path d="M16 3c0 0 3 0 3 3s-3 3-3 3M19 6H5M8 21c0 0-3 0-3-3s3-3 3-3M5 18h14"/></svg>
                     </div>
-                    <div class="val" id="f-val">0.00</div>
-                    <div class="sub" id="f-rate-label">Live Market Pulse</div>
+                    <div id="target-tag" class="tag-btn" onclick="openPicker('target')">NGN</div>
                 </div>
-                <div class="grid">
-                    <button onclick="fIn('7')">7</button><button onclick="fIn('8')">8</button><button onclick="fIn('9')">9</button><button style="color:var(--accent)" onclick="fClr()">AC</button>
-                    <button onclick="fIn('4')">4</button><button onclick="fIn('5')">5</button><button onclick="fIn('6')">6</button><button style="color:var(--accent)" onclick="fDel()">⌫</button>
-                    <button onclick="fIn('1')">1</button><button onclick="fIn('2')">2</button><button onclick="fIn('3')">3</button><button class="action" onclick="swapTags()">⇄</button>
-                    <button style="grid-column: span 3;" onclick="fIn('0')">0</button><button onclick="fIn('.')">.</button>
-                </div>
+                <div class="val" id="f-val">0.00</div>
+                <div class="sub" id="f-rate-label">Syncing Markets...</div>
             </div>
+            <div class="grid">
+                <button onclick="fIn('7')">7</button><button onclick="fIn('8')">8</button><button onclick="fIn('9')">9</button><button onclick="fClr()">AC</button>
+                <button onclick="fIn('4')">4</button><button onclick="fIn('5')">5</button><button onclick="fIn('6')">6</button><button onclick="fDel()">⌫</button>
+                <button onclick="fIn('1')">1</button><button onclick="fIn('2')">2</button><button onclick="fIn('3')">3</button><button class="action" onclick="swapTags()">⇄</button>
+                <button style="grid-column: span 4;" onclick="fIn('0')">0</button>
+            </div>
+        </div>
 
-            <div class="room">
-                <div class="display"><div class="sub">BTC / USD</div><div class="val" id="crypto-val">$0</div></div>
-                <button class="action" style="width:100%; height:60px; border-radius:20px; margin-bottom:20px; font-weight:900;" onclick="updateMarket(base)">REFRESH MARKETS</button>
-                <div class="grid">
-                    <button style="grid-column: span 4; height: 100px; font-size: 14px; opacity: 0.5;" onclick="move(1)">SWIPE BACK TO TRADE</button>
-                </div>
-            </div>
+        <div class="room">
+            <div class="display"><div class="sub">VISION CORE CRYPTO</div><div class="val">SYNC...</div></div>
+            <div class="grid"><button style="grid-column: span 4;" onclick="move(1)">BACK TO TRADE</button></div>
         </div>
     </div>
 
     <script>
         let rates = {}; 
         let base = "USD", target = "NGN", editPart = "base", fData = "", cData = "", isOffline = false;
-        const currencies = ["USD", "EUR", "GBP", "NGN", "JPY", "CAD", "AUD", "BTC", "ETH", "AED", "ZAR"];
+        const currencies = ["USD", "EUR", "GBP", "NGN", "JPY", "CAD", "AUD", "BTC", "ETH"];
 
         function vibrate(ms) { if (navigator.vibrate) navigator.vibrate(ms); }
-        
         function move(idx) { 
-            vibrate(8); 
+            vibrate(10); 
             document.getElementById('stage').style.transform = `translateX(-${idx * 33.33}%)`;
-            document.querySelectorAll('.nav-link').forEach((l, i) => l.classList.toggle('active', i === idx));
+            const links = document.querySelectorAll('.nav-link');
+            links.forEach((l, i) => l.classList.toggle('active', i === idx));
         }
 
-        function closeAll() { 
-            document.getElementById('curr-picker').classList.remove('open'); 
-            document.querySelector('.overlay').classList.remove('active'); 
-            document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('editing'));
-        }
+        function closeAll() { document.getElementById('curr-picker').classList.remove('open'); document.querySelector('.overlay').classList.remove('active'); }
 
         async function updateMarket(b) {
             const svg = document.getElementById('swap-svg');
@@ -204,7 +157,7 @@
                     isOffline = false;
                     toast.classList.add('online');
                     document.getElementById('toast-icon').innerText = "✅";
-                    document.getElementById('toast-msg').innerText = "Market link restored.";
+                    document.getElementById('toast-msg').innerText = "Market data restored.";
                     setTimeout(() => toast.classList.remove('visible'), 2500);
                 }
             } catch(e) {
@@ -212,16 +165,15 @@
                 toast.classList.remove('online');
                 toast.classList.add('visible');
             } finally {
-                setTimeout(() => svg.classList.remove('syncing'), 1000);
+                setTimeout(() => svg.classList.remove('syncing'), 800);
                 fUp();
             }
         }
 
         function openPicker(part) {
-            editPart = part; vibrate(12);
-            document.getElementById(part + '-tag').classList.add('editing');
+            editPart = part;
             const list = document.getElementById('picker-list');
-            list.innerHTML = currencies.map(c => `<div class="curr-item" onclick="applySelection('${c}')"><span>${c}</span><span style="opacity:0.3; font-size:12px;">GLOBAL</span></div>`).join('');
+            list.innerHTML = currencies.map(c => `<div class="curr-item" onclick="applySelection('${c}')"><b>${c}</b><span>➔</span></div>`).join('');
             document.getElementById('curr-picker').classList.add('open');
             document.querySelector('.overlay').classList.add('active');
         }
@@ -233,7 +185,7 @@
         }
 
         function swapTags() {
-            vibrate(35);
+            vibrate(40);
             document.getElementById('swap-icon').classList.toggle('flipped');
             [base, target] = [target, base];
             document.getElementById('base-tag').innerText = base;
@@ -245,33 +197,19 @@
             let val = parseFloat(fData || 0);
             let r = rates[target] || 1;
             document.getElementById('f-val').innerText = (val * r).toLocaleString(undefined, {minimumFractionDigits: 2});
-            document.getElementById('f-rate-label').innerText = isOffline ? "⚠️ OFFLINE DATA" : `1 ${base} = ${r.toFixed(4)} ${target}`;
+            document.getElementById('f-rate-label').innerText = isOffline ? "⚠️ DATA CACHED" : `1 ${base} = ${r.toFixed(4)} ${target}`;
         }
 
-        // INPUT LOGIC
-        function fIn(v) { if(fData.length < 12) fData += v; fUp(); vibrate(5); }
-        function fClr() { fData = ""; fUp(); vibrate(15); }
-        function fDel() { fData = fData.slice(0,-1); fUp(); vibrate(5); }
-        function cIn(v) { if(cData.length < 15) cData += v; cUp(); vibrate(5); }
+        function fIn(v) { fData += v; fUp(); vibrate(5); }
+        function fClr() { fData = ""; fUp(); vibrate(10); }
+        function fDel() { fData = fData.slice(0,-1); fUp(); }
+        function cIn(v) { cData += v; cUp(); vibrate(5); }
         function cUp() { document.getElementById('c-main').innerText = cData || "0"; }
-        function cClr() { cData = ""; cUp(); vibrate(15); }
-        function cDel() { cData = cData.slice(0,-1); cUp(); vibrate(5); }
-        function cSolve() { try { let res = eval(cData.replace('×','*').replace('÷','/')); cData = Number.isInteger(res) ? res.toString() : res.toFixed(4).toString(); cUp(); vibrate(20); } catch { cData = "ERROR"; cUp(); } }
+        function cClr() { cData = ""; cUp(); vibrate(10); }
+        function cDel() { cData = cData.slice(0,-1); cUp(); }
+        function cSolve() { try { cData = eval(cData).toString(); cUp(); } catch { cData = "ERR"; cUp(); } }
 
-        // Service Worker for GitHub Hosting
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').catch(() => {
-                    console.log('SW registration skipped - common on local dev');
-                });
-            });
-        }
-
-        window.onload = () => {
-            updateMarket("USD");
-            setInterval(() => updateMarket(base), 60000); 
-            window.addEventListener('online', () => updateMarket(base));
-        };
+        window.onload = () => updateMarket("USD");
     </script>
 </body>
 </html>
