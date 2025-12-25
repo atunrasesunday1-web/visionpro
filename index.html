@@ -3,245 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Vision Core Master 2025</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;900&display=swap" rel="stylesheet">
+    <title>Vision Elite Master 2025</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --accent: #00d4ff; --bg: #000; --text: #fff;
-            --glow: 0 0 15px rgba(0, 212, 255, 0.7);
-            --btn-num: rgba(255,255,255,0.08);
-            --btn-op: #ff9f0a;
-            --side-bg: rgba(15, 15, 15, 0.95);
+            --accent: #1d9bf0; /* Premium Blue */
+            --bg: #000000; --text: #f7f9f9;
+            --card: #16181c; --border: #2f3336;
+            --btn-num: #16181c; --btn-text: #eff3f4;
+            --glow: 0 0 20px rgba(29, 155, 240, 0.3);
         }
 
-        /* Light Theme Override */
         body.light-mode {
-            --bg: #f4f7f9; --text: #1a1a1a; --btn-num: rgba(0,0,0,0.05);
-            --side-bg: rgba(255, 255, 255, 0.98);
+            --bg: #ffffff; --text: #0f1419;
+            --card: #f7f9f9; --border: #eff3f4;
+            --btn-num: #f7f9f9; --btn-text: #0f1419;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
-        body { background: var(--bg); color: var(--text); overflow: hidden; height: 100svh; width: 100vw; transition: background 0.3s; }
+        body { background: var(--bg); color: var(--text); overflow: hidden; height: 100svh; transition: background 0.4s ease; }
 
-        /* SIDEBAR */
+        /* PREMIUM SIDEBAR (X-STYLE) */
         #sidebar { 
-            position: fixed; top: 0; left: -300px; width: 300px; height: 100%; 
-            background: var(--side-bg); z-index: 3000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            border-right: 1px solid var(--accent); padding: 60px 20px;
-            display: flex; flex-direction: column; gap: 30px; box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+            position: fixed; top: 0; left: -320px; width: 320px; height: 100%; 
+            background: var(--bg); z-index: 3000; transition: 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.1);
+            border-right: 1px solid var(--border); padding: 20px;
+            display: flex; flex-direction: column;
         }
-        #sidebar.open { left: 0; }
-        .side-overlay { 
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
-            background: rgba(0,0,0,0.6); z-index: 2900; display: none; 
-        }
-        .close-side { position: absolute; top: 20px; right: 20px; font-size: 24px; color: var(--accent); cursor: pointer; }
+        #sidebar.open { left: 0; box-shadow: 20px 0 80px rgba(0,0,0,0.5); }
+        .overlay { position: fixed; inset: 0; background: rgba(91, 112, 131, 0.4); z-index: 2900; display: none; backdrop-filter: blur(2px); }
 
-        .side-section { display: flex; flex-direction: column; gap: 10px; }
-        .side-title { font-size: 10px; font-weight: 900; letter-spacing: 2px; color: var(--accent); opacity: 0.8; }
+        .side-header { font-size: 20px; font-weight: 800; padding-bottom: 25px; border-bottom: 1px solid var(--border); }
+        .side-content { flex: 1; padding-top: 25px; overflow-y: auto; }
         
-        /* Sidebar Content Styling */
-        .news-card { background: rgba(0, 212, 255, 0.1); padding: 12px; border-radius: 10px; border: 1px solid rgba(0,212,255,0.2); font-size: 13px; }
-        .hist-item { font-size: 14px; opacity: 0.7; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .theme-btn { padding: 10px; border: 1px solid var(--accent); border-radius: 8px; background: transparent; color: var(--text); font-size: 12px; font-weight: 900; cursor: pointer; text-align: center; }
+        .side-label { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 12px; display: block; opacity: 0.9; }
+        .side-section { margin-bottom: 35px; }
 
-        /* HEADER */
-        .top-nav { position: fixed; top: 30px; width: 100%; padding: 0 25px; display: flex; justify-content: space-between; z-index: 2000; align-items: center; }
-        .menu-icon { display: flex; flex-direction: column; gap: 5px; cursor: pointer; filter: drop-shadow(var(--glow)); }
-        .menu-icon span { display: block; width: 24px; height: 2px; background: var(--accent); border-radius: 2px; }
-        .nav-links { display: flex; gap: 15px; }
-        .nav-link { font-size: 10px; font-weight: 900; opacity: 0.3; letter-spacing: 2px; cursor: pointer; transition: 0.3s; }
-        .nav-link.active { opacity: 1; color: var(--accent); text-shadow: var(--glow); }
-
-        /* STAGE */
-        .stage { display: flex; width: 300vw; height: 100%; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-        .room { width: 100vw; height: 100%; padding: 80px 20px 0; display: flex; flex-direction: column; flex-shrink: 0; }
-        .display { flex: 1; display: flex; flex-direction: column; justify-content: center; text-align: right; }
-        .val { font-size: clamp(45px, 9vw, 90px); font-weight: 200; color: var(--accent); text-shadow: var(--glow); line-height: 1; }
-
-        /* GRIDS & BUTTONS */
-        .grid-container { padding-bottom: 90px; }
-        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; max-width: 480px; margin: 0 auto; }
-        button { height: 60px; border-radius: 14px; border: 1px solid rgba(0,212,255,0.15); color: #fff; font-size: 20px; background: var(--btn-num); cursor: pointer; transition: 0.1s; display: flex; align-items: center; justify-content: center; }
-        .light-mode button { color: #1a1a1a; border-color: rgba(0,0,0,0.1); }
-        button:active { background: var(--accent); color: #000; }
-        .btn-op { background: var(--btn-op); border: none; font-size: 24px; color: #fff !important; }
-        .btn-fn { color: var(--accent); font-size: 14px; font-weight: 900; }
-        .digit { color: var(--accent); }
-
-        @media (min-width: 700px) or (orientation: landscape) {
-            .calc-grid { grid-template-columns: repeat(10, 1fr); max-width: 920px; gap: 6px; }
-            button { height: 40px !important; font-size: 14px !important; }
-            .sci { display: flex !important; }
+        /* THEME TOGGLE PREMIUM */
+        .theme-switch { 
+            display: flex; background: var(--card); border-radius: 100px; padding: 4px; 
+            border: 1px solid var(--border); position: relative;
         }
-        .sci { display: none; }
+        .t-opt { flex: 1; text-align: center; padding: 10px 0; font-size: 13px; font-weight: 600; cursor: pointer; z-index: 1; border-radius: 100px; transition: 0.3s; }
+        .t-opt.active { background: var(--accent); color: #fff; }
 
-        .portal-box { background: rgba(255,255,255,0.04); border-radius: 20px; padding: 18px; border: 1px solid rgba(0,212,255,0.15); margin-bottom: 20px; width: 100%; max-width: 420px; margin: auto; }
-        .portal-row { display: flex; justify-content: space-between; padding: 8px 0; }
-        .portal-numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; max-width: 340px; margin: 0 auto; }
+        /* NEWS CARDS */
+        .news-card { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid var(--border); font-size: 14px; margin-bottom: 10px; }
+        .news-tag { color: var(--accent); font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; display: block; }
+        
+        /* MAIN INTERFACE */
+        .top-nav { position: fixed; top: 0; width: 100%; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 2000; background: rgba(0,0,0,0.1); backdrop-filter: blur(10px); }
+        .menu-btn { width: 30px; height: 30px; display: flex; flex-direction: column; justify-content: center; gap: 5px; cursor: pointer; }
+        .menu-btn span { height: 2px; width: 100%; background: var(--text); border-radius: 10px; transition: 0.3s; }
+        
+        .tab-bar { display: flex; gap: 20px; background: var(--card); padding: 6px 18px; border-radius: 50px; border: 1px solid var(--border); }
+        .tab { font-size: 11px; font-weight: 800; opacity: 0.4; cursor: pointer; letter-spacing: 1px; }
+        .tab.active { opacity: 1; color: var(--accent); }
+
+        .stage { display: flex; width: 300vw; height: 100%; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .room { width: 100vw; height: 100%; padding: 80px 20px 20px; display: flex; flex-direction: column; flex-shrink: 0; }
+        
+        /* CALC ENGINE UI */
+        .display { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; padding-bottom: 20px; }
+        .val { font-size: 70px; font-weight: 300; letter-spacing: -2px; color: var(--accent); text-shadow: var(--glow); }
+
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        button { height: 75px; border-radius: 50%; border: none; background: var(--btn-num); color: var(--btn-text); font-size: 26px; font-weight: 500; transition: 0.2s; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        button:active { transform: scale(0.9); opacity: 0.7; }
+        .op { background: #ff9f0a; color: #fff; font-size: 30px; }
+        .fn { background: #a5a5a5; color: #000; font-size: 20px; }
+
+        /* CURRENCY INTERFACE */
+        .box { background: var(--card); border-radius: 24px; padding: 25px; border: 1px solid var(--border); margin-bottom: 15px; }
+        .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .unit { font-size: 18px; font-weight: 800; color: var(--accent); }
     </style>
 </head>
 <body>
 
-    <div class="side-overlay" id="overlay" onclick="toggleSide()"></div>
+    <div class="overlay" id="overlay" onclick="toggleSide()"></div>
     
     <div id="sidebar">
-        <div class="close-side" onclick="toggleSide()">×</div>
-        
-        <div class="side-section">
-            <div class="side-title">MARKET FOR CRYPTO NEWS</div>
-            <div class="news-card" id="news-box">
-                Connecting to live stream...<br>
-                <small style="opacity:0.6">Requires Internet Connection</small>
+        <div class="side-header">Vision Pro</div>
+        <div class="side-content">
+            
+            <div class="side-section">
+                <span class="side-label">MARKET TRENDS</span>
+                <div class="news-card">
+                    <span class="news-tag">Live • Dec 25</span>
+                    <b>Bitcoin Stalls:</b> BTC trading sideways at $87,490 during holiday thin liquidity.
+                </div>
+                <div class="news-card">
+                    <span class="news-tag">Ethereum</span>
+                    <b>Options Deadline:</b> $6B in ETH options expiring Friday; $3,000 is the key battleground.
+                </div>
             </div>
-        </div>
 
-        <div class="side-section">
-            <div class="side-title">CALCULATOR HISTORY</div>
-            <div id="calc-hist">
-                <div class="hist-item">No records yet</div>
+            <div class="side-section">
+                <span class="side-label">HISTORY</span>
+                <div id="history-list" style="font-size: 14px; opacity: 0.6;">
+                    No recent calculations.
+                </div>
             </div>
-        </div>
 
-        <div class="side-section">
-            <div class="side-title">THEME SETTINGS</div>
-            <div class="theme-btn" onclick="toggleTheme()">SWITCH TO LIGHT/DARK</div>
+            <div class="side-section">
+                <span class="side-label">THEME SETTINGS</span>
+                <div class="theme-switch">
+                    <div class="t-opt active" id="dark-btn" onclick="setTheme('dark')">Lights Out</div>
+                    <div class="t-opt" id="light-btn" onclick="setTheme('light')">Default</div>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <nav class="top-nav">
-        <div class="menu-icon" onclick="toggleSide()"><span></span><span></span><span></span></div>
-        <div class="nav-links">
-            <span class="nav-link active" onclick="move(0)">CALC</span>
-            <span class="nav-link" onclick="move(1)">TRADE</span>
-            <span class="nav-link" onclick="move(2)">CRYP</span>
+        <div class="menu-btn" onclick="toggleSide()">
+            <span></span><span style="width: 70%;"></span><span></span>
         </div>
-        <div style="width: 24px;"></div>
+        <div class="tab-bar">
+            <div class="tab active" onclick="move(0)">CALC</div>
+            <div class="tab" onclick="move(1)">TRADE</div>
+            <div class="tab" onclick="move(2)">CRYPTO</div>
+        </div>
+        <div style="width:30px"></div>
     </nav>
 
     <div class="stage" id="stage">
-        <section class="room">
-            <div class="display"><div class="val" id="c-main">0</div></div>
-            <div class="grid-container">
-                <div class="calc-grid">
-                    <button class="sci btn-fn" onclick="cIn('(')">(</button><button class="sci btn-fn" onclick="cIn(')')">)</button>
-                    <button class="sci btn-fn">mc</button><button class="sci btn-fn">m+</button><button class="sci btn-fn">m-</button><button class="sci btn-fn">mr</button>
-                    <button class="btn-fn" onclick="cClr()">AC</button><button class="btn-fn" onclick="cSci('pm')">+/-</button><button class="btn-fn" onclick="cSci('pct')">%</button><button class="btn-op" onclick="cIn('/')">÷</button>
-                    <button class="sci btn-fn">2nd</button><button class="sci btn-fn" onclick="cSci('sq')">x²</button><button class="sci btn-fn" onclick="cSci('cu')">x³</button><button class="sci btn-fn" onclick="cIn('**')">xʸ</button><button class="sci btn-fn" onclick="cSci('ex')">eˣ</button><button class="sci btn-fn" onclick="cSci('10x')">10ˣ</button>
-                    <button class="digit" onclick="cIn('7')">7</button><button class="digit" onclick="cIn('8')">8</button><button class="digit" onclick="cIn('9')">9</button><button class="btn-op" onclick="cIn('*')">×</button>
-                    <button class="sci btn-fn">1/x</button><button class="sci btn-fn" onclick="cSci('sqrt')">²√</button><button class="sci btn-fn">³√</button><button class="sci btn-fn">ʸ√</button><button class="sci btn-fn">ln</button><button class="sci btn-fn">log</button>
-                    <button class="digit" onclick="cIn('4')">4</button><button class="digit" onclick="cIn('5')">5</button><button class="digit" onclick="cIn('6')">6</button><button class="btn-op" onclick="cIn('-')">−</button>
-                    <button class="sci btn-fn">x!</button><button class="sci btn-fn" onclick="cSci('sin')">sin</button><button class="sci btn-fn" onclick="cSci('cos')">cos</button><button class="sci btn-fn" onclick="cSci('tan')">tan</button><button class="sci btn-fn" onclick="cIn('2.71')">e</button><button class="sci btn-fn">EE</button>
-                    <button class="digit" onclick="cIn('1')">1</button><button class="digit" onclick="cIn('2')">2</button><button class="digit" onclick="cIn('3')">3</button><button class="btn-op" onclick="cIn('+')">+</button>
-                    <button class="sci btn-fn">Rad</button><button class="sci btn-fn">sinh</button><button class="sci btn-fn">cosh</button><button class="sci btn-fn">tanh</button><button class="sci btn-fn" onclick="cIn('3.14')">π</button><button class="sci btn-fn">Rand</button>
-                    <button class="digit" style="grid-column: span 2; justify-content: flex-start; padding-left: 30px;" onclick="cIn('0')">0</button><button class="digit" onclick="cIn('.')">.</button><button class="btn-op" onclick="cSolve()">=</button>
-                </div>
+        <div class="room">
+            <div class="display"><div class="val" id="disp">0</div></div>
+            <div class="grid">
+                <button class="fn" onclick="clr()">AC</button><button class="fn">+/-</button><button class="fn">%</button><button class="op" onclick="inp('/')">÷</button>
+                <button onclick="inp('7')">7</button><button onclick="inp('8')">8</button><button onclick="inp('9')">9</button><button class="op" onclick="inp('*')">×</button>
+                <button onclick="inp('4')">4</button><button onclick="inp('5')">5</button><button onclick="inp('6')">6</button><button class="op" onclick="inp('-')">−</button>
+                <button onclick="inp('1')">1</button><button onclick="inp('2')">2</button><button onclick="inp('3')">3</button><button class="op" onclick="inp('+')">+</button>
+                <button style="grid-column: span 2; border-radius: 50px; justify-content: flex-start; padding-left: 30px;" onclick="inp('0')">0</button><button onclick="inp('.')">.</button><button class="op" onclick="solve()">=</button>
             </div>
-        </section>
+        </div>
 
-        <section class="room">
-            <div class="display"><div class="val" id="t-display">0.00</div></div>
-            <div class="grid-container">
-                <div class="portal-box">
-                    <div class="portal-row"><select id="f-c"><option>USD</option><option>EUR</option></select><div id="t-in">0</div></div>
-                    <div class="portal-row"><select id="t-c"><option>EUR</option><option>GBP</option></select><div style="color:var(--accent)" id="t-out">0.00</div></div>
-                </div>
-                <div class="portal-numpad">
-                    <button class="digit" onclick="tIn('7')">7</button><button class="digit" onclick="tIn('8')">8</button><button class="digit" onclick="tIn('9')">9</button>
-                    <button class="digit" onclick="tIn('4')">4</button><button class="digit" onclick="tIn('5')">5</button><button class="digit" onclick="tIn('6')">6</button>
-                    <button class="digit" onclick="tIn('1')">1</button><button class="digit" onclick="tIn('2')">2</button><button class="digit" onclick="tIn('3')">3</button>
-                    <button class="btn-fn" onclick="tClr()">AC</button><button class="digit" onclick="tIn('0')">0</button><button class="btn-fn" style="color:#ff3b30" onclick="tBack()">⌫</button>
-                </div>
+        <div class="room">
+            <div class="box">
+                <div class="row"><span>From USD</span><span class="unit" id="t-in">0</span></div>
+                <div class="row"><span>To EUR</span><span class="unit" id="t-out">0.00</span></div>
             </div>
-        </section>
+            <div class="grid">
+                <button onclick="tIn('7')">7</button><button onclick="tIn('8')">8</button><button onclick="tIn('9')">9</button>
+                <button onclick="tIn('4')">4</button><button onclick="tIn('5')">5</button><button onclick="tIn('6')">6</button>
+                <button onclick="tIn('1')">1</button><button onclick="tIn('2')">2</button><button onclick="tIn('3')">3</button>
+                <button class="fn" onclick="tClr()">AC</button><button onclick="tIn('0')">0</button><button class="fn" onclick="tBack()">⌫</button>
+            </div>
+        </div>
 
-        <section class="room">
-            <div class="display"><div class="val" id="cry-display">0.00</div></div>
-            <div class="grid-container">
-                <div class="portal-box">
-                    <div class="portal-row"><span>BTC/USD</span><span style="color:var(--accent)" id="btc-p">$96,420</span></div>
-                    <div class="portal-row"><select id="cry-sel"><option>BTC</option><option>ETH</option></select><div id="cry-in">0.00</div></div>
-                </div>
-                <div class="portal-numpad">
-                    <button class="digit" onclick="cryIn('7')">7</button><button class="digit" onclick="cryIn('8')">8</button><button class="digit" onclick="cryIn('9')">9</button>
-                    <button class="digit" onclick="cryIn('4')">4</button><button class="digit" onclick="cryIn('5')">5</button><button class="digit" onclick="cryIn('6')">6</button>
-                    <button class="digit" onclick="cryIn('1')">1</button><button class="digit" onclick="cryIn('2')">2</button><button class="digit" onclick="cryIn('3')">3</button>
-                    <button class="btn-fn" onclick="cryClr()">AC</button><button class="digit" onclick="cryIn('0')">0</button><button class="btn-fn" style="color:#ff3b30" onclick="cryBack()">⌫</button>
-                </div>
+        <div class="room">
+            <div class="box">
+                <div class="row"><span>BTC Market</span><span class="unit">$87,490</span></div>
+                <div class="row"><span>ETH Market</span><span class="unit" style="color:#a5a5a5">$2,929</span></div>
             </div>
-        </section>
+            <div class="box">
+                <div class="row"><span>Enter Amount</span><span class="unit" id="c-in">0.00</span></div>
+                <div class="row"><span>Value (USD)</span><span class="unit" id="c-out">$0.00</span></div>
+            </div>
+            <div class="grid">
+                <button onclick="cIn('7')">7</button><button onclick="cIn('8')">8</button><button onclick="cIn('9')">9</button>
+                <button onclick="cIn('4')">4</button><button onclick="cIn('5')">5</button><button onclick="cIn('6')">6</button>
+                <button onclick="cIn('1')">1</button><button onclick="cIn('2')">2</button><button onclick="cIn('3')">3</button>
+                <button class="fn" onclick="cClr()">AC</button><button onclick="cIn('0')">0</button><button class="fn" onclick="cBack()">⌫</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        let cD = "", tD = "", cryD = "", history = [];
-        const rates = { USD: 1, EUR: 0.92, GBP: 0.79, JPY: 150, BTC: 96420, ETH: 2580 };
+        let d = "", td = "", cd = "", hist = [];
 
         function toggleSide() {
             const s = document.getElementById('sidebar');
             const o = document.getElementById('overlay');
-            const isOpen = s.classList.contains('open');
-            s.classList.toggle('open');
-            o.style.display = isOpen ? 'none' : 'block';
+            const open = s.classList.toggle('open');
+            o.style.display = open ? 'block' : 'none';
         }
 
-        function toggleTheme() {
-            document.body.classList.toggle('light-mode');
+        function setTheme(m) {
+            document.body.classList.toggle('light-mode', m === 'light');
+            document.getElementById('dark-btn').classList.toggle('active', m === 'dark');
+            document.getElementById('light-btn').classList.toggle('active', m === 'light');
         }
 
         function move(i) {
             document.getElementById('stage').style.transform = `translateX(-${i * 100}vw)`;
-            document.querySelectorAll('.nav-link').forEach((l, idx) => l.classList.toggle('active', i === idx));
+            document.querySelectorAll('.tab').forEach((t, idx) => t.classList.toggle('active', i === idx));
         }
 
-        function cIn(v) { cD += v; cUp(); }
-        function cUp() { document.getElementById('c-main').innerText = cD || "0"; }
-        function cClr() { cD = ""; cUp(); }
-        function cSolve() { 
-            try { 
-                let res = eval(cD.replace('×','*').replace('÷','/'));
-                addHist(`${cD} = ${res}`);
-                cD = res.toString(); cUp(); 
-            } catch { cD = "Err"; cUp(); } 
+        // Calculator Logic
+        function inp(v) { d += v; document.getElementById('disp').innerText = d; }
+        function clr() { d = ""; document.getElementById('disp').innerText = "0"; }
+        function solve() {
+            try {
+                let r = eval(d);
+                addHist(d + " = " + r);
+                d = r.toString();
+                document.getElementById('disp').innerText = d;
+            } catch { d = "Error"; document.getElementById('disp').innerText = d; }
         }
 
-        function addHist(item) {
-            history.unshift(item);
-            if(history.length > 5) history.pop();
-            document.getElementById('calc-hist').innerHTML = history.map(h => `<div class="hist-item">${h}</div>`).join('');
+        function addHist(entry) {
+            hist.unshift(entry);
+            if(hist.length > 5) hist.pop();
+            document.getElementById('history-list').innerHTML = hist.map(h => `<div style="padding:8px 0; border-bottom:1px solid var(--border)">${h}</div>`).join('');
         }
 
-        function cSci(t) { 
-            let n = parseFloat(cD || "0"); 
-            if(t==='sq') n*=n; if(t==='sqrt') n=Math.sqrt(n);
-            cD = n.toFixed(2).toString(); cUp(); 
-        }
-
-        function tIn(v) { tD += v; tUp(); }
-        function tClr() { tD = ""; tUp(); }
-        function tBack() { tD = tD.slice(0, -1); tUp(); }
+        // Trade Logic
+        function tIn(v) { td += v; tUp(); }
+        function tClr() { td = ""; tUp(); }
+        function tBack() { td = td.slice(0,-1); tUp(); }
         function tUp() {
-            let f = document.getElementById('f-c').value, t = document.getElementById('t-c').value;
-            let res = (parseFloat(tD||0) / rates[f]) * rates[t];
-            document.getElementById('t-in').innerText = tD || "0";
-            document.getElementById('t-out').innerText = res.toFixed(2);
-            document.getElementById('t-display').innerText = res.toFixed(2);
+            document.getElementById('t-in').innerText = td || "0";
+            document.getElementById('t-out').innerText = (parseFloat(td||0) * 0.96).toFixed(2);
         }
 
-        function cryIn(v) { cryD += v; cryUp(); }
-        function cryClr() { cryD = ""; cryUp(); }
-        function cryBack() { cryD = cryD.slice(0, -1); cryUp(); }
-        function cryUp() {
-            let asset = document.getElementById('cry-sel').value;
-            let res = parseFloat(cryD||0) * rates[asset];
-            document.getElementById('cry-in').innerText = cryD || "0.00";
-            document.getElementById('cry-display').innerText = res.toLocaleString();
+        // Crypto Logic
+        function cIn(v) { cd += v; cUp(); }
+        function cClr() { cd = ""; cUp(); }
+        function cBack() { cd = cd.slice(0,-1); cUp(); }
+        function cUp() {
+            document.getElementById('c-in').innerText = cd || "0.00";
+            document.getElementById('c-out').innerText = "$" + (parseFloat(cd||0) * 87490).toLocaleString();
         }
-
-        // Simulating Live News Feed
-        const news = ["BTC hits new ATH!", "SEC approves Eth Staking", "Market volume up 20%", "Tech stocks rally"];
-        setInterval(() => {
-            document.getElementById('news-box').innerText = news[Math.floor(Math.random()*news.length)];
-        }, 5000);
     </script>
 </body>
 </html>
