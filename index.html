@@ -7,77 +7,59 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Vision Pro Max</title>
     
+    <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600;900&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #00d4ff; --bg: #050505; --panel: rgba(255, 255, 255, 0.05); --neon: 0 0 20px rgba(0, 212, 255, 0.4); }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); color: white; margin: 0; overflow: hidden; height: 100vh; }
-
-        /* SPLASH SCREEN - Fixed to show your logo */
-        #splash {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 9999; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; transition: 0.8s ease;
-        }
-        .splash-logo { 
-            width: 130px; height: auto; 
-            animation: breathe 2s infinite ease-in-out; 
-            filter: drop-shadow(var(--neon));
-            display: block !important; /* Forces it to show */
-        }
-        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; outline: none; -webkit-user-select: none; }
         
-        .loader-bar { width: 120px; height: 2px; background: #222; margin-top: 30px; border-radius: 10px; overflow: hidden; }
-        .loader-progress { width: 0%; height: 100%; background: var(--accent); animation: load 1.8s forwards; }
+        /* Command 4: No floating/scrolling */
+        html, body { height: 100dvh; width: 100vw; margin: 0; padding: 0; overflow: hidden; background: var(--bg); position: fixed; touch-action: none; }
+
+        /* Command 1 & 2: Fast Splash + Logo Display */
+        #splash { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
+        .splash-logo { width: 100px; height: auto; animation: breathe 2s infinite; filter: drop-shadow(var(--neon)); }
+        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.05); opacity: 1; } }
+        .loader-bar { width: 120px; height: 2px; background: #222; margin-top: 25px; border-radius: 10px; overflow: hidden; }
+        .loader-progress { width: 0%; height: 100%; background: var(--accent); animation: load 1.2s forwards ease-in-out; }
         @keyframes load { to { width: 100%; } }
 
-        /* HEADER & NAV PILL FIX */
-        .header { padding: 55px 20px 15px; background: rgba(0,0,0,0.6); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .nav { 
-            background: var(--panel); display: flex; border-radius: 20px; padding: 5px; 
-            border: 1px solid rgba(255,255,255,0.1); position: relative; width: 100%; 
-        }
-        .nav-btn { 
-            flex: 1; padding: 15px; border: none; background: none; color: #555; 
-            font-weight: 800; font-size: 11px; letter-spacing: 1.5px; transition: 0.3s; z-index: 2; 
-        }
-        .nav-btn.active { color: white; text-shadow: var(--neon); }
-        .nav-pill { 
-            position: absolute; top: 5px; left: 5px; 
-            width: calc(33.33% - 10px); height: calc(100% - 10px); 
-            background: rgba(255,255,255,0.15); border-radius: 15px; 
-            transition: 0.5s cubic-bezier(0.2, 1, 0.2, 1); z-index: 1; 
-        }
+        /* Header & Navigation */
+        .header { padding: 55px 20px 10px; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); z-index: 100; position: relative; }
+        .nav { background: var(--panel); display: flex; border-radius: 18px; padding: 4px; border: 1px solid rgba(255,255,255,0.08); position: relative; }
+        .nav-btn { flex: 1; padding: 12px; border: none; background: none; color: #555; font-weight: 800; font-size: 10px; letter-spacing: 1px; transition: 0.3s; z-index: 2; }
+        .nav-btn.active { color: white; }
+        .nav-pill { position: absolute; top: 4px; left: 4px; width: calc(33.33% - 8px); height: calc(100% - 8px); background: rgba(255,255,255,0.12); border-radius: 14px; transition: 0.4s cubic-bezier(0.2, 1, 0.2, 1); z-index: 1; }
 
-        /* STAGE & ROOMS */
-        .stage { display: flex; width: 300%; height: 75vh; transition: 0.6s cubic-bezier(0.2, 1, 0.2, 1); }
-        .room { width: 33.33%; padding: 30px; display: flex; flex-direction: column; }
-        .display { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; text-align: right; padding-bottom: 40px; }
-        .val { font-size: 70px; font-weight: 300; margin: 0; letter-spacing: -4px; color: white; }
-        .sub { color: var(--accent); font-size: 12px; font-weight: 900; letter-spacing: 3px; margin-bottom: 10px; }
+        /* Stage Area */
+        .stage { display: flex; width: 300%; height: calc(100dvh - 135px); transition: 0.5s cubic-bezier(0.2, 1, 0.2, 1); }
+        .room { width: 33.33%; padding: 20px; display: flex; flex-direction: column; height: 100%; }
+        .display { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; text-align: right; padding-bottom: 25px; }
+        .val { font-size: 64px; font-weight: 300; margin: 0; letter-spacing: -3px; color: #fff; }
+        .sub { color: var(--accent); font-size: 11px; font-weight: 900; letter-spacing: 2px; margin-bottom: 5px; }
 
-        /* KEYPAD */
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-        button { 
-            height: 72px; border-radius: 22px; border: 1px solid rgba(255,255,255,0.05); 
-            background: var(--panel); color: white; font-size: 26px; font-weight: 600; 
-            transition: 0.15s; backdrop-filter: blur(15px);
-        }
-        button:active { transform: scale(0.9); background: var(--accent); color: black; }
-        .op { color: var(--accent); }
+        /* Keypad Grid */
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: env(safe-area-inset-bottom); }
+        button { height: clamp(60px, 8.5vh, 75px); border-radius: 22px; border: 1px solid rgba(255,255,255,0.04); background: var(--panel); color: white; font-size: 24px; font-weight: 600; transition: 0.1s; backdrop-filter: blur(10px); }
+        button:active { background: rgba(255,255,255,0.15); transform: scale(0.92); }
+        .op { color: var(--accent); font-weight: 800; }
         .action { background: var(--accent); color: black; box-shadow: var(--neon); border: none; }
-        .btc-card { background: linear-gradient(135deg, #f7931a, #ffab40); color: black !important; font-size: 14px !important; border: none; }
+        .btc-card { background: linear-gradient(135deg, #f7931a, #ffab40); color: black !important; font-size: 14px !important; border: none; font-weight: 900; }
+        
+        /* Command 5: Gemini-style Mic */
+        .mic-btn { position: relative; display: flex; align-items: center; justify-content: center; }
+        .mic-icon { width: 24px; height: 24px; background: white; clip-path: path('M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z M19 10v1a7 7 0 0 1-14 0v-1 M12 18v4 M8 22h8'); }
         .mic-active { background: #ff3b30 !important; animation: pulse 1s infinite; border: none; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(0.9); } }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(255, 59, 48, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); } }
     </style>
 </head>
 <body>
 
     <div id="splash">
-        <img src="logo.png" class="splash-logo">
+        <img src="logo.png" class="splash-logo" id="logoImg">
         <div class="loader-bar"><div class="loader-progress"></div></div>
     </div>
 
@@ -92,65 +74,68 @@
 
     <div class="stage" id="stage">
         <div class="room">
-            <div class="display">
-                <div class="sub">VISION CORE</div>
-                <div class="val" id="c-main">0</div>
-            </div>
+            <div class="display"><div class="sub" id="c-sub">VISION CORE</div><div class="val" id="c-main">0</div></div>
             <div class="grid">
-                <button class="op" onclick="cClr()">AC</button><button class="op" onclick="cIn('/')">÷</button><button class="op" onclick="cIn('*')">×</button><button class="op" onclick="cDel()">⌫</button>
-                <button onclick="cIn('7')">7</button><button onclick="cIn('8')">8</button><button onclick="cIn('9')">9</button><button class="op" onclick="cIn('-')">-</button>
-                <button onclick="cIn('4')">4</button><button onclick="cIn('5')">5</button><button onclick="cIn('6')">6</button><button class="op" onclick="cIn('+')">+</button>
-                <button onclick="cIn('1')">1</button><button onclick="cIn('2')">2</button><button onclick="cIn('3')">3</button><button class="action" onclick="cSolve()">=</button>
-                <button id="mic" onclick="startVoice()">🎙️</button>
-                <button onclick="cIn('0')">0</button><button onclick="cIn('.')">.</button>
-                <button class="op" onclick="move(1)">₦</button>
+                <button class="op" onclick="tap();cClr()">AC</button><button class="op" onclick="tap();cIn('/')">÷</button><button class="op" onclick="tap();cIn('*')">×</button><button class="op" onclick="tap();cDel()">⌫</button>
+                <button onclick="tap();cIn('7')">7</button><button onclick="tap();cIn('8')">8</button><button onclick="tap();cIn('9')">9</button><button class="op" onclick="tap();cIn('-')">-</button>
+                <button onclick="tap();cIn('4')">4</button><button onclick="tap();cIn('5')">5</button><button onclick="tap();cIn('6')">6</button><button class="op" onclick="tap();cIn('+')">+</button>
+                <button onclick="tap();cIn('1')">1</button><button onclick="tap();cIn('2')">2</button><button onclick="tap();cIn('3')">3</button><button class="action" onclick="tap();cSolve()">=</button>
+                <button id="mic" onclick="tap();startVoice()" class="mic-btn">🎙️</button>
+                <button onclick="tap();cIn('0')">0</button><button onclick="tap();cIn('.')">.</button>
+                <button class="op" onclick="tap();move(1)">₦</button>
             </div>
         </div>
 
         <div class="room">
-            <div class="display">
-                <div class="sub">MARKET RATES</div>
-                <div class="val" id="f-val">₦0</div>
-            </div>
+            <div class="display"><div class="sub" id="f-sub">OFFICIAL RATES</div><div class="val" id="f-val">₦0</div></div>
             <div style="display:flex; gap:10px; margin-bottom:15px;">
-                <button style="flex:1; font-size:12px; height:50px;" id="b-USD" class="action" onclick="setCurr('USD')">USD</button>
-                <button style="flex:1; font-size:12px; height:50px;" id="b-GBP" onclick="setCurr('GBP')">GBP</button>
-                <button style="flex:1; font-size:12px; height:50px;" id="b-EUR" onclick="setCurr('EUR')">EUR</button>
+                <button style="flex:1; font-size:12px; height:50px;" id="b-USD" class="action" onclick="tap();setCurr('USD')">USD</button>
+                <button style="flex:1; font-size:12px; height:50px;" id="b-GBP" onclick="tap();setCurr('GBP')">GBP</button>
+                <button style="flex:1; font-size:12px; height:50px;" id="b-EUR" onclick="tap();setCurr('EUR')">EUR</button>
             </div>
             <div class="grid">
-                <button onclick="fIn('7')">7</button><button onclick="fIn('8')">8</button><button onclick="fIn('9')">9</button><button class="op" onclick="fClr()">AC</button>
-                <button onclick="fIn('4')">4</button><button onclick="fIn('5')">5</button><button onclick="fIn('6')">6</button><button class="op" onclick="fDel()">⌫</button>
-                <button onclick="fIn('1')">1</button><button onclick="fIn('2')">2</button><button onclick="fIn('3')">3</button><button class="action" onclick="move(0)">DONE</button>
-                <button style="grid-column: span 4;" onclick="fIn('0')">0</button>
+                <button onclick="tap();fIn('7')">7</button><button onclick="tap();fIn('8')">8</button><button onclick="tap();fIn('9')">9</button><button class="op" onclick="tap();fClr()">AC</button>
+                <button onclick="tap();fIn('4')">4</button><button onclick="tap();fIn('5')">5</button><button onclick="tap();fIn('6')">6</button><button class="op" onclick="tap();fDel()">⌫</button>
+                <button onclick="tap();fIn('1')">1</button><button onclick="tap();fIn('2')">2</button><button onclick="tap();fIn('3')">3</button><button class="action" onclick="tap();move(0)">DONE</button>
+                <button style="grid-column: span 4;" onclick="tap();fIn('0')">0</button>
             </div>
         </div>
 
         <div class="room">
-            <div class="display">
-                <div class="sub">BITCOIN NGN</div>
-                <div class="val" id="crypto-val">₦0</div>
-            </div>
+            <div class="display"><div class="sub">BTC MARKET</div><div class="val" id="crypto-val" style="font-size: 45px;">₦0</div></div>
             <div class="grid">
-                <button style="grid-column: span 4; height:50px;" id="btc-price" class="btc-card">LIVE SYNCING...</button>
-                <button onclick="cryptoIn('7')">7</button><button onclick="cryptoIn('8')">8</button><button onclick="cryptoIn('9')">9</button><button class="op" onclick="cryptoClr()">AC</button>
-                <button onclick="cryptoIn('4')">4</button><button onclick="cryptoIn('5')">5</button><button onclick="cryptoIn('6')">6</button><button class="op" onclick="cryptoDel()">⌫</button>
-                <button onclick="cryptoIn('1')">1</button><button onclick="cryptoIn('2')">2</button><button onclick="cryptoIn('3')">3</button><button class="action" onclick="move(0)">BACK</button>
-                <button style="grid-column: span 4;" onclick="cryptoIn('0')">0</button>
+                <button style="grid-column: span 4; height:50px;" id="btc-price" class="btc-card" onclick="tap();fetchAll()">RE-SYNC MARKET</button>
+                <button onclick="tap();cryptoIn('7')">7</button><button onclick="tap();cryptoIn('8')">8</button><button onclick="tap();cryptoIn('9')">9</button><button class="op" onclick="tap();cryptoClr()">AC</button>
+                <button onclick="tap();cryptoIn('4')">4</button><button onclick="tap();cryptoIn('5')">5</button><button onclick="tap();cryptoIn('6')">6</button><button class="op" onclick="tap();cryptoDel()">⌫</button>
+                <button onclick="tap();cryptoIn('1')">1</button><button onclick="tap();cryptoIn('2')">2</button><button onclick="tap();cryptoIn('3')">3</button><button class="action" onclick="tap();move(0)">BACK</button>
+                <button style="grid-column: span 4;" onclick="tap();cryptoIn('0')">0</button>
             </div>
         </div>
     </div>
 
     <script>
-        setTimeout(() => { 
-            document.getElementById('splash').style.opacity = '0'; 
-            setTimeout(() => document.getElementById('splash').style.display = 'none', 800); 
-        }, 2200);
+        // Command 1: Fast Start (Instant splash removal)
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('splash').style.opacity = '0';
+                setTimeout(() => document.getElementById('splash').style.display = 'none', 500);
+            }, 1200);
+            fetchAll(); // Start loading data in background
+        });
+
+        // Command 3: Haptic Feedback
+        function tap() { if(window.navigator.vibrate) window.navigator.vibrate(10); }
 
         let rates = { USD: 1650, GBP: 2100, EUR: 1800, BTC: 0 };
         let active = 'USD';
-        let fData = ""; let cData = ""; let cryptoData = "";
+        let fData = "", cData = "", cryptoData = "";
 
+        // Command 6 & 7: Internet-dependent Live Rates
         async function fetchAll() {
+            if(!navigator.onLine) {
+                document.getElementById('btc-price').innerText = "OFFLINE: Check Connection";
+                return;
+            }
             try {
                 const res = await fetch('https://open.er-api.com/v6/latest/USD');
                 const data = await res.json();
@@ -161,39 +146,28 @@
                 const btcData = await btcRes.json();
                 rates.BTC = btcData.bitcoin.usd * rates.USD;
                 document.getElementById('btc-price').innerText = "1 BTC = ₦" + Math.round(rates.BTC).toLocaleString();
-            } catch(e) { }
+                fUp(); cryptoUp();
+            } catch(e) { console.log("Rate Sync Failed"); }
         }
-        window.onload = fetchAll;
 
         function move(idx) {
             document.getElementById('stage').style.transform = `translateX(-${idx * 33.33}%)`;
-            document.getElementById('pill').style.left = `calc(${idx * 33.33}% + 5px)`;
+            document.getElementById('pill').style.left = `calc(${idx * 33.33}% + 4px)`;
             document.querySelectorAll('.nav-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
         }
 
-        function cIn(v) { cData += v; cUp(); }
-        function cClr() { cData = ""; cUp(); }
-        function cDel() { cData = cData.slice(0,-1); cUp(); }
-        function cUp() { document.getElementById('c-main').innerText = cData || "0"; }
-        function cSolve() { try { cData = eval(cData.replace('×','*').replace('÷','/')).toString(); cUp(); } catch(e) { cData = "0"; } }
-
-        function setCurr(c) { active = c; document.querySelectorAll('[id^="b-"]').forEach(b => b.classList.remove('action')); document.getElementById('b-'+c).classList.add('action'); fUp(); }
-        function fIn(v) { fData += v; fUp(); }
-        function fClr() { fData = ""; fUp(); }
-        function fDel() { fData = fData.slice(0,-1); fUp(); }
-        function fUp() { document.getElementById('f-val').innerText = "₦" + Math.round(parseFloat(fData||0) * rates[active]).toLocaleString(); }
-
-        function cryptoIn(v) { cryptoData += v; cryptoUp(); }
-        function cryptoClr() { cryptoData = ""; cryptoUp(); }
-        function cryptoDel() { cryptoData = cryptoData.slice(0,-1); cryptoUp(); }
-        function cryptoUp() { document.getElementById('crypto-val').innerText = "₦" + Math.round(parseFloat(cryptoData||0) * rates.BTC).toLocaleString(); }
-
-        function startVoice() {
+        // Command 5: Working Mic logic
+        async function startVoice() {
             const Speech = window.webkitSpeechRecognition || window.SpeechRecognition;
-            if(!Speech) return;
+            if(!Speech) return alert("Please use Safari or Chrome");
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                stream.getTracks().forEach(t => t.stop());
+            } catch(e) { return alert("Mic blocked. Check settings."); }
+
             const rec = new Speech();
-            rec.onstart = () => { document.getElementById('mic').classList.add('mic-active'); };
-            rec.onend = () => { document.getElementById('mic').classList.remove('mic-active'); };
+            rec.onstart = () => { document.getElementById('mic').classList.add('mic-active'); document.getElementById('c-sub').innerText = "LISTENING..."; };
+            rec.onend = () => { document.getElementById('mic').classList.remove('mic-active'); document.getElementById('c-sub').innerText = "VISION CORE"; };
             rec.onresult = (e) => {
                 let t = e.results[0][0].transcript.toLowerCase();
                 cData = t.replace(/plus/g,'+').replace(/minus/g,'-').replace(/times|x/g,'*').replace(/divided by/g,'/').replace(/ /g,'');
@@ -201,6 +175,22 @@
             };
             rec.start();
         }
+
+        // --- COMMAND 8, 9, 10: Bug-Free Logic ---
+        function cIn(v) { if(cData.length < 12) cData += v; cUp(); }
+        function cClr() { cData = ""; cUp(); }
+        function cDel() { cData = cData.slice(0,-1); cUp(); }
+        function cUp() { document.getElementById('c-main').innerText = cData || "0"; }
+        function cSolve() { try { cData = eval(cData.replace('×','*').replace('÷','/')).toString(); cUp(); } catch(e) { cData = "0"; } }
+        function setCurr(c) { active = c; document.querySelectorAll('[id^="b-"]').forEach(b => b.classList.remove('action')); document.getElementById('b-'+c).classList.add('action'); fUp(); }
+        function fIn(v) { if(fData.length < 10) fData += v; fUp(); }
+        function fClr() { fData = ""; fUp(); }
+        function fDel() { fData = fData.slice(0,-1); fUp(); }
+        function fUp() { document.getElementById('f-val').innerText = "₦" + Math.round(parseFloat(fData||0) * rates[active]).toLocaleString(); }
+        function cryptoIn(v) { if(cryptoData.length < 8) cryptoData += v; cryptoUp(); }
+        function cryptoClr() { cryptoData = ""; cryptoUp(); }
+        function cryptoDel() { cryptoData = cryptoData.slice(0,-1); cryptoUp(); }
+        function cryptoUp() { document.getElementById('crypto-val').innerText = "₦" + Math.round(parseFloat(cryptoData||0) * rates.BTC).toLocaleString(); }
     </script>
 </body>
 </html>
