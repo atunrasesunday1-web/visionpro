@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Vision Elite Master 2025</title>
+    <title>Vision Elite 2025</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --accent: #1d9bf0; /* Premium Blue */
+            --accent: #1d9bf0; 
             --bg: #000000; --text: #f7f9f9;
             --card: #16181c; --border: #2f3336;
             --btn-num: #16181c; --btn-text: #eff3f4;
-            --glow: 0 0 20px rgba(29, 155, 240, 0.3);
+            --glow: 0 0 20px rgba(29, 155, 240, 0.15);
         }
 
         body.light-mode {
@@ -23,60 +23,72 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); overflow: hidden; height: 100svh; transition: background 0.4s ease; }
 
-        /* PREMIUM SIDEBAR (X-STYLE) */
+        /* SIDEBAR & OVERLAY */
         #sidebar { 
             position: fixed; top: 0; left: -320px; width: 320px; height: 100%; 
             background: var(--bg); z-index: 3000; transition: 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.1);
-            border-right: 1px solid var(--border); padding: 20px;
+            border-right: 1px solid var(--border); padding: 30px 20px;
             display: flex; flex-direction: column;
         }
-        #sidebar.open { left: 0; box-shadow: 20px 0 80px rgba(0,0,0,0.5); }
-        .overlay { position: fixed; inset: 0; background: rgba(91, 112, 131, 0.4); z-index: 2900; display: none; backdrop-filter: blur(2px); }
+        #sidebar.open { left: 0; box-shadow: 20px 0 80px rgba(0,0,0,0.7); }
+        .overlay { position: fixed; inset: 0; background: rgba(91, 112, 131, 0.3); z-index: 2900; display: none; backdrop-filter: blur(4px); }
 
-        .side-header { font-size: 20px; font-weight: 800; padding-bottom: 25px; border-bottom: 1px solid var(--border); }
-        .side-content { flex: 1; padding-top: 25px; overflow-y: auto; }
-        
-        .side-label { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 12px; display: block; opacity: 0.9; }
-        .side-section { margin-bottom: 35px; }
+        .side-label { font-size: 11px; font-weight: 800; color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 15px; display: block; }
+        .side-section { margin-bottom: 40px; }
 
-        /* THEME TOGGLE PREMIUM */
-        .theme-switch { 
-            display: flex; background: var(--card); border-radius: 100px; padding: 4px; 
-            border: 1px solid var(--border); position: relative;
-        }
-        .t-opt { flex: 1; text-align: center; padding: 10px 0; font-size: 13px; font-weight: 600; cursor: pointer; z-index: 1; border-radius: 100px; transition: 0.3s; }
-        .t-opt.active { background: var(--accent); color: #fff; }
+        /* THEME TOGGLE */
+        .theme-switch { display: flex; background: var(--card); border-radius: 14px; padding: 5px; border: 1px solid var(--border); }
+        .t-opt { flex: 1; text-align: center; padding: 12px 0; font-size: 12px; font-weight: 600; cursor: pointer; border-radius: 10px; transition: 0.2s; }
+        .t-opt.active { background: var(--accent); color: #fff; box-shadow: var(--glow); }
 
-        /* NEWS CARDS */
-        .news-card { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid var(--border); font-size: 14px; margin-bottom: 10px; }
-        .news-tag { color: var(--accent); font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; display: block; }
+        /* TOP NAVIGATION */
+        .top-nav { position: fixed; top: 0; width: 100%; height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; z-index: 2000; }
+        .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 7px; width: 28px; }
+        .menu-btn span { height: 2px; background: var(--text); border-radius: 10px; width: 100%; }
         
-        /* MAIN INTERFACE */
-        .top-nav { position: fixed; top: 0; width: 100%; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 2000; background: rgba(0,0,0,0.1); backdrop-filter: blur(10px); }
-        .menu-btn { width: 30px; height: 30px; display: flex; flex-direction: column; justify-content: center; gap: 5px; cursor: pointer; }
-        .menu-btn span { height: 2px; width: 100%; background: var(--text); border-radius: 10px; transition: 0.3s; }
-        
-        .tab-bar { display: flex; gap: 20px; background: var(--card); padding: 6px 18px; border-radius: 50px; border: 1px solid var(--border); }
-        .tab { font-size: 11px; font-weight: 800; opacity: 0.4; cursor: pointer; letter-spacing: 1px; }
+        .tab-bar { display: flex; gap: 20px; background: var(--card); padding: 10px 22px; border-radius: 100px; border: 1px solid var(--border); }
+        .tab { font-size: 11px; font-weight: 800; opacity: 0.4; cursor: pointer; letter-spacing: 0.5px; }
         .tab.active { opacity: 1; color: var(--accent); }
 
+        /* MAIN CONTENT AREA */
         .stage { display: flex; width: 300vw; height: 100%; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-        .room { width: 100vw; height: 100%; padding: 80px 20px 20px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .room { width: 100vw; height: 100%; padding: 100px 25px 40px; display: flex; flex-direction: column; }
         
-        /* CALC ENGINE UI */
-        .display { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; padding-bottom: 20px; }
-        .val { font-size: 70px; font-weight: 300; letter-spacing: -2px; color: var(--accent); text-shadow: var(--glow); }
+        /* DISPLAY AREA */
+        .display { flex: 0.45; display: flex; justify-content: flex-end; align-items: center; padding-right: 10px; }
+        .val { font-size: clamp(55px, 9vw, 100px); font-weight: 200; color: var(--accent); line-height: 1; letter-spacing: -3px; }
 
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-        button { height: 75px; border-radius: 50%; border: none; background: var(--btn-num); color: var(--btn-text); font-size: 26px; font-weight: 500; transition: 0.2s; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        button:active { transform: scale(0.9); opacity: 0.7; }
-        .op { background: #ff9f0a; color: #fff; font-size: 30px; }
-        .fn { background: #a5a5a5; color: #000; font-size: 20px; }
+        /* GRID SYSTEM (DASHBOARD STYLE) */
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; flex: 1; max-width: 500px; margin: 0 auto; width: 100%; }
+        
+        button { 
+            height: 70px; 
+            border-radius: 20px; /* Dashboard Squircle */
+            border: 1px solid var(--border); 
+            background: var(--btn-num); 
+            color: var(--btn-text); 
+            font-size: 24px; 
+            font-weight: 400; 
+            transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer; 
+        }
+        
+        button:active { transform: scale(0.92); background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: var(--glow); }
+        
+        .op { background: #ff9f0a; color: #fff; border: none; font-size: 28px; }
+        .fn { color: var(--accent); font-weight: 800; font-size: 15px; border-color: rgba(29, 155, 240, 0.2); }
 
-        /* CURRENCY INTERFACE */
-        .box { background: var(--card); border-radius: 24px; padding: 25px; border: 1px solid var(--border); margin-bottom: 15px; }
-        .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .unit { font-size: 18px; font-weight: 800; color: var(--accent); }
+        @media (min-width: 800px) {
+            .grid { grid-template-columns: repeat(10, 1fr); max-width: 1000px; }
+            button { height: 50px; border-radius: 12px; font-size: 18px; }
+            .sci { display: flex !important; align-items: center; justify-content: center; }
+        }
+        .sci { display: none; }
+
+        /* PORTAL CONTAINERS */
+        .box { background: var(--card); border-radius: 24px; padding: 25px; border: 1px solid var(--border); margin-bottom: 25px; max-width: 500px; margin-left: auto; margin-right: auto; width: 100%; }
+        .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .unit { font-size: 22px; font-weight: 800; color: var(--accent); }
     </style>
 </head>
 <body>
@@ -84,67 +96,57 @@
     <div class="overlay" id="overlay" onclick="toggleSide()"></div>
     
     <div id="sidebar">
-        <div class="side-header">Vision Pro</div>
+        <div class="side-header" style="font-weight: 800; font-size: 24px; margin-bottom: 40px;">Vision Elite</div>
+        
         <div class="side-content">
+            <div class="side-section">
+                <span class="side-label">Market News</span>
+                <div style="background: var(--card); padding: 18px; border-radius: 16px; border: 1px solid var(--border); font-size: 14px; line-height: 1.5;">
+                    <b style="color: var(--accent);">Crypto Live:</b> BTC holding at $87,420. Volume is steady as 2025 closes out.
+                </div>
+            </div>
             
             <div class="side-section">
-                <span class="side-label">MARKET TRENDS</span>
-                <div class="news-card">
-                    <span class="news-tag">Live • Dec 25</span>
-                    <b>Bitcoin Stalls:</b> BTC trading sideways at $87,490 during holiday thin liquidity.
-                </div>
-                <div class="news-card">
-                    <span class="news-tag">Ethereum</span>
-                    <b>Options Deadline:</b> $6B in ETH options expiring Friday; $3,000 is the key battleground.
-                </div>
+                <span class="side-label">Calculation History</span>
+                <div id="history-list" style="font-size: 14px; opacity: 0.7;">No active sessions.</div>
             </div>
 
             <div class="side-section">
-                <span class="side-label">HISTORY</span>
-                <div id="history-list" style="font-size: 14px; opacity: 0.6;">
-                    No recent calculations.
-                </div>
-            </div>
-
-            <div class="side-section">
-                <span class="side-label">THEME SETTINGS</span>
+                <span class="side-label">Appearance</span>
                 <div class="theme-switch">
                     <div class="t-opt active" id="dark-btn" onclick="setTheme('dark')">Lights Out</div>
                     <div class="t-opt" id="light-btn" onclick="setTheme('light')">Default</div>
                 </div>
             </div>
-
         </div>
     </div>
 
     <nav class="top-nav">
-        <div class="menu-btn" onclick="toggleSide()">
-            <span></span><span style="width: 70%;"></span><span></span>
-        </div>
+        <div class="menu-btn" onclick="toggleSide()"><span></span><span style="width: 70%"></span><span></span></div>
         <div class="tab-bar">
             <div class="tab active" onclick="move(0)">CALC</div>
             <div class="tab" onclick="move(1)">TRADE</div>
             <div class="tab" onclick="move(2)">CRYPTO</div>
         </div>
-        <div style="width:30px"></div>
+        <div style="width: 28px"></div>
     </nav>
 
     <div class="stage" id="stage">
         <div class="room">
             <div class="display"><div class="val" id="disp">0</div></div>
             <div class="grid">
-                <button class="fn" onclick="clr()">AC</button><button class="fn">+/-</button><button class="fn">%</button><button class="op" onclick="inp('/')">÷</button>
+                <button class="fn" onclick="clr()">AC</button><button class="fn" onclick="sci('pm')">+/-</button><button class="fn" onclick="sci('pct')">%</button><button class="op" onclick="inp('/')">÷</button>
                 <button onclick="inp('7')">7</button><button onclick="inp('8')">8</button><button onclick="inp('9')">9</button><button class="op" onclick="inp('*')">×</button>
                 <button onclick="inp('4')">4</button><button onclick="inp('5')">5</button><button onclick="inp('6')">6</button><button class="op" onclick="inp('-')">−</button>
                 <button onclick="inp('1')">1</button><button onclick="inp('2')">2</button><button onclick="inp('3')">3</button><button class="op" onclick="inp('+')">+</button>
-                <button style="grid-column: span 2; border-radius: 50px; justify-content: flex-start; padding-left: 30px;" onclick="inp('0')">0</button><button onclick="inp('.')">.</button><button class="op" onclick="solve()">=</button>
+                <button style="grid-column: span 2; text-align: left; padding-left: 35px;" onclick="inp('0')">0</button><button onclick="inp('.')">.</button><button class="op" onclick="solve()">=</button>
             </div>
         </div>
 
         <div class="room">
             <div class="box">
-                <div class="row"><span>From USD</span><span class="unit" id="t-in">0</span></div>
-                <div class="row"><span>To EUR</span><span class="unit" id="t-out">0.00</span></div>
+                <div class="row"><span>USD Input</span><span class="unit" id="t-in">0</span></div>
+                <div class="row"><span>EUR Result</span><span class="unit" id="t-out">0.00</span></div>
             </div>
             <div class="grid">
                 <button onclick="tIn('7')">7</button><button onclick="tIn('8')">8</button><button onclick="tIn('9')">9</button>
@@ -156,12 +158,9 @@
 
         <div class="room">
             <div class="box">
-                <div class="row"><span>BTC Market</span><span class="unit">$87,490</span></div>
-                <div class="row"><span>ETH Market</span><span class="unit" style="color:#a5a5a5">$2,929</span></div>
-            </div>
-            <div class="box">
-                <div class="row"><span>Enter Amount</span><span class="unit" id="c-in">0.00</span></div>
-                <div class="row"><span>Value (USD)</span><span class="unit" id="c-out">$0.00</span></div>
+                <div class="row"><span>BTC Price</span><span class="unit">$87,420</span></div>
+                <div class="row"><span>Total Assets</span><span class="unit" id="c-in">0.00</span></div>
+                <div class="row"><span>USD Value</span><span class="unit" id="c-out">$0.00</span></div>
             </div>
             <div class="grid">
                 <button onclick="cIn('7')">7</button><button onclick="cIn('8')">8</button><button onclick="cIn('9')">9</button>
@@ -193,40 +192,41 @@
             document.querySelectorAll('.tab').forEach((t, idx) => t.classList.toggle('active', i === idx));
         }
 
-        // Calculator Logic
-        function inp(v) { d += v; document.getElementById('disp').innerText = d; }
+        // Logic
+        function inp(v) { d += v; document.getElementById('disp').innerText = d || "0"; }
         function clr() { d = ""; document.getElementById('disp').innerText = "0"; }
         function solve() {
             try {
-                let r = eval(d);
-                addHist(d + " = " + r);
-                d = r.toString();
+                let res = eval(d);
+                addHist(`${d} = ${res}`);
+                d = res.toString();
                 document.getElementById('disp').innerText = d;
-            } catch { d = "Error"; document.getElementById('disp').innerText = d; }
+            } catch { d = ""; document.getElementById('disp').innerText = "Error"; }
+        }
+        function sci(t) {
+            let n = parseFloat(d || "0");
+            if(t==='pm') n *= -1; if(t==='pct') n /= 100;
+            d = n.toString(); document.getElementById('disp').innerText = d;
+        }
+        function addHist(e) {
+            hist.unshift(e); if(hist.length > 5) hist.pop();
+            document.getElementById('history-list').innerHTML = hist.map(i => `<div style="padding:8px 0; border-bottom:1px solid var(--border); font-family: monospace;">${i}</div>`).join('');
         }
 
-        function addHist(entry) {
-            hist.unshift(entry);
-            if(hist.length > 5) hist.pop();
-            document.getElementById('history-list').innerHTML = hist.map(h => `<div style="padding:8px 0; border-bottom:1px solid var(--border)">${h}</div>`).join('');
-        }
-
-        // Trade Logic
         function tIn(v) { td += v; tUp(); }
         function tClr() { td = ""; tUp(); }
         function tBack() { td = td.slice(0,-1); tUp(); }
         function tUp() {
             document.getElementById('t-in').innerText = td || "0";
-            document.getElementById('t-out').innerText = (parseFloat(td||0) * 0.96).toFixed(2);
+            document.getElementById('t-out').innerText = (parseFloat(td||0) * 0.94).toFixed(2);
         }
 
-        // Crypto Logic
         function cIn(v) { cd += v; cUp(); }
         function cClr() { cd = ""; cUp(); }
         function cBack() { cd = cd.slice(0,-1); cUp(); }
         function cUp() {
             document.getElementById('c-in').innerText = cd || "0.00";
-            document.getElementById('c-out').innerText = "$" + (parseFloat(cd||0) * 87490).toLocaleString();
+            document.getElementById('c-out').innerText = "$" + (parseFloat(cd||0) * 87420).toLocaleString();
         }
     </script>
 </body>
