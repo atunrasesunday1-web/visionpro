@@ -34,18 +34,19 @@
         .top-nav { position: fixed; top: 0; width: 100%; height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 2000; }
         .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 6px; width: 25px; }
         .menu-btn span { height: 2px; background: var(--text); width: 100%; border-radius: 10px; }
-        .tab-bar { display: flex; gap: 15px; background: var(--card); padding: 8px 18px; border-radius: 50px; border: 1px solid var(--border); }
-        .tab { font-size: 11px; font-weight: 800; opacity: 0.4; cursor: pointer; }
+        
+        .tab-bar { display: flex; gap: 15px; background: var(--card); padding: 8px 25px; border-radius: 50px; border: 1px solid var(--border); }
+        .tab { font-size: 11px; font-weight: 800; opacity: 0.4; cursor: pointer; letter-spacing: 1px; }
         .tab.active { opacity: 1; color: var(--accent); }
 
-        /* STAGE */
-        .stage { display: flex; width: 300vw; height: 100%; transition: 0.5s cubic-bezier(0.2, 0, 0, 1); }
+        /* STAGE (Reduced to 200vw for 2 rooms) */
+        .stage { display: flex; width: 200vw; height: 100%; transition: 0.5s cubic-bezier(0.2, 0, 0, 1); }
         .room { width: 100vw; height: 100%; padding: 90px 20px 20px; display: flex; flex-direction: column; }
         
         .display { flex: 0.3; display: flex; align-items: flex-end; justify-content: flex-end; padding-bottom: 20px; }
         .val { font-size: 65px; font-weight: 200; color: var(--accent); letter-spacing: -2px; }
 
-        /* MASTER GRID - LOCKED */
+        /* GRID SYSTEM */
         .grid { 
             display: grid; 
             grid-template-columns: repeat(4, 1fr); 
@@ -58,7 +59,7 @@
         button { 
             height: 65px; border-radius: 18px; border: 1px solid var(--border); 
             background: var(--btn-num); color: var(--btn-text); 
-            font-size: 22px; font-weight: 500; cursor: pointer;
+            font-size: 22px; font-weight: 500; cursor: pointer; transition: 0.1s;
         }
         button:active { transform: scale(0.95); background: var(--accent); }
         
@@ -66,7 +67,6 @@
         .fn { background: #a5a5a5; color: #000; font-size: 16px; font-weight: 700; border: none; }
         .sci { color: var(--accent); font-size: 14px; font-weight: 800; }
 
-        /* BOXES */
         .box { background: var(--card); border-radius: 20px; padding: 25px; border: 1px solid var(--border); margin-bottom: 20px; text-align: center; }
         .box h2 { font-size: 32px; color: var(--accent); margin: 5px 0; }
     </style>
@@ -78,9 +78,9 @@
     <div id="sidebar">
         <h2 style="font-weight: 800; margin-bottom: 30px;">Vision Elite</h2>
         <div style="margin-bottom: 35px;">
-            <p style="font-size: 11px; font-weight: 800; color: var(--accent); margin-bottom: 12px; letter-spacing: 1px;">MARKET NEWS</p>
+            <p style="font-size: 11px; font-weight: 800; color: var(--accent); margin-bottom: 12px; letter-spacing: 1px;">LIVE UPDATES</p>
             <div style="background: var(--card); padding: 15px; border-radius: 12px; font-size: 13px; line-height: 1.4; border: 1px solid var(--border);">
-                <b>Crypto:</b> BTC steady at $87,420. Market expects high volatility as 2026 approaches.
+                <b>Markets:</b> Global trade volume steady. EUR/USD testing new support levels for 2026.
             </div>
         </div>
         <div style="margin-bottom: 35px;">
@@ -99,7 +99,6 @@
         <div class="tab-bar">
             <div class="tab active" onclick="move(0)">CALC</div>
             <div class="tab" onclick="move(1)">TRADE</div>
-            <div class="tab" onclick="move(2)">CRYPTO</div>
         </div>
         <div style="width: 25px"></div>
     </nav>
@@ -134,8 +133,8 @@
         </div>
 
         <div class="room">
-            <div class="box"><p>USD</p><h2 id="t-in">0</h2></div>
-            <div class="box"><p>EUR</p><h2 id="t-out">0.00</h2></div>
+            <div class="box"><p>USD Amount</p><h2 id="t-in">0</h2></div>
+            <div class="box"><p>EUR Result</p><h2 id="t-out">0.00</h2></div>
             <div class="grid">
                 <button onclick="tIn('7')">7</button><button onclick="tIn('8')">8</button><button onclick="tIn('9')">9</button>
                 <button onclick="tIn('4')">4</button><button onclick="tIn('5')">5</button><button onclick="tIn('6')">6</button>
@@ -143,21 +142,10 @@
                 <button class="fn" onclick="tClr()">AC</button><button onclick="tIn('0')">0</button><button class="fn" onclick="tBack()">⌫</button>
             </div>
         </div>
-
-        <div class="room">
-            <div class="box"><p>BTC Units</p><h2 id="c-in">0</h2></div>
-            <div class="box"><p>USD Value</p><h2 id="c-out">$0.00</h2></div>
-            <div class="grid">
-                <button onclick="cIn('7')">7</button><button onclick="cIn('8')">8</button><button onclick="cIn('9')">9</button>
-                <button onclick="cIn('4')">4</button><button onclick="cIn('5')">5</button><button onclick="cIn('6')">6</button>
-                <button onclick="cIn('1')">1</button><button onclick="cIn('2')">2</button><button onclick="cIn('3')">3</button>
-                <button class="fn" onclick="cClr()">AC</button><button onclick="cIn('0')">0</button><button class="fn" onclick="cBack()">⌫</button>
-            </div>
-        </div>
     </div>
 
     <script>
-        let d = "", td = "", cd = "", hist = [];
+        let d = "", td = "", hist = [];
 
         function toggleSide() {
             const s = document.getElementById('sidebar');
@@ -194,18 +182,14 @@
             d = n.toFixed(2).toString(); document.getElementById('disp').innerText = d;
         }
         function addHist(e) {
-            hist.unshift(e); if(hist.length > 4) hist.pop();
+            hist.unshift(e); if(hist.length > 5) hist.pop();
             document.getElementById('hist-list').innerHTML = hist.map(h => `<div style="padding:4px 0; border-bottom:1px solid var(--border)">${h}</div>`).join('');
         }
 
-        // PORTALS
+        // TRADE
         function tIn(v) { td += v; document.getElementById('t-in').innerText = td; document.getElementById('t-out').innerText = (parseFloat(td)*0.94).toFixed(2); }
         function tClr() { td = ""; document.getElementById('t-in').innerText = "0"; document.getElementById('t-out').innerText = "0.00"; }
         function tBack() { td = td.slice(0,-1); document.getElementById('t-in').innerText = td || "0"; }
-
-        function cIn(v) { cd += v; document.getElementById('c-in').innerText = cd; document.getElementById('c-out').innerText = "$" + (parseFloat(cd)*87420).toLocaleString(); }
-        function cClr() { cd = ""; document.getElementById('c-in').innerText = "0"; document.getElementById('c-out').innerText = "$0.00"; }
-        function cBack() { cd = cd.slice(0,-1); document.getElementById('c-in').innerText = cd || "0"; }
     </script>
 </body>
 </html>
