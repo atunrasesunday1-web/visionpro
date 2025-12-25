@@ -3,135 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="icon" type="image/png" href="logo.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-    <title>Vision Core Max</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
-    
+    <title>Vision Core Neon</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600;900&display=swap" rel="stylesheet">
     <style>
         :root { 
             --accent: #00d4ff; --bg: #000; --text: #fff;
-            --btn-num: #333; --btn-fn: #a5a5a5; --btn-op: #ff9f0a;
+            --glow: 0 0 15px rgba(0, 212, 255, 0.7);
+            --btn-num: rgba(255,255,255,0.08);
+            --btn-op: #ff9f0a;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; }
-        body { margin: 0; background: var(--bg); color: var(--text); overflow: hidden; height: 100dvh; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text); overflow: hidden; height: 100dvh; }
 
-        /* THE CUSTOM BREATHING LOGO */
-        .logo-container {
-            width: 38px; height: 38px; position: relative;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .logo-main {
-            width: 100%; height: 100%; object-fit: contain; z-index: 2;
-            /* This filter adds a glow that matches the shape of YOUR logo png */
-            filter: drop-shadow(0 0 8px var(--accent));
-            animation: logo-breath 4s infinite ease-in-out;
-        }
-        .logo-aura {
-            position: absolute; width: 60%; height: 60%;
-            background: var(--accent); filter: blur(20px);
-            border-radius: 50%; opacity: 0; z-index: 1;
-            animation: aura-pulse 4s infinite ease-in-out;
-        }
-
-        @keyframes logo-breath {
-            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px var(--accent)); }
-            50% { transform: scale(1.15); filter: drop-shadow(0 0 15px var(--accent)); }
-        }
-        @keyframes aura-pulse {
-            0%, 100% { opacity: 0.2; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(2.5); }
-        }
-
-        /* NAVIGATION & STAGE */
+        /* HEADER */
         .top-nav { position: fixed; top: 45px; width: 100%; padding: 0 25px; display: flex; justify-content: space-between; z-index: 1000; align-items: center; }
+        .logo-img { width: 32px; height: 32px; object-fit: contain; filter: drop-shadow(var(--glow)); }
         .nav-link { font-size: 11px; font-weight: 900; opacity: 0.4; letter-spacing: 2px; cursor: pointer; transition: 0.3s; }
-        .nav-link.active { opacity: 1; color: var(--accent); }
+        .nav-link.active { opacity: 1; color: var(--accent); text-shadow: var(--glow); }
 
-        .stage { display: flex; width: 300vw; height: 100%; transition: 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
-        .room { width: 100vw; height: 100%; padding: 110px 20px 30px; display: flex; flex-direction: column; flex-shrink: 0; }
+        /* THE STAGE */
+        .stage { display: flex; width: 300vw; height: 100%; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .room { width: 100vw; height: 100%; padding: 110px 20px 40px; display: flex; flex-direction: column; flex-shrink: 0; }
 
-        /* IPHONE SCIENTIFIC GRID */
+        /* NEON DISPLAY */
         .display { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; text-align: right; padding: 20px; }
-        .val { font-size: clamp(54px, 11vw, 90px); font-weight: 300; letter-spacing: -4px; color: #fff; }
-        .sub { color: var(--accent); font-size: 10px; font-weight: 900; letter-spacing: 2px; margin-bottom: 5px; }
+        .val { font-size: clamp(50px, 12vw, 90px); font-weight: 300; letter-spacing: -3px; color: var(--accent); text-shadow: var(--glow); }
+        .sub { color: var(--accent); font-size: 10px; font-weight: 900; letter-spacing: 2px; margin-bottom: 5px; opacity: 0.6; }
 
+        /* GRID SYSTEM */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; max-width: 480px; margin: 0 auto; }
         
-        @media (min-width: 500px) or (orientation: landscape) {
-            .grid { grid-template-columns: repeat(10, 1fr); max-width: 1000px; gap: 8px; }
-            .sci-only { display: flex !important; align-items: center; justify-content: center; }
-            button { height: 50px !important; font-size: 16px !important; }
+        /* IPHONE SCIENTIFIC ACCURACY (Desktop/Landscape) */
+        @media (min-width: 600px) or (orientation: landscape) {
+            .grid { grid-template-columns: repeat(10, 1fr); max-width: 950px; gap: 8px; }
+            .sci { display: flex !important; align-items: center; justify-content: center; }
+            button { height: 50px !important; font-size: 14px !important; border-radius: 12px !important; }
+            .room { padding-top: 80px; }
         }
-        .sci-only { display: none; }
+        .sci { display: none; }
 
-        button { height: 75px; border-radius: 50px; border: none; color: #fff; font-size: 26px; font-weight: 500; cursor: pointer; transition: 0.1s; display: flex; align-items: center; justify-content: center; }
-        .btn-num { background: var(--btn-num); }
-        .btn-fn { background: var(--btn-fn); color: #000; font-size: 20px; }
-        .btn-op { background: var(--btn-op); font-size: 32px; }
-        .btn-zero { grid-column: span 2; justify-content: flex-start; padding-left: 35px; }
-        button:active { filter: brightness(1.5); transform: scale(0.94); }
+        /* NEON BUTTONS */
+        button { height: 75px; border-radius: 20px; border: 1px solid rgba(0, 212, 255, 0.1); color: #fff; font-size: 26px; font-weight: 500; cursor: pointer; background: var(--btn-num); transition: 0.2s; }
+        button:active { background: var(--accent); color: #000; box-shadow: var(--glow); transform: scale(0.95); }
+        .btn-fn { color: var(--accent); font-size: 18px; font-weight: 900; }
+        .btn-op { background: var(--btn-op); color: white; border: none; }
+        .btn-zero { grid-column: span 2; text-align: left; padding-left: 35px; }
+        
+        /* Glow for digits */
+        .digit { color: var(--accent); text-shadow: 0 0 10px rgba(0, 212, 255, 0.3); }
     </style>
 </head>
 <body>
 
     <div class="top-nav">
-        <div class="logo-container">
-            <div class="logo-aura"></div>
-            <img src="logo.png" class="logo-main" id="app-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/825/825590.png'">
-        </div>
-        
+        <img src="logo.png" class="logo-img" onerror="this.style.opacity='0.5'">
         <div style="display: flex; gap: 20px;">
             <span class="nav-link active" onclick="move(0)">CALC</span>
             <span class="nav-link" onclick="move(1)">TRADE</span>
             <span class="nav-link" onclick="move(2)">CRYP</span>
         </div>
-        <div style="width: 38px;"></div>
+        <div style="width: 32px;"></div>
     </div>
 
     <div class="stage" id="stage">
         <div class="room">
             <div class="display">
-                <div class="sub">VISION CORE SYSTEM</div>
+                <div class="sub">NEON CORE SCIENTIFIC</div>
                 <div class="val" id="c-main">0</div>
             </div>
             <div class="grid">
-                <button class="btn-num sci-only" onclick="cIn('(')">(</button><button class="btn-num sci-only" onclick="cIn(')')">)</button>
-                <button class="btn-num sci-only">mc</button><button class="btn-num sci-only">m+</button>
-                <button class="btn-num sci-only">m-</button><button class="btn-num sci-only">mr</button>
-                <button class="btn-fn" onclick="cClr()">AC</button><button class="btn-fn" onclick="cSci('pm')">⁺/₋</button>
-                <button class="btn-fn" onclick="cSci('pct')">%</button><button class="btn-op" onclick="cIn('/')">÷</button>
-                <button class="btn-num sci-only" onclick="cSci('sq')">x²</button><button class="btn-num sci-only" onclick="cSci('cu')">x³</button>
-                <button class="btn-num sci-only" onclick="cIn('**')">xʸ</button><button class="btn-num sci-only" onclick="cSci('ex')">eˣ</button>
-                <button class="btn-num sci-only">10ˣ</button><button class="btn-num sci-only">ln</button>
-                <button class="btn-num" onclick="cIn('7')">7</button><button class="btn-num" onclick="cIn('8')">8</button>
-                <button class="btn-num" onclick="cIn('9')">9</button><button class="btn-op" onclick="cIn('*')">×</button>
-                <button class="btn-num sci-only">1/x</button><button class="btn-num sci-only" onclick="cSci('sqrt')">√</button>
-                <button class="btn-num sci-only">³√</button><button class="btn-num sci-only">ʸ√</button>
-                <button class="btn-num sci-only">log</button><button class="btn-num sci-only">x!</button>
-                <button class="btn-num" onclick="cIn('4')">4</button><button class="btn-num" onclick="cIn('5')">5</button>
-                <button class="btn-num" onclick="cIn('6')">6</button><button class="btn-op" onclick="cIn('-')">−</button>
-                <button class="btn-num sci-only">sin</button><button class="btn-num sci-only">cos</button>
-                <button class="btn-num sci-only">tan</button><button class="btn-num sci-only">e</button>
-                <button class="btn-num sci-only">EE</button><button class="btn-num sci-only">Rad</button>
-                <button class="btn-num" onclick="cIn('1')">1</button><button class="btn-num" onclick="cIn('2')">2</button>
-                <button class="btn-num" onclick="cIn('3')">3</button><button class="btn-op" onclick="cIn('+')">+</button>
-                <button class="btn-num sci-only">sinh</button><button class="btn-num sci-only">cosh</button>
-                <button class="btn-num sci-only">tanh</button><button class="btn-num sci-only">π</button>
-                <button class="btn-num sci-only">Rand</button><button class="btn-num sci-only">Inv</button>
-                <button class="btn-num btn-zero" onclick="cIn('0')">0</button>
-                <button class="btn-num" onclick="cIn('.')">.</button>
+                <button class="sci btn-fn">(</button><button class="sci btn-fn">)</button>
+                <button class="sci btn-fn">mc</button><button class="sci btn-fn">m+</button>
+                <button class="sci btn-fn">m-</button><button class="sci btn-fn">mr</button>
+                <button class="btn-fn" onclick="cClr()">AC</button>
+                <button class="btn-fn" onclick="cSci('pm')">⁺/₋</button>
+                <button class="btn-fn" onclick="cSci('pct')">%</button>
+                <button class="btn-op" onclick="cIn('/')">÷</button>
+                
+                <button class="sci btn-fn">2nd</button>
+                <button class="sci btn-fn" onclick="cSci('sq')">x²</button>
+                <button class="sci btn-fn" onclick="cSci('cu')">x³</button>
+                <button class="sci btn-fn" onclick="cIn('**')">xʸ</button>
+                <button class="sci btn-fn" onclick="cSci('ex')">eˣ</button>
+                <button class="sci btn-fn" onclick="cSci('10x')">10ˣ</button>
+                <button class="digit" onclick="cIn('7')">7</button>
+                <button class="digit" onclick="cIn('8')">8</button>
+                <button class="digit" onclick="cIn('9')">9</button>
+                <button class="btn-op" onclick="cIn('*')">×</button>
+
+                <button class="sci btn-fn">1/x</button>
+                <button class="sci btn-fn" onclick="cSci('sqrt')">²√</button>
+                <button class="sci btn-fn">³√</button><button class="sci btn-fn">ʸ√</button>
+                <button class="sci btn-fn" onclick="cSci('ln')">ln</button>
+                <button class="sci btn-fn">log</button>
+                <button class="digit" onclick="cIn('4')">4</button>
+                <button class="digit" onclick="cIn('5')">5</button>
+                <button class="digit" onclick="cIn('6')">6</button>
+                <button class="btn-op" onclick="cIn('-')">−</button>
+
+                <button class="sci btn-fn">x!</button>
+                <button class="sci btn-fn" onclick="cSci('sin')">sin</button>
+                <button class="sci btn-fn" onclick="cSci('cos')">cos</button>
+                <button class="sci btn-fn" onclick="cSci('tan')">tan</button>
+                <button class="sci btn-fn" onclick="cIn('2.718')">e</button>
+                <button class="sci btn-fn">EE</button>
+                <button class="digit" onclick="cIn('1')">1</button>
+                <button class="digit" onclick="cIn('2')">2</button>
+                <button class="digit" onclick="cIn('3')">3</button>
+                <button class="btn-op" onclick="cIn('+')">+</button>
+
+                <button class="sci btn-fn">Rad</button>
+                <button class="sci btn-fn">sinh</button>
+                <button class="sci btn-fn">cosh</button>
+                <button class="sci btn-fn">tanh</button>
+                <button class="sci btn-fn" onclick="cIn('3.141')">π</button>
+                <button class="sci btn-fn" onclick="cSci('rand')">Rand</button>
+                <button class="digit btn-zero" onclick="cIn('0')">0</button>
+                <button class="digit" onclick="cIn('.')">.</button>
                 <button class="btn-op" onclick="cSolve()">=</button>
             </div>
         </div>
 
-        <div class="room"><div class="display"><div class="val">TRADE TERMINAL</div></div></div>
-        <div class="room"><div class="display"><div class="val">CORE CRYPTO</div></div></div>
+        <div class="room"><div class="display"><div class="val">TRADE</div></div></div>
+        <div class="room"><div class="display"><div class="val">CRYPTO</div></div></div>
     </div>
 
     <script>
@@ -150,6 +149,9 @@
             if(type === 'pm') cData = (n*-1).toString();
             if(type === 'sq') cData = (n*n).toString();
             if(type === 'sqrt') cData = Math.sqrt(n).toString();
+            if(type === 'sin') cData = Math.sin(n).toString();
+            if(type === 'cos') cData = Math.cos(n).toString();
+            if(type === 'tan') cData = Math.tan(n).toString();
             cUp();
         }
     </script>
