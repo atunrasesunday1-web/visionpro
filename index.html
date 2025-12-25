@@ -9,98 +9,86 @@
         :root { 
             --accent: #1d9bf0; --bg: #000; --text: #f7f9f9;
             --card: #16181c; --border: #2f3336;
-            --btn-num: #1d1d1f; --btn-text: #fff;
-            --glass: rgba(255, 255, 255, 0.03);
+            --btn-num: #333333; --btn-text: #fff;
+            --op-orange: #ff9f0a; --fn-grey: #a5a5a5;
             --insight-green: #00ff88;
         }
 
         body.light-mode {
             --bg: #ffffff; --text: #0f1419;
             --card: #f7f9f9; --border: #eff3f4;
-            --btn-num: #f2f2f7; --btn-text: #000;
-            --glass: rgba(0, 0, 0, 0.03);
+            --btn-num: #e5e5ea; --btn-text: #000;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
         
-        /* SHAPE-SHIFTER ENGINE: svh accounts for ChromeOS shelf and mobile URL bars */
-        html, body { 
-            background: var(--bg); color: var(--text); 
-            overflow: hidden; height: 100svh; 
-            transition: 0.3s ease; 
-        }
+        html, body { background: var(--bg); color: var(--text); overflow: hidden; height: 100svh; transition: 0.3s ease; }
 
-        /* SIDEBAR */
+        /* PRESERVED: SIDEBAR & NAVIGATION */
         #sidebar { 
             position: fixed; top: 0; left: -320px; width: 320px; height: 100%; 
             background: var(--bg); z-index: 3000; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            border-right: 1px solid var(--border); padding: 50px 30px;
-            display: flex; flex-direction: column;
+            border-right: 1px solid var(--border); padding: 50px 30px; display: flex; flex-direction: column;
         }
         #sidebar.open { left: 0; box-shadow: 40px 0 100px rgba(0,0,0,0.9); }
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2900; display: none; backdrop-filter: blur(8px); }
 
-        /* MARKET LINK (NO BOX - CLEAN GHOST STYLE) */
+        /* PRESERVED: FLOATING INSIGHT LOGO */
         .market-btn {
-            width: fit-content; padding: 12px 0; background: none;
-            border: none; color: var(--text);
+            width: fit-content; padding: 12px 0; background: none; border: none; color: var(--text);
             font-weight: 800; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
-            cursor: pointer; display: flex; align-items: center;
-            text-decoration: none; margin-bottom: 30px; transition: 0.3s; gap: 14px;
+            cursor: pointer; display: flex; align-items: center; text-decoration: none; margin-bottom: 30px; gap: 14px;
         }
         .insight-logo { width: 24px; height: 24px; fill: none; stroke: var(--insight-green); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-        .market-btn:hover { opacity: 0.7; }
 
-        /* THEME ICON GRID */
-        .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; }
-        .theme-btn { 
-            height: 75px; border-radius: 16px; border: 1px solid var(--border);
-            background: var(--glass); cursor: pointer; display: flex; 
-            flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-            transition: 0.3s ease;
-        }
-        .theme-btn span { font-size: 9px; font-weight: 800; letter-spacing: 1px; color: var(--text); opacity: 0.5; }
-        .theme-btn svg { width: 22px; height: 22px; fill: var(--text); opacity: 0.5; }
-        .theme-btn.active { border-color: var(--accent); background: rgba(29, 155, 240, 0.1); }
-        .theme-btn.active svg, .theme-btn.active span { opacity: 1; fill: var(--accent); color: var(--accent); }
-
-        /* STAGGERED MENU ICON */
-        .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 6px; width: 30px; z-index: 3001; }
-        .menu-btn span { height: 2px; background: var(--text); border-radius: 10px; transition: 0.3s; }
-        .line-1 { width: 100%; }
-        .line-2 { width: 60%; }
-        .line-3 { width: 85%; }
-
-        /* NAVIGATION */
         .top-nav { position: fixed; top: 0; width: 100%; height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; z-index: 2000; }
         .tab-bar { display: flex; gap: 20px; background: var(--card); padding: 10px 25px; border-radius: 100px; border: 1px solid var(--border); }
-        .tab { font-size: 10px; font-weight: 800; opacity: 0.3; cursor: pointer; letter-spacing: 2px; transition: 0.3s; }
-        .tab.active { opacity: 1; color: var(--accent); text-shadow: 0 0 10px rgba(29, 155, 240, 0.4); }
+        .tab { font-size: 10px; font-weight: 800; opacity: 0.3; cursor: pointer; letter-spacing: 2px; }
+        .tab.active { opacity: 1; color: var(--accent); }
 
-        /* ROOMS & STAGE */
+        /* ROOMS & GRID */
         .stage { display: flex; width: 200vw; height: 100%; transition: 0.6s cubic-bezier(0.2, 0, 0, 1); }
-        .room { width: 100vw; height: 100%; padding: 100px 25px 25px; display: flex; flex-direction: column; max-width: 480px; margin: 0 auto; }
+        .room { width: 100vw; height: 100%; padding: 100px 25px 25px; display: flex; flex-direction: column; max-width: 500px; margin: 0 auto; }
         
-        .display-container { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; padding-bottom: 20px; position: relative; }
-        .copy-trigger { 
-            position: absolute; top: 0; right: 0; background: var(--accent); color: #fff; 
-            padding: 6px 14px; border-radius: 8px; font-size: 10px; font-weight: 800;
-            cursor: pointer; opacity: 0; pointer-events: none; transition: 0.3s;
+        .display-container { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; padding-bottom: 20px; }
+        .val { font-size: clamp(45px, 9svh, 85px); font-weight: 200; color: var(--accent); letter-spacing: -3px; text-align: right; width: 100%; }
+
+        /* SMART ORIENTATION GRIDS */
+        .grid { display: grid; gap: 12px; width: 100%; }
+        .grid-portrait { grid-template-columns: repeat(4, 1fr); display: grid; }
+        .grid-landscape { display: none; grid-template-columns: repeat(10, 1fr); }
+
+        @media (orientation: landscape) {
+            .grid-portrait { display: none; }
+            .grid-landscape { display: grid; }
+            .room { max-width: 95%; padding-top: 60px; }
+            .val { font-size: 8svh; padding-bottom: 5px; }
+            .top-nav { height: 50px; }
         }
-        .copy-trigger.visible { opacity: 1; pointer-events: auto; }
-        .val { font-size: clamp(40px, 8.5svh, 75px); font-weight: 200; color: var(--accent); letter-spacing: -3px; text-align: right; width: 100%; }
 
-        /* CALCULATOR GRID (Dynamic Height Safety) */
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; grid-auto-rows: minmax(50px, 7.5svh); }
-        button { border-radius: 20px; border: 1px solid var(--border); background: var(--btn-num); color: var(--btn-text); font-size: clamp(18px, 2.4svh, 24px); cursor: pointer; transition: 0.2s; }
-        button:active { transform: scale(0.9); background: var(--accent); color: white; }
-        .op { background: #ff9f0a; color: #fff; border: none; font-size: 1.4em; }
-        .fn { background: #a5a5a5; color: #000; font-size: 0.7em; font-weight: 800; border: none; }
-        .sci { color: var(--accent); font-size: 0.6em; font-weight: 800; }
+        button { 
+            height: clamp(55px, 7.5svh, 85px); border-radius: 100px; border: none; 
+            background: var(--btn-num); color: var(--btn-text); 
+            font-size: clamp(18px, 2.5svh, 26px); cursor: pointer; transition: 0.2s; 
+        }
+        button:active { filter: brightness(1.6); transform: scale(0.95); }
+        .op { background: var(--op-orange); color: white; }
+        .fn { background: var(--fn-grey); color: black; font-weight: 600; }
+        .sci { background: #212121; font-size: 0.6em; font-weight: 800; color: var(--accent); border: 1px solid var(--border); }
 
-        .box { background: var(--card); border-radius: 24px; padding: 25px; border: 1px solid var(--border); margin-bottom: 12px; text-align: center; position: relative; }
+        /* VOICE INTERFACE */
+        .voice-btn {
+            position: fixed; bottom: 30px; right: 30px; width: 55px; height: 55px;
+            background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 4000; transition: 0.3s;
+        }
+        .voice-btn.listening { background: var(--insight-green); box-shadow: 0 0 25px var(--insight-green); animation: pulse 1.2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+        /* TRADE CARDS */
+        .box { background: var(--card); border-radius: 24px; padding: 25px; border: 1px solid var(--border); margin-bottom: 12px; text-align: center; }
         .box p { font-size: 10px; opacity: 0.4; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
-        .box h2 { font-size: clamp(26px, 4.5svh, 38px); color: var(--accent); font-weight: 300; }
+        .box h2 { font-size: 38px; color: var(--accent); font-weight: 300; }
     </style>
 </head>
 <body class="dark-mode">
@@ -108,8 +96,7 @@
     <div class="overlay" id="overlay" onclick="toggleSide()"></div>
     
     <div id="sidebar">
-        <h2 style="font-weight: 800; font-size: 24px; margin-bottom: 40px; letter-spacing: -1px;">Vision Elite</h2>
-        
+        <h2 style="font-weight: 800; font-size: 24px; margin-bottom: 40px;">Vision Elite</h2>
         <p style="font-size: 10px; font-weight: 800; color: var(--accent); letter-spacing: 2px; margin-bottom: 10px;">TERMINAL</p>
         <a href="https://finance.yahoo.com/currencies" target="_blank" class="market-btn">
             <svg class="insight-logo" viewBox="0 0 24 24">
@@ -117,27 +104,16 @@
             </svg>
             Live Market Feed
         </a>
-        
-        <p style="font-size: 10px; font-weight: 800; color: var(--accent); letter-spacing: 2px; margin-bottom: 15px;">THEME</p>
-        <div class="theme-grid">
-            <div class="theme-btn active" id="btn-dark" onclick="setTheme('dark')">
-                <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
-                <span>DARK</span>
-            </div>
-            <div class="theme-btn" id="btn-light" onclick="setTheme('light')">
-                <svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/></svg>
-                <span>LIGHT</span>
-            </div>
-        </div>
+        <div onclick="setTheme('dark')" style="margin-bottom: 15px; cursor:pointer; font-weight: 800; font-size: 12px;">DARK THEME</div>
+        <div onclick="setTheme('light')" style="cursor:pointer; font-weight: 800; font-size: 12px;">LIGHT THEME</div>
+    </div>
 
-        <p style="font-size: 10px; font-weight: 800; color: var(--accent); letter-spacing: 2px; margin-bottom: 15px;">SESSION HISTORY</p>
-        <div id="hist-list" style="font-size: 12px; opacity: 0.4; line-height: 2;">No activity.</div>
+    <div class="voice-btn" id="v-btn" onclick="runVoice()">
+        <svg width="22" height="22" fill="white" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
     </div>
 
     <nav class="top-nav">
-        <div class="menu-btn" onclick="toggleSide()">
-            <span class="line-1"></span><span class="line-2"></span><span class="line-3"></span>
-        </div>
+        <div onclick="toggleSide()" style="cursor:pointer; font-weight: 800; font-size: 11px; letter-spacing: 1px;">MENU</div>
         <div class="tab-bar">
             <div class="tab active" onclick="move(0)">CALCULATOR</div>
             <div class="tab" onclick="move(1)">TRADE</div>
@@ -147,30 +123,38 @@
 
     <div class="stage" id="stage">
         <div class="room">
-            <div class="display-container">
-                <div class="copy-trigger" id="copy-calc" onclick="copyToClipboard('disp')">COPY</div>
-                <div class="val" id="disp">0</div>
-            </div>
-            <div class="grid">
-                <button class="sci" onclick="sci('sqrt')">√</button><button class="sci" onclick="inp('3.141')">π</button><button class="sci" onclick="sci('sin')">sin</button><button class="sci" onclick="sci('cos')">cos</button>
-                <button class="fn" onclick="clr()">AC</button><button class="fn" onclick="sci('pm')">+/-</button><button class="fn" onclick="sci('pct')">%</button><button class="op" onclick="inp('/')">÷</button>
+            <div class="display-container"><div class="val" id="disp">0</div></div>
+            
+            <div class="grid grid-portrait">
+                <button class="fn" onclick="clr()">AC</button><button class="fn" onclick="sciOp('pm')">+/-</button><button class="fn" onclick="sciOp('pct')">%</button><button class="op" onclick="inp('/')">÷</button>
                 <button onclick="inp('7')">7</button><button onclick="inp('8')">8</button><button onclick="inp('9')">9</button><button class="op" onclick="inp('*')">×</button>
                 <button onclick="inp('4')">4</button><button onclick="inp('5')">5</button><button onclick="inp('6')">6</button><button class="op" onclick="inp('-')">−</button>
                 <button onclick="inp('1')">1</button><button onclick="inp('2')">2</button><button onclick="inp('3')">3</button><button class="op" onclick="inp('+')">+</button>
-                <button style="grid-column: span 2; border-radius: 40px; text-align: left; padding-left: 30px;" onclick="inp('0')">0</button><button onclick="inp('.')">.</button><button class="op" onclick="solve()">=</button>
+                <button style="grid-column: span 2; text-align: left; padding-left: 30px;" onclick="inp('0')">0</button><button onclick="inp('.')">.</button><button class="op" onclick="solve()">=</button>
+            </div>
+
+            <div class="grid grid-landscape">
+                <button class="sci" onclick="inp('(')">(</button><button class="sci" onclick="inp(')')">)</button><button class="sci">mc</button><button class="sci">m+</button><button class="sci">m-</button><button class="sci">mr</button>
+                <button class="fn" onclick="clr()">AC</button><button class="fn" onclick="sciOp('pm')">+/-</button><button class="fn" onclick="sciOp('pct')">%</button><button class="op" onclick="inp('/')">÷</button>
+                
+                <button class="sci">2nd</button><button class="sci" onclick="sciOp('x2')">x²</button><button class="sci" onclick="sciOp('x3')">x³</button><button class="sci" onclick="sciOp('xy')">xʸ</button><button class="sci">eˣ</button><button class="sci">10ˣ</button>
+                <button onclick="inp('7')">7</button><button onclick="inp('8')">8</button><button onclick="inp('9')">9</button><button class="op" onclick="inp('*')">×</button>
+                
+                <button class="sci">1/x</button><button class="sci" onclick="sciOp('sqrt')">√</button><button class="sci">³√</button><button class="sci">ʸ√x</button><button class="sci">ln</button><button class="sci">log₁₀</button>
+                <button onclick="inp('4')">4</button><button onclick="inp('5')">5</button><button onclick="inp('6')">6</button><button class="op" onclick="inp('-')">−</button>
+                
+                <button class="sci">x!</button><button class="sci" onclick="sciOp('sin')">sin</button><button class="sci" onclick="sciOp('cos')">cos</button><button class="sci" onclick="sciOp('tan')">tan</button><button class="sci" onclick="inp('2.718')">e</button><button class="sci">EE</button>
+                <button onclick="inp('1')">1</button><button onclick="inp('2')">2</button><button onclick="inp('3')">3</button><button class="op" onclick="inp('+')">+</button>
+                
+                <button class="sci">Rad</button><button class="sci">sinh</button><button class="sci">cosh</button><button class="sci">tanh</button><button class="sci" onclick="inp('3.1415')">π</button><button class="sci">Rand</button>
+                <button style="grid-column: span 2; text-align: left; padding-left: 30px;" onclick="inp('0')">0</button><button onclick="inp('.')">.</button><button class="op" onclick="solve()">=</button>
             </div>
         </div>
 
         <div class="room">
-            <div class="box">
-                <div class="copy-trigger" id="copy-tin" onclick="copyToClipboard('t-in')" style="top: 15px; right: 15px;">COPY</div>
-                <p>USD Deposit</p><h2 id="t-in">0</h2>
-            </div>
-            <div class="box">
-                <div class="copy-trigger" id="copy-tout" onclick="copyToClipboard('t-out')" style="top: 15px; right: 15px;">COPY</div>
-                <p>EUR Exchange</p><h2 id="t-out">0.00</h2>
-            </div>
-            <div class="grid">
+            <div class="box"><p>USD Deposit</p><h2 id="t-in">0</h2></div>
+            <div class="box"><p>EUR Exchange</p><h2 id="t-out">0.00</h2></div>
+            <div class="grid grid-portrait">
                 <button onclick="tIn('7')">7</button><button onclick="tIn('8')">8</button><button onclick="tIn('9')">9</button>
                 <button onclick="tIn('4')">4</button><button onclick="tIn('5')">5</button><button onclick="tIn('6')">6</button>
                 <button onclick="tIn('1')">1</button><button onclick="tIn('2')">2</button><button onclick="tIn('3')">3</button>
@@ -180,69 +164,46 @@
     </div>
 
     <script>
-        let d = "", td = "", hist = [];
+        let d = "", td = "";
+        const disp = document.getElementById('disp');
 
-        function toggleSide() {
-            const s = document.getElementById('sidebar');
-            const o = document.getElementById('overlay');
-            const open = s.classList.toggle('open');
-            o.style.display = open ? 'block' : 'none';
-        }
+        function toggleSide() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').style.display = 'block'; }
+        function setTheme(m) { document.body.className = m + '-mode'; }
+        function move(i) { document.getElementById('stage').style.transform = `translateX(-${i * 100}vw)`; }
+        
+        function inp(v) { d += v; disp.innerText = d; }
+        function clr() { d = ""; disp.innerText = "0"; }
+        function solve() { try { d = eval(d.replace('×','*').replace('÷','/')).toString(); disp.innerText = d; } catch { clr(); } }
 
-        function setTheme(m) {
-            document.body.classList.toggle('light-mode', m === 'light');
-            document.getElementById('btn-dark').classList.toggle('active', m === 'dark');
-            document.getElementById('btn-light').classList.toggle('active', m === 'light');
-        }
-
-        function move(i) {
-            document.getElementById('stage').style.transform = `translateX(-${i * 100}vw)`;
-            document.querySelectorAll('.tab').forEach((t, idx) => t.classList.toggle('active', i === idx));
-        }
-
-        function copyToClipboard(id) {
-            navigator.clipboard.writeText(document.getElementById(id).innerText);
-            const btn = event.currentTarget;
-            btn.innerHTML = "SAVED";
-            setTimeout(() => { btn.innerHTML = "COPY"; }, 1500);
-        }
-
-        function inp(v) { d += v; document.getElementById('disp').innerText = d; setCopy('calc', false); }
-        function clr() { d = ""; document.getElementById('disp').innerText = "0"; setCopy('calc', false); }
-        function solve() {
-            try {
-                let res = eval(d.replace('×', '*').replace('÷', '/'));
-                addHist(d + " = " + res);
-                d = res.toString();
-                document.getElementById('disp').innerText = d;
-                setCopy('calc', true);
-            } catch { clr(); }
-        }
-        function sci(t) {
+        function sciOp(t) {
             let n = parseFloat(d || "0");
-            if(t==='sqrt') n = Math.sqrt(n); if(t==='pm') n *= -1; if(t==='pct') n /= 100;
-            if(t==='sin') n = Math.sin(n); if(t==='cos') n = Math.cos(n);
-            d = n.toFixed(2); document.getElementById('disp').innerText = d;
-            setCopy('calc', true);
-        }
-        function setCopy(type, show) {
-            const btn = document.getElementById('copy-' + type);
-            if(btn) btn.classList.toggle('visible', show);
-        }
-        function addHist(e) {
-            hist.unshift(e); if(hist.length > 5) hist.pop();
-            document.getElementById('hist-list').innerHTML = hist.map(h => `<div style="padding:5px 0; border-bottom:1px solid var(--border)">${h}</div>`).join('');
+            if(t==='pm') n*=-1; if(t==='pct') n/=100; if(t==='sqrt') n=Math.sqrt(n);
+            if(t==='sin') n=Math.sin(n); if(t==='cos') n=Math.cos(n); if(t==='tan') n=Math.tan(n);
+            if(t==='x2') n=Math.pow(n,2); if(t==='x3') n=Math.pow(n,3);
+            d = n.toString(); disp.innerText = d;
         }
 
         function tIn(v) { td += v; tUp(); }
         function tClr() { td = ""; tUp(); }
         function tBack() { td = td.slice(0,-1); tUp(); }
-        function tUp() {
-            document.getElementById('t-in').innerText = td || "0";
-            document.getElementById('t-out').innerText = (parseFloat(td||0)*0.94).toFixed(2);
-            const hasVal = td.length > 0;
-            setCopy('tin', hasVal);
-            setCopy('tout', hasVal);
+        function tUp() { document.getElementById('t-in').innerText = td || "0"; document.getElementById('t-out').innerText = (parseFloat(td||0)*0.94).toFixed(2); }
+
+        function runVoice() {
+            const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if(!Rec) return alert("Browser not supported");
+            const r = new Rec();
+            r.onstart = () => document.getElementById('v-btn').classList.add('listening');
+            r.onend = () => document.getElementById('v-btn').classList.remove('listening');
+            r.onresult = (e) => {
+                let s = e.results[0][0].transcript.toLowerCase();
+                if(s.includes("clear")) clr();
+                else if(s.includes("equals") || s.includes("solve")) solve();
+                else {
+                    s = s.replace("plus","+").replace("minus","-").replace("times","*").replace("divided by","/");
+                    d += s.replace(/[^0-9+\-*/.]/g,''); disp.innerText = d;
+                }
+            };
+            r.start();
         }
     </script>
 </body>
