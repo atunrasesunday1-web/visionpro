@@ -11,10 +11,39 @@
             --glow: 0 0 15px rgba(0, 212, 255, 0.7);
             --btn-num: rgba(255,255,255,0.08);
             --btn-op: #ff9f0a;
+            --side-bg: rgba(15, 15, 15, 0.95);
+        }
+
+        /* Light Theme Override */
+        body.light-mode {
+            --bg: #f4f7f9; --text: #1a1a1a; --btn-num: rgba(0,0,0,0.05);
+            --side-bg: rgba(255, 255, 255, 0.98);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
-        body { background: var(--bg); color: var(--text); overflow: hidden; height: 100svh; width: 100vw; }
+        body { background: var(--bg); color: var(--text); overflow: hidden; height: 100svh; width: 100vw; transition: background 0.3s; }
+
+        /* SIDEBAR */
+        #sidebar { 
+            position: fixed; top: 0; left: -300px; width: 300px; height: 100%; 
+            background: var(--side-bg); z-index: 3000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border-right: 1px solid var(--accent); padding: 60px 20px;
+            display: flex; flex-direction: column; gap: 30px; box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+        }
+        #sidebar.open { left: 0; }
+        .side-overlay { 
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+            background: rgba(0,0,0,0.6); z-index: 2900; display: none; 
+        }
+        .close-side { position: absolute; top: 20px; right: 20px; font-size: 24px; color: var(--accent); cursor: pointer; }
+
+        .side-section { display: flex; flex-direction: column; gap: 10px; }
+        .side-title { font-size: 10px; font-weight: 900; letter-spacing: 2px; color: var(--accent); opacity: 0.8; }
+        
+        /* Sidebar Content Styling */
+        .news-card { background: rgba(0, 212, 255, 0.1); padding: 12px; border-radius: 10px; border: 1px solid rgba(0,212,255,0.2); font-size: 13px; }
+        .hist-item { font-size: 14px; opacity: 0.7; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .theme-btn { padding: 10px; border: 1px solid var(--accent); border-radius: 8px; background: transparent; color: var(--text); font-size: 12px; font-weight: 900; cursor: pointer; text-align: center; }
 
         /* HEADER */
         .top-nav { position: fixed; top: 30px; width: 100%; padding: 0 25px; display: flex; justify-content: space-between; z-index: 2000; align-items: center; }
@@ -26,44 +55,62 @@
 
         /* STAGE */
         .stage { display: flex; width: 300vw; height: 100%; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-        .room { width: 100vw; height: 100%; padding: 70px 20px 0; display: flex; flex-direction: column; flex-shrink: 0; }
+        .room { width: 100vw; height: 100%; padding: 80px 20px 0; display: flex; flex-direction: column; flex-shrink: 0; }
+        .display { flex: 1; display: flex; flex-direction: column; justify-content: center; text-align: right; }
+        .val { font-size: clamp(45px, 9vw, 90px); font-weight: 200; color: var(--accent); text-shadow: var(--glow); line-height: 1; }
 
-        /* DISPLAY AREA (LABELS ERASED) */
-        .display { flex: 1; display: flex; flex-direction: column; justify-content: center; text-align: right; padding-right: 10px; }
-        .val { font-size: clamp(45px, 9vw, 90px); font-weight: 200; color: var(--accent); text-shadow: var(--glow); line-height: 1; letter-spacing: -2px; }
-
-        /* BUTTONS & GRID */
-        .grid-container { padding-bottom: 90px; } /* Safety for ChromeOS Shelf */
+        /* GRIDS & BUTTONS */
+        .grid-container { padding-bottom: 90px; }
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; max-width: 480px; margin: 0 auto; }
-        
         button { height: 60px; border-radius: 14px; border: 1px solid rgba(0,212,255,0.15); color: #fff; font-size: 20px; background: var(--btn-num); cursor: pointer; transition: 0.1s; display: flex; align-items: center; justify-content: center; }
-        button:active { background: var(--accent); color: #000; box-shadow: var(--glow); transform: scale(0.95); }
-        
-        .btn-op { background: var(--btn-op); border: none; font-size: 24px; }
+        .light-mode button { color: #1a1a1a; border-color: rgba(0,0,0,0.1); }
+        button:active { background: var(--accent); color: #000; }
+        .btn-op { background: var(--btn-op); border: none; font-size: 24px; color: #fff !important; }
         .btn-fn { color: var(--accent); font-size: 14px; font-weight: 900; }
         .digit { color: var(--accent); }
 
-        /* LANDSCAPE / SCIENTIFIC MODE */
         @media (min-width: 700px) or (orientation: landscape) {
             .calc-grid { grid-template-columns: repeat(10, 1fr); max-width: 920px; gap: 6px; }
-            button { height: 40px !important; font-size: 14px !important; border-radius: 8px; }
+            button { height: 40px !important; font-size: 14px !important; }
             .sci { display: flex !important; }
-            .display { flex: 0.8; }
         }
         .sci { display: none; }
 
-        /* PORTAL BOXES */
-        .portal-box { background: rgba(255,255,255,0.04); border-radius: 20px; padding: 18px; border: 1px solid rgba(0,212,255,0.15); margin-bottom: 20px; width: 100%; max-width: 420px; margin-left: auto; margin-right: auto; }
-        .portal-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 18px; }
+        .portal-box { background: rgba(255,255,255,0.04); border-radius: 20px; padding: 18px; border: 1px solid rgba(0,212,255,0.15); margin-bottom: 20px; width: 100%; max-width: 420px; margin: auto; }
+        .portal-row { display: flex; justify-content: space-between; padding: 8px 0; }
         .portal-numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; max-width: 340px; margin: 0 auto; }
-        .portal-numpad button { height: 55px; font-size: 22px; }
-        select { background: transparent; color: var(--accent); border: none; font-size: 15px; font-weight: 900; outline: none; cursor: pointer; }
     </style>
 </head>
 <body>
 
+    <div class="side-overlay" id="overlay" onclick="toggleSide()"></div>
+    
+    <div id="sidebar">
+        <div class="close-side" onclick="toggleSide()">×</div>
+        
+        <div class="side-section">
+            <div class="side-title">MARKET FOR CRYPTO NEWS</div>
+            <div class="news-card" id="news-box">
+                Connecting to live stream...<br>
+                <small style="opacity:0.6">Requires Internet Connection</small>
+            </div>
+        </div>
+
+        <div class="side-section">
+            <div class="side-title">CALCULATOR HISTORY</div>
+            <div id="calc-hist">
+                <div class="hist-item">No records yet</div>
+            </div>
+        </div>
+
+        <div class="side-section">
+            <div class="side-title">THEME SETTINGS</div>
+            <div class="theme-btn" onclick="toggleTheme()">SWITCH TO LIGHT/DARK</div>
+        </div>
+    </div>
+
     <nav class="top-nav">
-        <div class="menu-icon"><span></span><span></span><span></span></div>
+        <div class="menu-icon" onclick="toggleSide()"><span></span><span></span><span></span></div>
         <div class="nav-links">
             <span class="nav-link active" onclick="move(0)">CALC</span>
             <span class="nav-link" onclick="move(1)">TRADE</span>
@@ -80,17 +127,13 @@
                     <button class="sci btn-fn" onclick="cIn('(')">(</button><button class="sci btn-fn" onclick="cIn(')')">)</button>
                     <button class="sci btn-fn">mc</button><button class="sci btn-fn">m+</button><button class="sci btn-fn">m-</button><button class="sci btn-fn">mr</button>
                     <button class="btn-fn" onclick="cClr()">AC</button><button class="btn-fn" onclick="cSci('pm')">+/-</button><button class="btn-fn" onclick="cSci('pct')">%</button><button class="btn-op" onclick="cIn('/')">÷</button>
-                    
                     <button class="sci btn-fn">2nd</button><button class="sci btn-fn" onclick="cSci('sq')">x²</button><button class="sci btn-fn" onclick="cSci('cu')">x³</button><button class="sci btn-fn" onclick="cIn('**')">xʸ</button><button class="sci btn-fn" onclick="cSci('ex')">eˣ</button><button class="sci btn-fn" onclick="cSci('10x')">10ˣ</button>
                     <button class="digit" onclick="cIn('7')">7</button><button class="digit" onclick="cIn('8')">8</button><button class="digit" onclick="cIn('9')">9</button><button class="btn-op" onclick="cIn('*')">×</button>
-                    
                     <button class="sci btn-fn">1/x</button><button class="sci btn-fn" onclick="cSci('sqrt')">²√</button><button class="sci btn-fn">³√</button><button class="sci btn-fn">ʸ√</button><button class="sci btn-fn">ln</button><button class="sci btn-fn">log</button>
                     <button class="digit" onclick="cIn('4')">4</button><button class="digit" onclick="cIn('5')">5</button><button class="digit" onclick="cIn('6')">6</button><button class="btn-op" onclick="cIn('-')">−</button>
-                    
-                    <button class="sci btn-fn">x!</button><button class="sci btn-fn" onclick="cSci('sin')">sin</button><button class="sci btn-fn" onclick="cSci('cos')">cos</button><button class="sci btn-fn" onclick="cSci('tan')">tan</button><button class="sci btn-fn" onclick="cIn('2.718')">e</button><button class="sci btn-fn">EE</button>
+                    <button class="sci btn-fn">x!</button><button class="sci btn-fn" onclick="cSci('sin')">sin</button><button class="sci btn-fn" onclick="cSci('cos')">cos</button><button class="sci btn-fn" onclick="cSci('tan')">tan</button><button class="sci btn-fn" onclick="cIn('2.71')">e</button><button class="sci btn-fn">EE</button>
                     <button class="digit" onclick="cIn('1')">1</button><button class="digit" onclick="cIn('2')">2</button><button class="digit" onclick="cIn('3')">3</button><button class="btn-op" onclick="cIn('+')">+</button>
-                    
-                    <button class="sci btn-fn">Rad</button><button class="sci btn-fn">sinh</button><button class="sci btn-fn">cosh</button><button class="sci btn-fn">tanh</button><button class="sci btn-fn" onclick="cIn('3.14159')">π</button><button class="sci btn-fn">Rand</button>
+                    <button class="sci btn-fn">Rad</button><button class="sci btn-fn">sinh</button><button class="sci btn-fn">cosh</button><button class="sci btn-fn">tanh</button><button class="sci btn-fn" onclick="cIn('3.14')">π</button><button class="sci btn-fn">Rand</button>
                     <button class="digit" style="grid-column: span 2; justify-content: flex-start; padding-left: 30px;" onclick="cIn('0')">0</button><button class="digit" onclick="cIn('.')">.</button><button class="btn-op" onclick="cSolve()">=</button>
                 </div>
             </div>
@@ -101,7 +144,7 @@
             <div class="grid-container">
                 <div class="portal-box">
                     <div class="portal-row"><select id="f-c"><option>USD</option><option>EUR</option></select><div id="t-in">0</div></div>
-                    <div class="portal-row"><select id="t-c"><option>EUR</option><option>GBP</option><option>JPY</option></select><div style="color:var(--accent)" id="t-out">0.00</div></div>
+                    <div class="portal-row"><select id="t-c"><option>EUR</option><option>GBP</option></select><div style="color:var(--accent)" id="t-out">0.00</div></div>
                 </div>
                 <div class="portal-numpad">
                     <button class="digit" onclick="tIn('7')">7</button><button class="digit" onclick="tIn('8')">8</button><button class="digit" onclick="tIn('9')">9</button>
@@ -130,8 +173,20 @@
     </div>
 
     <script>
-        let cD = "", tD = "", cryD = "";
-        const rates = { USD: 1, EUR: 0.92, GBP: 0.79, JPY: 150.2, BTC: 96420, ETH: 2580 };
+        let cD = "", tD = "", cryD = "", history = [];
+        const rates = { USD: 1, EUR: 0.92, GBP: 0.79, JPY: 150, BTC: 96420, ETH: 2580 };
+
+        function toggleSide() {
+            const s = document.getElementById('sidebar');
+            const o = document.getElementById('overlay');
+            const isOpen = s.classList.contains('open');
+            s.classList.toggle('open');
+            o.style.display = isOpen ? 'none' : 'block';
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+        }
 
         function move(i) {
             document.getElementById('stage').style.transform = `translateX(-${i * 100}vw)`;
@@ -141,12 +196,23 @@
         function cIn(v) { cD += v; cUp(); }
         function cUp() { document.getElementById('c-main').innerText = cD || "0"; }
         function cClr() { cD = ""; cUp(); }
-        function cSolve() { try { cD = eval(cD.replace('×','*').replace('÷','/')).toString(); cUp(); } catch { cD = "Err"; cUp(); } }
+        function cSolve() { 
+            try { 
+                let res = eval(cD.replace('×','*').replace('÷','/'));
+                addHist(`${cD} = ${res}`);
+                cD = res.toString(); cUp(); 
+            } catch { cD = "Err"; cUp(); } 
+        }
+
+        function addHist(item) {
+            history.unshift(item);
+            if(history.length > 5) history.pop();
+            document.getElementById('calc-hist').innerHTML = history.map(h => `<div class="hist-item">${h}</div>`).join('');
+        }
+
         function cSci(t) { 
             let n = parseFloat(cD || "0"); 
-            if(t==='pct') n/=100; if(t==='pm') n*=-1; if(t==='sq') n*=n; if(t==='sqrt') n=Math.sqrt(n);
-            if(t==='sin') n=Math.sin(n); if(t==='cos') n=Math.cos(n); if(t==='tan') n=Math.tan(n);
-            if(t==='ex') n=Math.exp(n); if(t==='10x') n=Math.pow(10, n);
+            if(t==='sq') n*=n; if(t==='sqrt') n=Math.sqrt(n);
             cD = n.toFixed(2).toString(); cUp(); 
         }
 
@@ -171,11 +237,11 @@
             document.getElementById('cry-display').innerText = res.toLocaleString();
         }
 
+        // Simulating Live News Feed
+        const news = ["BTC hits new ATH!", "SEC approves Eth Staking", "Market volume up 20%", "Tech stocks rally"];
         setInterval(() => {
-            let btc = (96000 + Math.random()*200).toFixed(0);
-            document.getElementById('btc-p').innerText = "$" + btc;
-            rates.BTC = parseFloat(btc);
-        }, 3000);
+            document.getElementById('news-box').innerText = news[Math.floor(Math.random()*news.length)];
+        }, 5000);
     </script>
 </body>
 </html>
