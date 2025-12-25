@@ -58,14 +58,15 @@
         .stage { display: flex; width: 200vw; height: 100%; transition: 0.6s cubic-bezier(0.2, 0, 0, 1); }
         .room { width: 100vw; height: 100%; padding: 100px 25px 30px; display: flex; flex-direction: column; }
         
-        /* DISPLAY & COPY BUTTON */
+        /* DISPLAY & DYNAMIC COPY BUTTON */
         .display-container { flex: 0.35; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; padding-bottom: 25px; position: relative; }
         .copy-trigger { 
             position: absolute; top: 0; right: 0; background: var(--card); 
             border: 1px solid var(--border); color: var(--text); padding: 8px 12px; 
             border-radius: 10px; cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 6px;
-            transition: 0.2s;
+            transition: 0.3s ease; opacity: 0; pointer-events: none; /* Hidden by default */
         }
+        .copy-trigger.visible { opacity: 1; pointer-events: auto; }
         .copy-trigger:active { transform: scale(0.9); background: var(--accent); color: white; }
         .val { font-size: 70px; font-weight: 200; color: var(--accent); letter-spacing: -3px; }
 
@@ -125,7 +126,7 @@
     <div class="stage" id="stage">
         <div class="room">
             <div class="display-container">
-                <div class="copy-trigger" onclick="copyToClipboard('disp')">
+                <div class="copy-trigger" id="copy-calc" onclick="copyToClipboard('disp')">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                     COPY
                 </div>
@@ -143,11 +144,11 @@
 
         <div class="room">
             <div class="box">
-                <div class="copy-trigger" onclick="copyToClipboard('t-in')" style="top: 15px; right: 15px;">COPY</div>
+                <div class="copy-trigger" id="copy-tin" onclick="copyToClipboard('t-in')" style="top: 15px; right: 15px;">COPY</div>
                 <p>USD Portfolio</p><h2 id="t-in">0</h2>
             </div>
             <div class="box">
-                <div class="copy-trigger" onclick="copyToClipboard('t-out')" style="top: 15px; right: 15px;">COPY</div>
+                <div class="copy-trigger" id="copy-tout" onclick="copyToClipboard('t-out')" style="top: 15px; right: 15px;">COPY</div>
                 <p>EUR Exchange</p><h2 id="t-out">0.00</h2>
             </div>
             <div class="grid">
@@ -186,18 +187,19 @@
             const btn = event.currentTarget;
             const original = btn.innerHTML;
             btn.innerHTML = "SAVED!";
-            btn.style.borderColor = "var(--accent)";
-            setTimeout(() => { btn.innerHTML = original; btn.style.borderColor = "var(--border)"; }, 1500);
+            setTimeout(() => { btn.innerHTML = original; }, 1500);
         }
 
-        function inp(v) { d += v; document.getElementById('disp').innerText = d; }
-        function clr() { d = ""; document.getElementById('disp').innerText = "0"; }
+        // CALC
+        function inp(v) { d += v; document.getElementById('disp').innerText = d; setCopy('calc', false); }
+        function clr() { d = ""; document.getElementById('disp').innerText = "0"; setCopy('calc', false); }
         function solve() {
             try {
                 let res = eval(d.replace('×', '*').replace('÷', '/'));
                 addHist(d + " = " + res);
                 d = res.toString();
                 document.getElementById('disp').innerText = d;
+                setCopy('calc', true); // Show copy after solve
             } catch { d = ""; document.getElementById('disp').innerText = "Error"; }
         }
         function sci(t) {
@@ -205,18 +207,28 @@
             if(t==='sqrt') n = Math.sqrt(n); if(t==='pm') n *= -1; if(t==='pct') n /= 100;
             if(t==='sin') n = Math.sin(n); if(t==='cos') n = Math.cos(n);
             d = n.toFixed(2).toString(); document.getElementById('disp').innerText = d;
+            setCopy('calc', true); // Show copy after sci function
         }
+        function setCopy(type, show) {
+            const btn = document.getElementById('copy-' + type);
+            if(btn) btn.classList.toggle('visible', show);
+        }
+
         function addHist(e) {
             hist.unshift(e); if(hist.length > 5) hist.pop();
             document.getElementById('hist-list').innerHTML = hist.map(h => `<div style="padding:5px 0; border-bottom:1px solid var(--border)">${h}</div>`).join('');
         }
 
+        // TRADE
         function tIn(v) { td += v; tUp(); }
         function tClr() { td = ""; tUp(); }
         function tBack() { td = td.slice(0,-1); tUp(); }
         function tUp() {
             document.getElementById('t-in').innerText = td || "0";
             document.getElementById('t-out').innerText = (parseFloat(td||0)*0.94).toFixed(2);
+            const hasValue = td.length > 0;
+            document.getElementById('copy-tin').classList.toggle('visible', hasValue);
+            document.getElementById('copy-tout').classList.toggle('visible', hasValue);
         }
     </script>
 </body>
