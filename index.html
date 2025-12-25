@@ -20,46 +20,49 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); overflow: hidden; height: 100dvh; }
 
-        /* NEON MENU ICON */
+        /* NAVIGATION */
         .top-nav { position: fixed; top: 45px; width: 100%; padding: 0 25px; display: flex; justify-content: space-between; z-index: 1000; align-items: center; }
         .menu-icon { display: flex; flex-direction: column; gap: 4px; cursor: pointer; filter: drop-shadow(var(--glow)); }
         .menu-icon span { display: block; width: 22px; height: 2px; background: var(--accent); border-radius: 2px; }
-
         .nav-link { font-size: 11px; font-weight: 900; opacity: 0.4; letter-spacing: 2px; cursor: pointer; transition: 0.3s; }
         .nav-link.active { opacity: 1; color: var(--accent); text-shadow: var(--glow); }
 
-        /* STAGE */
+        /* STAGE SYSTEM */
         .stage { display: flex; width: 300vw; height: 100%; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-        .room { width: 100vw; height: 100%; padding: 110px 20px 40px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .room { width: 100vw; height: 100%; padding: 110px 25px 40px; display: flex; flex-direction: column; flex-shrink: 0; }
 
-        /* DISPLAY */
-        .display { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; text-align: right; padding: 20px; }
+        /* DISPLAYS */
+        .display { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; text-align: right; padding-bottom: 20px; }
         .val { font-size: clamp(50px, 12vw, 90px); font-weight: 300; letter-spacing: -3px; color: var(--accent); text-shadow: var(--glow); }
         .sub { color: var(--accent); font-size: 10px; font-weight: 900; letter-spacing: 2px; margin-bottom: 5px; opacity: 0.6; }
 
-        /* GRID SYSTEM (46 SIGNS) */
+        /* GRID SYSTEM */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; max-width: 480px; margin: 0 auto; }
-        
-        @media (min-width: 600px) or (orientation: landscape) {
-            .grid { grid-template-columns: repeat(10, 1fr); max-width: 950px; gap: 8px; }
-            .sci { display: flex !important; align-items: center; justify-content: center; }
-            button { height: 50px !important; font-size: 14px !important; border-radius: 12px !important; }
-            .room { padding-top: 80px; }
-        }
-        .sci { display: none; }
-
-        /* NEON BUTTONS */
         button { height: 75px; border-radius: 20px; border: 1px solid rgba(0, 212, 255, 0.1); color: #fff; font-size: 26px; font-weight: 500; cursor: pointer; background: var(--btn-num); transition: 0.2s; }
         button:active { background: var(--accent); color: #000; box-shadow: var(--glow); transform: scale(0.95); }
         .btn-fn { color: var(--accent); font-size: 18px; font-weight: 900; }
         .btn-op { background: var(--btn-op); color: white; border: none; }
-        .btn-zero { grid-column: span 2; text-align: left; padding-left: 35px; }
         .digit { color: var(--accent); text-shadow: 0 0 10px rgba(0, 212, 255, 0.3); }
+
+        /* TRADE INTERFACE */
+        .trade-box { background: rgba(255,255,255,0.05); border-radius: 25px; padding: 25px; border: 1px solid rgba(0,212,255,0.2); margin-top: 20px; }
+        .trade-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .trade-row:last-child { margin-bottom: 0; }
+        select { background: transparent; color: var(--accent); border: none; font-size: 18px; font-weight: 900; outline: none; cursor: pointer; }
+        input { background: transparent; color: #fff; border: none; text-align: right; font-size: 24px; font-weight: 300; width: 60%; outline: none; }
+
+        @media (orientation: landscape) {
+            .grid { grid-template-columns: repeat(10, 1fr); max-width: 950px; gap: 8px; }
+            .sci { display: flex !important; align-items: center; justify-content: center; }
+            button { height: 50px !important; font-size: 14px !important; }
+            .room { padding-top: 80px; }
+        }
+        .sci { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="top-nav">
+    <nav class="top-nav">
         <div class="menu-icon"><span></span><span></span><span></span></div>
         <div style="display: flex; gap: 20px;">
             <span class="nav-link active" onclick="move(0)">CALC</span>
@@ -67,10 +70,10 @@
             <span class="nav-link" onclick="move(2)">CRYP</span>
         </div>
         <div style="width: 22px;"></div>
-    </div>
+    </nav>
 
     <div class="stage" id="stage">
-        <div class="room">
+        <section class="room">
             <div class="display">
                 <div class="sub">VISION CORE SYSTEM</div>
                 <div class="val" id="c-main">0</div>
@@ -83,45 +86,63 @@
                 <button class="btn-fn" onclick="cSci('pm')">⁺/₋</button>
                 <button class="btn-fn" onclick="cSci('pct')">%</button>
                 <button class="btn-op" onclick="cIn('/')">÷</button>
-                
-                <button class="sci btn-fn">2nd</button>
-                <button class="sci btn-fn" onclick="cSci('sq')">x²</button>
-                <button class="sci btn-fn" onclick="cSci('cu')">x³</button>
-                <button class="sci btn-fn" onclick="cIn('**')">xʸ</button>
-                <button class="sci btn-fn" onclick="cSci('ex')">eˣ</button>
-                <button class="sci btn-fn" onclick="cSci('10x')">10ˣ</button>
+                <button class="sci btn-fn">2nd</button><button class="sci btn-fn">x²</button>
+                <button class="sci btn-fn">x³</button><button class="sci btn-fn">xʸ</button>
+                <button class="sci btn-fn">eˣ</button><button class="sci btn-fn">10ˣ</button>
                 <button class="digit" onclick="cIn('7')">7</button><button class="digit" onclick="cIn('8')">8</button><button class="digit" onclick="cIn('9')">9</button>
                 <button class="btn-op" onclick="cIn('*')">×</button>
-
-                <button class="sci btn-fn">1/x</button><button class="sci btn-fn" onclick="cSci('sqrt')">²√</button>
+                <button class="sci btn-fn">1/x</button><button class="sci btn-fn">√</button>
                 <button class="sci btn-fn">³√</button><button class="sci btn-fn">ʸ√</button>
-                <button class="sci btn-fn" onclick="cSci('ln')">ln</button><button class="sci btn-fn">log</button>
+                <button class="sci btn-fn">ln</button><button class="sci btn-fn">log</button>
                 <button class="digit" onclick="cIn('4')">4</button><button class="digit" onclick="cIn('5')">5</button><button class="digit" onclick="cIn('6')">6</button>
                 <button class="btn-op" onclick="cIn('-')">−</button>
-
                 <button class="sci btn-fn">x!</button><button class="sci btn-fn">sin</button>
                 <button class="sci btn-fn">cos</button><button class="sci btn-fn">tan</button>
-                <button class="sci btn-fn" onclick="cIn('2.718')">e</button><button class="sci btn-fn">EE</button>
+                <button class="sci btn-fn">e</button><button class="sci btn-fn">EE</button>
                 <button class="digit" onclick="cIn('1')">1</button><button class="digit" onclick="cIn('2')">2</button><button class="digit" onclick="cIn('3')">3</button>
                 <button class="btn-op" onclick="cIn('+')">+</button>
-
                 <button class="sci btn-fn">Rad</button><button class="sci btn-fn">sinh</button>
                 <button class="sci btn-fn">cosh</button><button class="sci btn-fn">tanh</button>
-                <button class="sci btn-fn" onclick="cIn('3.141')">π</button><button class="sci btn-fn">Rand</button>
-                <button class="digit btn-zero" onclick="cIn('0')">0</button><button class="digit" onclick="cIn('.')">.</button>
+                <button class="sci btn-fn">π</button><button class="sci btn-fn">Rand</button>
+                <button class="digit" style="grid-column: span 2; text-align: left; padding-left: 35px;" onclick="cIn('0')">0</button>
+                <button class="digit" onclick="cIn('.')">.</button>
                 <button class="btn-op" onclick="cSolve()">=</button>
             </div>
-        </div>
-        <div class="room"><div class="display"><div class="val">TRADE</div></div></div>
-        <div class="room"><div class="display"><div class="val">CRYP</div></div></div>
+        </section>
+
+        <section class="room">
+            <div class="display">
+                <div class="sub">CURRENCY PORTAL</div>
+                <div class="val" id="t-result">0.00</div>
+            </div>
+            <div class="trade-box">
+                <div class="trade-row">
+                    <select id="from-cur"><option>USD</option><option>EUR</option><option>GBP</option></select>
+                    <input type="number" id="trade-in" placeholder="0.00" oninput="convert()">
+                </div>
+                <div style="height: 1px; background: rgba(0,212,255,0.2); margin: 15px 0;"></div>
+                <div class="trade-row">
+                    <select id="to-cur"><option>EUR</option><option>USD</option><option>GBP</option><option>JPY</option></select>
+                    <div style="font-size: 24px; color: var(--accent); text-shadow: var(--glow);" id="t-out">0.00</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="room">
+            <div class="display"><div class="sub">BLOCKCHAIN DATA</div><div class="val">CRYP</div></div>
+        </section>
     </div>
 
     <script>
         let cData = "";
+        const rates = { USD: 1, EUR: 0.92, GBP: 0.79, JPY: 150.5 };
+
         function move(idx) { 
             document.getElementById('stage').style.transform = `translateX(-${idx * 100}vw)`;
             document.querySelectorAll('.nav-link').forEach((l, i) => l.classList.toggle('active', i === idx));
         }
+
+        // Calc Logic
         function cIn(v) { cData += v; cUp(); }
         function cUp() { document.getElementById('c-main').innerText = cData || "0"; }
         function cClr() { cData = ""; cUp(); }
@@ -130,9 +151,18 @@
             let n = parseFloat(cData || "0");
             if(type === 'pct') cData = (n/100).toString();
             if(type === 'pm') cData = (n*-1).toString();
-            if(type === 'sq') cData = (n*n).toString();
-            if(type === 'sqrt') cData = Math.sqrt(n).toString();
             cUp();
+        }
+
+        // Trade Logic
+        function convert() {
+            const amt = document.getElementById('trade-in').value;
+            const from = document.getElementById('from-cur').value;
+            const to = document.getElementById('to-cur').value;
+            if(!amt) return;
+            const res = (amt / rates[from]) * rates[to];
+            document.getElementById('t-out').innerText = res.toFixed(2);
+            document.getElementById('t-result').innerText = res.toFixed(2);
         }
     </script>
 </body>
