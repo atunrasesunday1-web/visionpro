@@ -13,14 +13,14 @@
         :root { 
             --accent: #00d4ff; --bg: #000; --text: #fff;
             --glow: 0 0 15px rgba(0, 212, 255, 0.7);
-            --btn-num: rgba(255,255,255,0.08);
+            --btn-num: rgba(255,255,255,0.1);
             --btn-op: #ff9f0a;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); overflow: hidden; height: 100dvh; }
 
-        /* NAV & MENU */
+        /* NAV */
         .top-nav { position: fixed; top: 40px; width: 100%; padding: 0 25px; display: flex; justify-content: space-between; z-index: 1000; align-items: center; }
         .menu-icon { display: flex; flex-direction: column; gap: 4px; cursor: pointer; filter: drop-shadow(var(--glow)); }
         .menu-icon span { display: block; width: 22px; height: 2px; background: var(--accent); border-radius: 2px; }
@@ -36,31 +36,31 @@
         .val { font-size: clamp(45px, 10vw, 85px); font-weight: 200; color: var(--accent); text-shadow: var(--glow); letter-spacing: -2px; }
         .sub { color: var(--accent); font-size: 10px; font-weight: 900; letter-spacing: 2px; margin-bottom: 5px; opacity: 0.6; }
 
-        /* GRID SYSTEM */
+        /* GRIDS */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; max-width: 480px; margin: 0 auto; }
-        button { height: 70px; border-radius: 18px; border: 1px solid rgba(0, 212, 255, 0.1); color: #fff; font-size: 24px; background: var(--btn-num); cursor: pointer; transition: 0.2s; }
+        button { height: 70px; border-radius: 18px; border: 1px solid rgba(0, 212, 255, 0.2); color: #fff; font-size: 24px; background: var(--btn-num); cursor: pointer; transition: 0.1s; position: relative; overflow: hidden; }
         button:active { background: var(--accent); color: #000; box-shadow: var(--glow); transform: scale(0.95); }
         .btn-fn { color: var(--accent); font-size: 18px; font-weight: 900; }
         .btn-op { background: var(--btn-op); border: none; }
-        .digit { color: var(--accent); text-shadow: 0 0 10px rgba(0, 212, 255, 0.3); }
+        .digit { color: var(--accent); text-shadow: 0 0 8px rgba(0, 212, 255, 0.4); }
 
-        /* DESKTOP / CHROME OS SHELF ADJUSTMENT */
         @media (min-width: 800px) or (orientation: landscape) {
-            .grid { grid-template-columns: repeat(10, 1fr); max-width: 90%; gap: 10px; padding-bottom: 60px; } /* Elevated for Shelf */
+            .grid { grid-template-columns: repeat(10, 1fr); max-width: 90%; gap: 10px; padding-bottom: 70px; }
             .sci { display: flex !important; align-items: center; justify-content: center; }
-            button { height: 50px !important; font-size: 16px !important; }
+            button { height: 48px !important; font-size: 16px !important; }
             .room { padding-top: 80px; }
-            .portal-numpad { padding-bottom: 60px; }
+            .portal-numpad { padding-bottom: 70px; }
         }
         .sci { display: none; }
 
-        /* PORTALS */
-        .portal-box { background: rgba(255,255,255,0.03); border-radius: 25px; padding: 20px; border: 1px solid rgba(0,212,255,0.15); margin-bottom: 20px; }
-        .portal-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
-        .portal-val { font-size: 24px; font-weight: 200; }
-        .portal-numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; max-width: 400px; margin: 0 auto; }
-        .portal-numpad button { height: 55px; font-size: 20px; }
+        /* PORTAL SPECIALS */
+        .portal-box { background: rgba(255,255,255,0.05); border-radius: 20px; padding: 15px; border: 1px solid rgba(0,212,255,0.2); margin-bottom: 15px; }
+        .portal-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; }
+        .portal-val { font-size: 24px; font-weight: 200; letter-spacing: 1px; }
+        .portal-numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; max-width: 380px; margin: 0 auto; }
+        .portal-numpad button { height: 55px; font-size: 22px; }
         select { background: transparent; color: var(--accent); border: none; font-size: 16px; font-weight: 900; outline: none; }
+        .back-btn { color: #ff3b30; } /* Subtle red for backspace */
     </style>
 </head>
 <body>
@@ -84,30 +84,12 @@
                 <button class="sci btn-fn">m-</button><button class="sci btn-fn">mr</button>
                 <button class="btn-fn" onclick="cClr()">AC</button><button class="btn-fn" onclick="cSci('pm')">+/-</button>
                 <button class="btn-fn" onclick="cSci('pct')">%</button><button class="btn-op" onclick="cIn('/')">÷</button>
-                
-                <button class="sci btn-fn" onclick="cSci('sq')">x²</button><button class="sci btn-fn" onclick="cSci('cu')">x³</button>
-                <button class="sci btn-fn" onclick="cIn('**')">xʸ</button><button class="sci btn-fn" onclick="cSci('ex')">eˣ</button>
-                <button class="sci btn-fn" onclick="cSci('10x')">10ˣ</button>
-                <button class="digit" onclick="cIn('7')">7</button><button class="digit" onclick="cIn('8')">8</button>
-                <button class="digit" onclick="cIn('9')">9</button><button class="btn-op" onclick="cIn('*')">×</button>
-                
-                <button class="sci btn-fn">1/x</button><button class="sci btn-fn" onclick="cSci('sqrt')">²√</button>
-                <button class="sci btn-fn">³√</button><button class="sci btn-fn">ʸ√</button>
-                <button class="sci btn-fn" onclick="cSci('ln')">ln</button>
-                <button class="digit" onclick="cIn('4')">4</button><button class="digit" onclick="cIn('5')">5</button>
-                <button class="digit" onclick="cIn('6')">6</button><button class="btn-op" onclick="cIn('-')">−</button>
-                
-                <button class="sci btn-fn">x!</button><button class="sci btn-fn" onclick="cSci('sin')">sin</button>
-                <button class="sci btn-fn" onclick="cSci('cos')">cos</button><button class="sci btn-fn" onclick="cSci('tan')">tan</button>
-                <button class="sci btn-fn" onclick="cIn('2.718')">e</button>
-                <button class="digit" onclick="cIn('1')">1</button><button class="digit" onclick="cIn('2')">2</button>
-                <button class="digit" onclick="cIn('3')">3</button><button class="btn-op" onclick="cIn('+')">+</button>
-                
-                <button class="sci btn-fn">Rad</button><button class="sci btn-fn">sinh</button>
-                <button class="sci btn-fn">cosh</button><button class="sci btn-fn">tanh</button>
-                <button class="sci btn-fn" onclick="cIn('3.141')">π</button>
-                <button class="digit" style="grid-column: span 2; text-align: left; padding-left: 35px;" onclick="cIn('0')">0</button>
-                <button class="digit" onclick="cIn('.')">.</button><button class="btn-op" onclick="cSolve()">=</button>
+                <button class="digit" onclick="cIn('7')">7</button><button class="digit" onclick="cIn('8')">8</button><button class="digit" onclick="cIn('9')">9</button><button class="btn-op" onclick="cIn('*')">×</button>
+                <button class="digit" onclick="cIn('4')">4</button><button class="digit" onclick="cIn('5')">5</button><button class="digit" onclick="cIn('6')">6</button><button class="btn-op" onclick="cIn('-')">−</button>
+                <button class="digit" onclick="cIn('1')">1</button><button class="digit" onclick="cIn('2')">2</button><button class="digit" onclick="cIn('3')">3</button><button class="btn-op" onclick="cIn('+')">+</button>
+                <button class="digit" style="grid-column: span 2; text-align: left; padding-left: 35px;" onclick="cIn('0')">0</button><button class="digit" onclick="cIn('.')">.</button><button class="btn-op" onclick="cSolve()">=</button>
+                <button class="sci btn-fn" onclick="cSci('sq')">x²</button><button class="sci btn-fn" onclick="cSci('sqrt')">√</button>
+                <button class="sci btn-fn">sin</button><button class="sci btn-fn">cos</button><button class="sci btn-fn">tan</button>
             </div>
         </section>
 
@@ -115,20 +97,19 @@
             <div class="display"><div class="sub">CURRENCY PORTAL</div><div class="val" id="t-display">0.00</div></div>
             <div class="portal-box">
                 <div class="portal-row"><select id="f-c"><option>USD</option><option>EUR</option></select><div class="portal-val" id="t-in">0</div></div>
-                <div class="portal-row"><select id="t-c"><option>EUR</option><option>GBP</option><option>JPY</option></select><div class="portal-val" style="color:var(--accent);text-shadow:var(--glow)" id="t-out">0.00</div></div>
+                <div class="portal-row"><select id="t-c"><option>EUR</option><option>GBP</option></select><div class="portal-val" style="color:var(--accent);text-shadow:var(--glow)" id="t-out">0.00</div></div>
             </div>
             <div class="portal-numpad">
                 <button class="digit" onclick="tIn('7')">7</button><button class="digit" onclick="tIn('8')">8</button><button class="digit" onclick="tIn('9')">9</button>
                 <button class="digit" onclick="tIn('4')">4</button><button class="digit" onclick="tIn('5')">5</button><button class="digit" onclick="tIn('6')">6</button>
                 <button class="digit" onclick="tIn('1')">1</button><button class="digit" onclick="tIn('2')">2</button><button class="digit" onclick="tIn('3')">3</button>
-                <button class="btn-fn" onclick="tClr()">C</button><button class="digit" onclick="tIn('0')">0</button><button class="digit" onclick="tIn('.')">.</button>
+                <button class="btn-fn" onclick="tClr()">AC</button><button class="digit" onclick="tIn('0')">0</button><button class="btn-fn back-btn" onclick="tBack()">⌫</button>
             </div>
         </section>
 
         <section class="room">
             <div class="display"><div class="sub">BLOCKCHAIN MONITOR</div><div class="val" id="cry-display">0.00</div></div>
             <div class="portal-box">
-                <div class="portal-row" style="opacity: 0.5; font-size: 11px;"><span>ASSET</span><span>LIVE PRICE</span></div>
                 <div class="portal-row"><span>BTC</span><span style="color:var(--accent)" id="btc-p">$96,400</span></div>
                 <div class="portal-row"><span>ETH</span><span style="color:var(--accent)" id="eth-p">$2,540</span></div>
                 <div class="portal-row"><select id="cry-sel"><option>BTC</option><option>ETH</option></select><div class="portal-val" id="cry-in">0.00</div></div>
@@ -137,14 +118,14 @@
                 <button class="digit" onclick="cryIn('7')">7</button><button class="digit" onclick="cryIn('8')">8</button><button class="digit" onclick="cryIn('9')">9</button>
                 <button class="digit" onclick="cryIn('4')">4</button><button class="digit" onclick="cryIn('5')">5</button><button class="digit" onclick="cryIn('6')">6</button>
                 <button class="digit" onclick="cryIn('1')">1</button><button class="digit" onclick="cryIn('2')">2</button><button class="digit" onclick="cryIn('3')">3</button>
-                <button class="btn-fn" onclick="cryClr()">C</button><button class="digit" onclick="cryIn('0')">0</button><button class="digit" onclick="cryIn('.')">.</button>
+                <button class="btn-fn" onclick="cryClr()">AC</button><button class="digit" onclick="cryIn('0')">0</button><button class="btn-fn back-btn" onclick="cryBack()">⌫</button>
             </div>
         </section>
     </div>
 
     <script>
         let cD = "", tD = "", cryD = "";
-        const rates = { USD: 1, EUR: 0.92, GBP: 0.79, JPY: 150.2, BTC: 96000, ETH: 2500 };
+        const rates = { USD: 1, EUR: 0.92, GBP: 0.79, BTC: 96000, ETH: 2500 };
 
         function move(i) {
             document.getElementById('stage').style.transform = `translateX(-${i * 100}vw)`;
@@ -156,15 +137,12 @@
         function cUp() { document.getElementById('c-main').innerText = cD || "0"; }
         function cClr() { cD = ""; cUp(); }
         function cSolve() { try { cD = eval(cD.replace('×','*').replace('÷','/')).toString(); cUp(); } catch { cD = "Err"; cUp(); } }
-        function cSci(t) { 
-            let n = parseFloat(cD || "0"); 
-            if(t==='pct') n/=100; if(t==='pm') n*=-1; if(t==='sq') n*=n; if(t==='sqrt') n=Math.sqrt(n);
-            cD = n.toString(); cUp(); 
-        }
+        function cSci(t) { let n = parseFloat(cD || "0"); if(t==='pct') n/=100; if(t==='pm') n*=-1; cD = n.toString(); cUp(); }
 
         // TRADE
         function tIn(v) { tD += v; tUp(); }
         function tClr() { tD = ""; tUp(); }
+        function tBack() { tD = tD.slice(0, -1); tUp(); }
         function tUp() {
             let f = document.getElementById('f-c').value, t = document.getElementById('t-c').value;
             let res = (parseFloat(tD||0) / rates[f]) * rates[t];
@@ -173,9 +151,10 @@
             document.getElementById('t-display').innerText = res.toFixed(2);
         }
 
-        // CRYP
+        // CRYPTO
         function cryIn(v) { cryD += v; cryUp(); }
         function cryClr() { cryD = ""; cryUp(); }
+        function cryBack() { cryD = cryD.slice(0, -1); cryUp(); }
         function cryUp() {
             let asset = document.getElementById('cry-sel').value;
             let res = parseFloat(cryD||0) * rates[asset];
