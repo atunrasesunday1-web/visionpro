@@ -1,209 +1,194 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Vision Elite | Command Center</title>
+    <title>Vision Elite | Master</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
-            --bg: #000;
-            --text: #ffffff;
-            --accent: #1d9bf0; 
-            --premium-green: #00ff88;
-            --surface: #111111;
-            --border: #222222;
-            --low-white: rgba(255, 255, 255, 0.6);
+            --bg: #000; --surface: #111; --text: #fff; --accent: #1d9bf0;
+            --border: #222; --low-white: rgba(255, 255, 255, 0.6); --green: #00ff88;
+            --danger: #ff453a;
+        }
+        [data-theme="light"] {
+            --bg: #f5f5f7; --surface: #ffffff; --text: #1d1d1f; --accent: #007aff;
+            --border: #d2d2d7; --low-white: rgba(0, 0, 0, 0.5); --green: #1d9b40;
+            --danger: #ff3b30;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; height: 100svh; overflow: hidden; display: flex; flex-direction: column; transition: background 0.4s ease; }
+
+        /* --- SIDEBAR & MODALS --- */
+        #sidebar { position: fixed; left: -280px; top: 0; width: 280px; height: 100%; background: var(--surface); border-right: 1px solid var(--border); z-index: 1000; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); padding: 60px 24px; display: flex; flex-direction: column; gap: 32px; }
+        .sidebar-active #sidebar { transform: translateX(280px); }
+        .menu-item { display: flex; align-items: center; gap: 16px; font-size: 14px; font-weight: 600; color: var(--low-white); cursor: pointer; }
+        .menu-item:hover { color: var(--text); }
         
-        body { 
-            background: var(--bg); 
-            color: var(--text); 
-            font-family: 'Inter', sans-serif; 
-            height: 100svh; 
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
+        .sheet { position: fixed; bottom: -100%; left: 0; width: 100%; height: 80%; background: var(--surface); border-radius: 32px 32px 0 0; z-index: 2000; transition: bottom 0.5s cubic-bezier(0.16, 1, 0.3, 1); padding: 30px; overflow-y: auto; border-top: 1px solid var(--border); }
+        .sheet.active { bottom: 0; }
+        .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .sheet-title { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
 
-        /* --- SIDEBAR SYSTEM --- */
-        #sidebar {
-            position: fixed;
-            left: -280px;
-            top: 0;
-            width: 280px;
-            height: 100%;
-            background: var(--surface);
-            border-right: 1px solid var(--border);
-            z-index: 1000;
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            padding: 60px 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 32px;
-        }
-
-        .sidebar-active #sidebar {
-            transform: translateX(280px);
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--low-white);
+        /* Premium Clear Button */
+        .btn-clear {
+            background: rgba(255, 69, 58, 0.1);
+            color: var(--danger);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             cursor: pointer;
             transition: 0.2s;
         }
+        .btn-clear:active { transform: scale(0.95); background: rgba(255, 69, 58, 0.2); }
 
-        .menu-item:hover { color: var(--text); }
+        /* --- UI COMPONENTS --- */
+        header { padding: 20px; display: flex; align-items: center; justify-content: space-between; z-index: 100; }
+        .switcher-container { background: var(--surface); border: 1px solid var(--border); border-radius: 100px; padding: 4px; display: flex; }
+        .switch-btn { padding: 8px 20px; border-radius: 100px; font-size: 10px; font-weight: 800; cursor: pointer; transition: 0.3s; color: var(--low-white); text-transform: uppercase; }
+        .switch-btn.active { background: var(--accent); color: #fff; }
+
+        #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; z-index: 900; backdrop-filter: blur(8px); }
+        .overlay-active #overlay { display: block; }
+
+        .news-item { padding: 20px 0; border-bottom: 1px solid var(--border); }
+        .news-title { font-weight: 600; margin-bottom: 6px; font-size: 14px; line-height: 1.4; }
+        .news-meta { font-size: 11px; color: var(--low-white); text-transform: uppercase; }
         
-        .menu-item i { width: 20px; height: 20px; }
-        .icon-green { color: var(--premium-green); }
+        .history-item { display: flex; justify-content: space-between; padding: 18px 0; border-bottom: 1px solid var(--border); }
+        .hist-val { font-weight: 600; font-size: 16px; }
+        .hist-time { font-size: 12px; color: var(--low-white); }
 
-        /* --- HEADER & TOGGLE --- */
-        header {
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: relative;
-        }
-
-        .menu-trigger {
-            cursor: pointer;
-            z-index: 1100;
-        }
-
-        .switcher-container {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 100px;
-            padding: 4px;
-            display: flex;
-        }
-
-        .switch-btn {
-            padding: 8px 20px;
-            border-radius: 100px;
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            color: var(--low-white);
-            text-transform: uppercase;
-        }
-
-        .switch-btn.active {
-            background: var(--accent);
-            color: #fff;
-        }
-
-        /* --- VIEWPORT ENGINE --- */
-        .viewport {
-            width: 100%;
-            flex-grow: 1;
-            display: flex;
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .section {
-            min-width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            max-width: 450px;
-            margin: 0 auto;
-        }
-
-        .display-box {
-            height: 120px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: flex-end;
-            font-size: 48px;
-            font-weight: 600;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 20px;
-        }
-
-        /* Overlay to close sidebar */
-        #overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            z-index: 900;
-        }
-
-        .sidebar-active #overlay { display: block; }
+        .viewport { width: 100%; flex-grow: 1; display: flex; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .section { min-width: 100%; padding: 20px; }
+        .display-box { height: 120px; display: flex; align-items: center; justify-content: flex-end; font-size: 48px; font-weight: 600; border-bottom: 1px solid var(--border); letter-spacing: -1px; }
     </style>
 </head>
-<body>
+<body id="app-body">
 
-    <div id="overlay" onclick="toggleMenu()"></div>
+    <div id="overlay" onclick="closeAll()"></div>
 
     <nav id="sidebar">
-        <div class="menu-item">
-            <i data-lucide="trending-up" class="icon-green"></i>
-            Live Markets Insights
+        <div class="menu-item" onclick="openInsights()">
+            <i data-lucide="trending-up" style="color: var(--green);"></i> Live Markets Insights
         </div>
-        <div class="menu-item">
-            Calculation History
-        </div>
-        <div class="menu-item">
-            <i data-lucide="sun"></i>
-            <i data-lucide="moon"></i>
-            Theme Settings
+        <div class="menu-item" onclick="openHistory()">Calculation History</div>
+        <div class="menu-item" onclick="toggleTheme()">
+            <i data-lucide="sun"></i><i data-lucide="moon"></i> Theme Settings
         </div>
     </nav>
 
-    <header>
-        <div class="menu-trigger" onclick="toggleMenu()">
-            <i data-lucide="menu"></i>
+    <div id="insights-sheet" class="sheet">
+        <div class="sheet-header">
+            <span class="sheet-title">Insights</span>
+            <div onclick="closeAll()" style="cursor:pointer"><i data-lucide="x" size="20"></i></div>
         </div>
+        <div id="news-feed">Fetching server data...</div>
+    </div>
 
+    <div id="history-sheet" class="sheet">
+        <div class="sheet-header">
+            <span class="sheet-title">History</span>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button class="btn-clear" onclick="clearHistory()">Clear All</button>
+                <div onclick="closeAll()" style="cursor:pointer"><i data-lucide="x" size="20"></i></div>
+            </div>
+        </div>
+        <div id="history-list"></div>
+    </div>
+
+    <header>
+        <div class="menu-trigger" onclick="toggleMenu()"><i data-lucide="menu"></i></div>
         <div class="switcher-container">
             <div id="btn-calc" class="switch-btn active" onclick="setView(0)">Calculator</div>
             <div id="btn-trade" class="switch-btn" onclick="setView(1)">Trade</div>
         </div>
-        
-        <div style="width: 24px;"></div> </header>
+        <div style="width: 24px;"></div>
+    </header>
 
     <div class="viewport" id="viewport">
         <div class="section">
-            <div class="display-box">0</div>
+            <div class="display-box" id="calc-display" onclick="testCalc()">0</div>
+            <p style="font-size: 11px; color: var(--low-white); margin-top: 15px; text-align: center; opacity: 0.5;">TAP DISPLAY TO GENERATE TEST DATA</p>
         </div>
-
         <div class="section">
             <div class="display-box" style="color: var(--accent);">$0.00</div>
         </div>
     </div>
 
     <script>
-        // Initialize Icons
         lucide.createIcons();
+        const body = document.body;
 
-        function toggleMenu() {
-            document.body.classList.toggle('sidebar-active');
+        function toggleMenu() { body.classList.toggle('sidebar-active'); body.classList.toggle('overlay-active'); }
+        function closeAll() { body.classList.remove('sidebar-active', 'overlay-active'); document.querySelectorAll('.sheet').forEach(s => s.classList.remove('active')); }
+        function setView(i) { 
+            document.getElementById('viewport').style.transform = `translateX(-${i * 100}%)`; 
+            document.querySelectorAll('.switch-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.switch-btn')[i].classList.add('active');
         }
 
-        function setView(index) {
-            document.getElementById('viewport').style.transform = `translateX(-${index * 100}%)`;
-            document.querySelectorAll('.switch-btn').forEach(btn => btn.classList.remove('active'));
-            if(index === 0) document.getElementById('btn-calc').classList.add('active');
-            else document.getElementById('btn-trade').classList.add('active');
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+        }
+
+        async function openInsights() {
+            closeAll();
+            document.getElementById('insights-sheet').classList.add('active');
+            const feed = document.getElementById('news-feed');
+            try {
+                const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=https://finance.yahoo.com/rss/forex`);
+                const data = await res.json();
+                feed.innerHTML = data.items.map(item => `
+                    <div class="news-item">
+                        <div class="news-title">${item.title}</div>
+                        <div class="news-meta">Global Market • ${new Date(item.pubDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                    </div>
+                `).join('');
+            } catch (e) { feed.innerHTML = "Server connection lost. Please try again."; }
+        }
+
+        function openHistory() {
+            closeAll();
+            document.getElementById('history-sheet').classList.add('active');
+            renderHistory();
+        }
+
+        function saveCalc(val) {
+            let history = JSON.parse(localStorage.getItem('vision_history') || '[]');
+            history.unshift({ val, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
+            localStorage.setItem('vision_history', JSON.stringify(history.slice(0, 15)));
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('history-list');
+            const history = JSON.parse(localStorage.getItem('vision_history') || '[]');
+            list.innerHTML = history.length ? history.map(h => `
+                <div class="history-item">
+                    <span class="hist-val">${h.val}</span>
+                    <span class="hist-time">${h.time}</span>
+                </div>
+            `).join('') : '<p style="color:var(--low-white); text-align:center; margin-top:40px;">No history to show.</p>';
+        }
+
+        function clearHistory() {
+            localStorage.removeItem('vision_history');
+            renderHistory();
+        }
+
+        // Tap the main 0 to see the history system in action
+        function testCalc() { 
+            const v = (Math.random() * 5000).toFixed(2); 
+            document.getElementById('calc-display').innerText = v; 
+            saveCalc(v); 
         }
     </script>
 </body>
