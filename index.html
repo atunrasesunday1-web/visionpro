@@ -39,21 +39,19 @@
         .insight-logo { width: 24px; height: 24px; fill: none; stroke: var(--insight-green); stroke-width: 3; }
 
         /* --- NAVIGATION --- */
-        .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 6px; width: 30px; z-index: 3001; }
-        .menu-btn span { height: 2px; background: var(--text); border-radius: 10px; }
         .top-nav { position: fixed; top: 0; width: 100%; height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; z-index: 2000; }
         .tab-bar { display: flex; gap: 20px; background: var(--card); padding: 10px 25px; border-radius: 100px; border: 1px solid var(--border); }
         .tab { font-size: 10px; font-weight: 800; opacity: 0.3; cursor: pointer; letter-spacing: 2px; }
         .tab.active { opacity: 1; color: var(--accent); }
 
-        /* --- DISPLAY & ROOMS --- */
+        /* --- DISPLAY --- */
         .stage { display: flex; width: 200vw; height: 100%; transition: 0.6s cubic-bezier(0.2, 0, 0, 1); }
         .room { width: 100vw; height: 100%; padding: 100px 25px 25px; display: flex; flex-direction: column; max-width: 480px; margin: 0 auto; }
         .val { font-size: clamp(45px, 9svh, 85px); font-weight: 400; color: var(--accent); text-align: right; width: 100%; margin-bottom: 10px; }
 
-        /* --- FIXED GRID LOGIC --- */
-        .grid { display: grid; gap: 12px; width: 100%; grid-template-columns: repeat(4, 1fr); }
-        .grid-landscape { display: none; grid-template-columns: repeat(10, 1fr); }
+        /* --- STABLE GRID --- */
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; }
+        .grid-landscape { display: none; grid-template-columns: repeat(10, 1fr); gap: 10px; }
 
         @media (orientation: landscape) {
             .grid { display: none; }
@@ -65,7 +63,7 @@
             height: clamp(55px, 7.5svh, 85px); border-radius: 100px; border: none; 
             background: var(--btn-num); color: var(--btn-text); 
             font-size: 24px; font-weight: 600; cursor: pointer; transition: 0.1s; 
-            display: flex; align-items: center; justify-content: center;
+            display: flex; align-items: center; justify-content: center; position: relative;
         }
         button:active { filter: brightness(1.6); transform: scale(0.92); }
         .op { background: var(--op-orange); color: white; font-size: 28px; }
@@ -76,11 +74,11 @@
             color: var(--accent); border: 1.5px solid var(--border); 
         }
 
-        /* --- INTEGRATED MIC ICON --- */
-        .mic-btn { background: var(--btn-num); }
-        .mic-icon { stroke: var(--insight-green); stroke-width: 3; fill: none; width: 28px; height: 28px; }
-        .listening-btn { background: var(--insight-green) !important; }
-        .listening-btn .mic-icon { stroke: #000 !important; }
+        /* --- ZERO-MIC COMBO --- */
+        .zero-mic-btn { grid-column: span 2; justify-content: space-between; padding: 0 35px; }
+        .mic-icon { stroke: var(--insight-green); stroke-width: 3; fill: none; width: 24px; height: 24px; transition: 0.3s; }
+        .listening-active .mic-icon { stroke: #fff; transform: scale(1.2); }
+        .listening-active { background: var(--insight-green) !important; color: #000 !important; }
 
         /* --- THEMES --- */
         .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; }
@@ -120,7 +118,11 @@
     </div>
 
     <nav class="top-nav">
-        <div class="menu-btn" onclick="toggleSide()"><span></span><span style="width:60%"></span><span style="width:85%"></span></div>
+        <div class="menu-btn" onclick="toggleSide()" style="cursor:pointer; display:flex; flex-direction:column; gap:6px; width:30px;">
+            <span style="height:2px; background:var(--text); width:100%"></span>
+            <span style="height:2px; background:var(--text); width:60%"></span>
+            <span style="height:2px; background:var(--text); width:85%"></span>
+        </div>
         <div class="tab-bar">
             <div class="tab active" id="tab0" onclick="move(0)">CALCULATOR</div>
             <div class="tab" id="tab1" onclick="move(1)">TRADE</div>
@@ -137,10 +139,13 @@
                 <button onclick="inp('4')">4</button><button onclick="inp('5')">5</button><button onclick="inp('6')">6</button><button class="op" onclick="inp('-')">−</button>
                 <button onclick="inp('1')">1</button><button onclick="inp('2')">2</button><button onclick="inp('3')">3</button><button class="op" onclick="inp('+')">+</button>
                 
-                <button onclick="inp('0')">0</button>
-                <button id="calc-mic" class="mic-btn" onclick="runVoice()">
-                    <svg viewBox="0 0 24 24" class="mic-icon"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                <button id="zero-btn" class="zero-mic-btn" onclick="handleZero(event)">
+                    <span>0</span>
+                    <div id="mic-trigger" onclick="runVoice(event)" style="padding: 10px;">
+                        <svg viewBox="0 0 24 24" class="mic-icon"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                    </div>
                 </button>
+                
                 <button onclick="inp('.')">.</button>
                 <button class="op" onclick="solve()">=</button>
             </div>
@@ -198,6 +203,8 @@
         function solve() { try { let res = eval(d.replace('×','*').replace('÷','/')); addHist(d + "=" + res); d = res.toString(); disp.innerText = d; } catch { clr(); } }
         function addHist(e) { hist.unshift(e); if(hist.length > 5) hist.pop(); document.getElementById('hist-log').innerHTML = hist.map(h => `<div style="padding:5px 0; border-bottom:1px solid var(--border)">${h}</div>`).join(''); }
 
+        function handleZero(e) { if(e.target.id !== 'mic-trigger' && !document.getElementById('mic-trigger').contains(e.target)) inp('0'); }
+
         function sciOp(t) {
             let n = parseFloat(d || "0");
             if(t==='pm') n*=-1; if(t==='pct') n/=100; if(t==='sqrt') n=Math.sqrt(n);
@@ -211,14 +218,15 @@
         function tBack() { td = td.slice(0,-1); tUp(); }
         function tUp() { document.getElementById('t-in').innerText = td || "0"; document.getElementById('t-out').innerText = (parseFloat(td||0)*0.94).toFixed(2); }
 
-        function runVoice() {
+        function runVoice(e) {
+            e.stopPropagation();
             const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
             if(!Rec) return;
             const r = new Rec();
-            const btn = document.getElementById('calc-mic');
+            const btn = document.getElementById('zero-btn');
             
-            r.onstart = () => btn.classList.add('listening-btn');
-            r.onend = () => btn.classList.remove('listening-btn');
+            r.onstart = () => btn.classList.add('listening-active');
+            r.onend = () => btn.classList.remove('listening-active');
             r.onresult = (e) => {
                 let s = e.results[0][0].transcript.toLowerCase();
                 if(s.includes("clear")) clr();
