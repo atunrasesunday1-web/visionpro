@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Vision Elite | Master Scientific</title>
+    <title>Vision Elite | Dual Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
             --bg: #000; --text: #fff; --surface: #1c1c1e;
             --orange: #ff9f0a; --gray: #a5a5a5; --dark-gray: #333333;
-            --overlay: rgba(0,0,0,0.7);
+            --overlay: rgba(0,0,0,0.8);
         }
         [data-theme="light"] {
             --bg: #fff; --text: #000; --surface: #f2f2f7;
             --orange: #ff9500; --gray: #8e8e93; --dark-gray: #e5e5ea;
-            --overlay: rgba(0,0,0,0.3);
+            --overlay: rgba(0,0,0,0.2);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
@@ -25,41 +25,55 @@
             transition: background 0.3s ease;
         }
 
-        /* --- SIDEBAR MENU --- */
+        /* --- SIDEBAR --- */
         #sidebar {
             position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
-            background: var(--surface); z-index: 2000; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 60px 20px; box-shadow: 10px 0 30px rgba(0,0,0,0.2);
+            background: var(--surface); z-index: 3000; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 60px 20px;
         }
         #sidebar.open { left: 0; }
-        .menu-header { font-size: 12px; font-weight: 800; color: var(--orange); margin-bottom: 30px; letter-spacing: 2px; }
         .menu-item {
             display: flex; align-items: center; gap: 15px; padding: 15px;
-            border-radius: 12px; margin-bottom: 8px; cursor: pointer; transition: 0.2s;
-            font-weight: 500; color: var(--text);
+            border-radius: 12px; margin-bottom: 8px; cursor: pointer; color: var(--text);
         }
-        .menu-item:active { background: var(--dark-gray); }
-        .menu-item i { width: 20px; }
         #overlay {
             position: fixed; inset: 0; background: var(--overlay); visibility: hidden; opacity: 0;
-            z-index: 1500; transition: 0.3s; backdrop-filter: blur(4px);
+            z-index: 2500; transition: 0.3s; backdrop-filter: blur(4px);
         }
         #overlay.show { visibility: visible; opacity: 1; }
 
-        /* --- HEADER --- */
-        header { padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
-        .icon-btn { color: var(--orange); cursor: pointer; transition: 0.2s; }
+        /* --- TABS --- */
+        .tab-container {
+            position: absolute; left: 50%; transform: translateX(-50%); top: 15px;
+            display: flex; background: var(--dark-gray); padding: 4px; border-radius: 20px; z-index: 1000;
+        }
+        .tab {
+            padding: 6px 16px; border-radius: 16px; font-size: 11px; font-weight: 700;
+            cursor: pointer; transition: 0.2s; color: var(--gray);
+        }
+        .tab.active { background: var(--gray); color: black; }
+
+        header { padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; }
+
+        /* --- VIEWS --- */
+        #calc-view, #conv-view { flex: 1; display: flex; flex-direction: column; }
+        #conv-view { display: none; padding: 20px; }
 
         /* --- DISPLAY --- */
         .display {
             flex: 1; display: flex; flex-direction: column; justify-content: flex-end;
             align-items: flex-end; padding: 20px 30px;
         }
-        .equation { font-size: 18px; color: var(--gray); min-height: 24px; margin-bottom: 5px; }
-        .current-val { font-size: clamp(40px, 12vh, 80px); font-weight: 300; letter-spacing: -2px; line-height: 1; text-align: right; width: 100%; }
+        .current-val { font-size: clamp(40px, 12vh, 80px); font-weight: 300; letter-spacing: -2px; text-align: right; width: 100%; }
+
+        /* --- CONVERTER UI --- */
+        .conv-card { background: var(--surface); padding: 25px; border-radius: 24px; margin-top: 40px; }
+        .currency-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .currency-code { font-size: 24px; font-weight: 600; }
+        .currency-amt { font-size: 32px; font-weight: 300; color: var(--orange); }
 
         /* --- GRID --- */
-        .grid-container { padding: 10px; padding-bottom: 40px; display: grid; gap: 12px; transition: 0.3s; }
+        .grid-container { padding: 10px; padding-bottom: 40px; display: grid; gap: 12px; }
 
         @media screen and (orientation: portrait) {
             .grid-container { grid-template-columns: repeat(4, 1fr); }
@@ -70,21 +84,18 @@
         @media screen and (min-width: 768px), screen and (orientation: landscape) {
             .grid-container { grid-template-columns: repeat(10, 1fr); gap: 10px; max-width: 1000px; margin: 0 auto; width: 95%; }
             .sci-only { display: flex; }
-            .current-val { font-size: clamp(30px, 10vh, 55px); }
             .double { grid-column: span 1; }
-            .btn { border-radius: 40px !important; aspect-ratio: auto !important; height: 46px !important; font-size: 15px !important; }
+            .btn { border-radius: 40px !important; height: 46px !important; font-size: 15px !important; aspect-ratio: auto !important; }
         }
 
-        /* --- BUTTONS --- */
         .btn {
             aspect-ratio: 1; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 24px; font-weight: 400; cursor: pointer; border: none; transition: 0.1s;
-            background: var(--dark-gray); color: var(--text);
+            font-size: 24px; font-weight: 400; cursor: pointer; border: none; background: var(--dark-gray); color: var(--text);
         }
-        .btn:active { transform: scale(0.92); opacity: 0.6; }
-        .btn.op { background: var(--orange); color: white; font-size: 30px; }
-        .btn.sys { background: var(--gray); color: black; font-size: 20px; font-weight: 500; }
+        .btn.op { background: var(--orange); color: white; }
+        .btn.sys { background: var(--gray); color: black; font-size: 18px; }
         .btn.sci { background: var(--surface); font-size: 14px; }
+        .btn:active { opacity: 0.6; transform: scale(0.95); }
     </style>
 </head>
 <body>
@@ -92,28 +103,41 @@
     <div id="overlay" onclick="toggleMenu()"></div>
     
     <nav id="sidebar">
-        <div class="menu-header">VISION ELITE</div>
-        <div class="menu-item" onclick="alert('Live Market News: Loading stable data...')">
-            <i data-lucide="trending-up"></i> Live Market News
-        </div>
-        <div class="menu-item" onclick="toggleTheme()">
-            <i data-lucide="sun"></i> Theme Settings
-        </div>
-        <div class="menu-item" onclick="alert('History: No previous records found.')">
-            <i data-lucide="history"></i> History Settings
-        </div>
+        <div class="menu-item" onclick="alert('News Loading...')"><i data-lucide="trending-up"></i> Live News</div>
+        <div class="menu-item" onclick="toggleTheme()"><i data-lucide="sun"></i> Theme</div>
+        <div class="menu-item" onclick="alert('History Empty')"><i data-lucide="history"></i> History</div>
     </nav>
 
+    <div class="tab-container">
+        <div class="tab active" id="tab-calc" onclick="switchView('calc')">CALC</div>
+        <div class="tab" id="tab-conv" onclick="switchView('conv')">CONV</div>
+    </div>
+
     <header>
-        <div class="icon-btn" onclick="toggleMenu()"><i data-lucide="menu"></i></div>
-        <div style="font-size: 10px; font-weight: 800; opacity: 0.4; letter-spacing: 2px;">SCIENTIFIC</div>
-        <div class="icon-btn" onclick="location.reload()"><i data-lucide="rotate-ccw"></i></div>
+        <div style="color:var(--orange); cursor:pointer" onclick="toggleMenu()"><i data-lucide="menu"></i></div>
+        <div></div>
+        <div style="color:var(--orange); cursor:pointer" onclick="location.reload()"><i data-lucide="rotate-ccw"></i></div>
     </header>
 
-    <div class="display">
-        <div class="equation" id="eq-display"></div>
-        <div class="current-val" id="main-display">0</div>
-    </div>
+    <main id="calc-view">
+        <div class="display">
+            <div id="main-display" class="current-val">0</div>
+        </div>
+    </main>
+
+    <main id="conv-view">
+        <div class="conv-card">
+            <div class="currency-row">
+                <span class="currency-code">USD</span>
+                <span id="from-val" class="currency-amt">1.00</span>
+            </div>
+            <div style="height:1px; background:var(--dark-gray); margin: 15px 0;"></div>
+            <div class="currency-row">
+                <span class="currency-code">EUR</span>
+                <span id="to-val" class="currency-amt">0.92</span>
+            </div>
+        </div>
+    </main>
 
     <div class="grid-container">
         <button class="btn sci sci-only" onclick="sci('(')">(</button>
@@ -124,48 +148,48 @@
         <button class="btn sci sci-only" onclick="mem('mr')">mr</button>
         <button class="btn sys" id="ac-btn" onclick="clearAll()">AC</button>
         <button class="btn sys" onclick="negate()">+/-</button>
-        <button class="btn sys" onclick="percent()">%</button>
-        <button class="btn op" onclick="setOp('/')">÷</button>
-
-        <button class="btn sci sci-only" onclick="sci('2nd')">2nd</button>
-        <button class="btn sci sci-only" onclick="sci('pow2')">x²</button>
-        <button class="btn sci sci-only" onclick="sci('pow3')">x³</button>
-        <button class="btn sci sci-only" onclick="setOp('**')">xʸ</button>
-        <button class="btn sci sci-only" onclick="sci('ex')">eˣ</button>
-        <button class="btn sci sci-only" onclick="sci('10x')">10ˣ</button>
-        <button class="btn" onclick="num('7')">7</button>
-        <button class="btn" onclick="num('8')">8</button>
-        <button class="btn" onclick="num('9')">9</button>
-        <button class="btn op" onclick="setOp('*')">×</button>
-
-        <button class="btn sci sci-only" onclick="sci('1x')">1/x</button>
-        <button class="btn sci sci-only" onclick="sci('sqrt')">²√x</button>
-        <button class="btn sci sci-only" onclick="sci('cbrt')">³√x</button>
-        <button class="btn sci sci-only" onclick="setOp('yroot')">ʸ√x</button>
-        <button class="btn sci sci-only" onclick="sci('ln')">ln</button>
-        <button class="btn sci sci-only" onclick="sci('log')">log₁₀</button>
-        <button class="btn" onclick="num('4')">4</button>
-        <button class="btn" onclick="num('5')">5</button>
-        <button class="btn" onclick="num('6')">6</button>
-        <button class="btn op" onclick="setOp('-')">−</button>
+        <button class="btn sys" onclick="perc()">%</button>
+        <button class="btn op" onclick="op('/')">÷</button>
 
         <button class="btn sci sci-only" onclick="sci('sin')">sin</button>
         <button class="btn sci sci-only" onclick="sci('cos')">cos</button>
         <button class="btn sci sci-only" onclick="sci('tan')">tan</button>
+        <button class="btn sci sci-only" onclick="op('**')">xʸ</button>
+        <button class="btn sci sci-only" onclick="sci('ex')">eˣ</button>
+        <button class="btn sci sci-only" onclick="sci('log')">log</button>
+        <button class="btn" onclick="num('7')">7</button>
+        <button class="btn" onclick="num('8')">8</button>
+        <button class="btn" onclick="num('9')">9</button>
+        <button class="btn op" onclick="op('*')">×</button>
+
+        <button class="btn sci sci-only" onclick="sci('sinh')">sinh</button>
+        <button class="btn sci sci-only" onclick="sci('cosh')">cosh</button>
+        <button class="btn sci sci-only" onclick="sci('tanh')">tanh</button>
+        <button class="btn sci sci-only" onclick="sci('sqrt')">√</button>
+        <button class="btn sci sci-only" onclick="sci('ln')">ln</button>
+        <button class="btn sci sci-only" onclick="sci('fact')">x!</button>
+        <button class="btn" onclick="num('4')">4</button>
+        <button class="btn" onclick="num('5')">5</button>
+        <button class="btn" onclick="num('6')">6</button>
+        <button class="btn op" onclick="op('-')">−</button>
+
+        <button class="btn sci sci-only" onclick="num('Math.PI')">π</button>
         <button class="btn sci sci-only" onclick="num('Math.E')">e</button>
+        <button class="btn sci sci-only" onclick="sci('rand')">Rand</button>
+        <button class="btn sci sci-only" onclick="sci('1x')">1/x</button>
         <button class="btn sci sci-only" onclick="sci('EE')">EE</button>
         <button class="btn sci sci-only" onclick="toggleRad()">Rad</button>
         <button class="btn" onclick="num('1')">1</button>
         <button class="btn" onclick="num('2')">2</button>
         <button class="btn" onclick="num('3')">3</button>
-        <button class="btn op" onclick="setOp('+')">+</button>
+        <button class="btn op" onclick="op('+')">+</button>
 
-        <button class="btn sci sci-only" onclick="sci('sinh')">sinh</button>
-        <button class="btn sci sci-only" onclick="sci('cosh')">cosh</button>
-        <button class="btn sci sci-only" onclick="sci('tanh')">tanh</button>
-        <button class="btn sci sci-only" onclick="num('Math.PI')">π</button>
-        <button class="btn sci sci-only" onclick="sci('rand')">Rand</button>
-        <button class="btn sci sci-only" onclick="sci('fact')">x!</button>
+        <button class="btn sci sci-only" onclick="sci('asin')">sin⁻¹</button>
+        <button class="btn sci sci-only" onclick="sci('acos')">cos⁻¹</button>
+        <button class="btn sci sci-only" onclick="sci('atan')">tan⁻¹</button>
+        <button class="btn sci sci-only" onclick="sci('pow2')">x²</button>
+        <button class="btn sci sci-only" onclick="sci('pow3')">x³</button>
+        <button class="btn sci sci-only" onclick="sci('yroot')">ʸ√x</button>
         <button class="btn double" onclick="num('0')">0</button>
         <button class="btn" onclick="num('.')">.</button>
         <button class="btn op" onclick="solve()">=</button>
@@ -174,10 +198,15 @@
     <script>
         lucide.createIcons();
         let current = '0';
-        let operator = null;
-        let memory = 0;
-        let waitingForNext = false;
-        let history = [];
+        let view = 'calc';
+
+        function switchView(v) {
+            view = v;
+            document.getElementById('calc-view').style.display = v === 'calc' ? 'flex' : 'none';
+            document.getElementById('conv-view').style.display = v === 'conv' ? 'block' : 'none';
+            document.getElementById('tab-calc').classList.toggle('active', v === 'calc');
+            document.getElementById('tab-conv').classList.toggle('active', v === 'conv');
+        }
 
         function toggleMenu() {
             document.getElementById('sidebar').classList.toggle('open');
@@ -185,67 +214,29 @@
         }
 
         function num(v) {
-            if (current === '0' || waitingForNext) {
-                current = v;
-                waitingForNext = false;
-            } else {
-                current += v;
-            }
-            update();
-        }
-
-        function setOp(op) {
-            operator = op;
-            memory = current;
-            waitingForNext = true;
-            document.getElementById('eq-display').innerText = memory + ' ' + op.replace('*','×').replace('/','÷');
-        }
-
-        function solve() {
-            if (!operator) return;
-            try {
-                let res = eval(`${memory}${operator}${current}`);
-                document.getElementById('eq-display').innerText = '';
-                current = String(res);
-                operator = null;
-                update();
-            } catch { current = 'Error'; update(); }
-        }
-
-        function clearAll() {
-            current = '0';
-            operator = null;
-            document.getElementById('eq-display').innerText = '';
+            current = (current === '0') ? v : current + v;
             update();
         }
 
         function update() {
-            document.getElementById('main-display').innerText = current.length > 10 ? parseFloat(current).toPrecision(8) : current;
-            document.getElementById('ac-btn').innerText = current === '0' ? 'AC' : 'C';
-        }
-
-        function sci(type) {
-            let v = parseFloat(current);
-            switch(type) {
-                case 'pow2': current = String(Math.pow(v, 2)); break;
-                case 'sqrt': current = String(Math.sqrt(v)); break;
-                case 'sin': current = String(Math.sin(v)); break;
-                case 'cos': current = String(Math.cos(v)); break;
-                case 'tan': current = String(Math.tan(v)); break;
-                case 'fact': current = String(f(v)); break;
+            if(view === 'calc') {
+                document.getElementById('main-display').innerText = current;
+            } else {
+                document.getElementById('from-val').innerText = current;
+                document.getElementById('to-val').innerText = (parseFloat(current) * 0.92).toFixed(2);
             }
-            update();
         }
 
-        function f(n) { return n <= 1 ? 1 : n * f(n-1); }
-        function negate() { current = String(parseFloat(current) * -1); update(); }
-        function percent() { current = String(parseFloat(current) / 100); update(); }
-
+        function clearAll() { current = '0'; update(); }
         function toggleTheme() {
             const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', t);
             toggleMenu();
         }
+
+        // Calculator placeholders
+        function op(o) { current += ' ' + o + ' '; update(); }
+        function solve() { try { current = String(eval(current)); update(); } catch { current = 'Error'; update(); } }
     </script>
 </body>
 </html>
