@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Vision Elite | Dual Pro</title>
+    <title>Vision Elite | Dual Pro + History</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
             --bg: #000; --text: #fff; --surface: #1c1c1e;
             --orange: #ff9f0a; --gray: #a5a5a5; --dark-gray: #333333;
-            --overlay: rgba(0,0,0,0.8);
+            --overlay: rgba(0,0,0,0.8); --red: #ff453a;
         }
         [data-theme="light"] {
             --bg: #fff; --text: #000; --surface: #f2f2f7;
-            --orange: #ff9500; --gray: #d1d1d6; --light-gray: #8e8e93;
-            --dark-gray: #e5e5ea; --overlay: rgba(0,0,0,0.2);
+            --orange: #ff9500; --gray: #8e8e93; --dark-gray: #e5e5ea;
+            --overlay: rgba(0,0,0,0.2); --red: #d70015;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
@@ -36,6 +36,25 @@
             display: flex; align-items: center; gap: 15px; padding: 15px;
             border-radius: 12px; margin-bottom: 8px; cursor: pointer; color: var(--text);
         }
+
+        /* --- HISTORY PANEL --- */
+        #history-panel {
+            position: fixed; bottom: -100%; left: 0; width: 100%; height: 80%;
+            background: var(--surface); z-index: 4000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-top-left-radius: 30px; border-top-right-radius: 30px;
+            display: flex; flex-direction: column; padding: 25px;
+        }
+        #history-panel.open { bottom: 0; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .clear-btn { color: var(--red); font-weight: 600; cursor: pointer; font-size: 14px; padding: 8px; }
+        .history-list { flex: 1; overflow-y: auto; }
+        .history-entry { 
+            padding: 15px 0; border-bottom: 1px solid var(--dark-gray); cursor: pointer;
+            display: flex; flex-direction: column; align-items: flex-end;
+        }
+        .hist-eq { font-size: 14px; color: var(--gray); margin-bottom: 4px; }
+        .hist-res { font-size: 20px; font-weight: 500; color: var(--orange); }
+
         #overlay {
             position: fixed; inset: 0; background: var(--overlay); visibility: hidden; opacity: 0;
             z-index: 2500; transition: 0.3s; backdrop-filter: blur(4px);
@@ -59,18 +78,14 @@
         #calc-view, #conv-view { flex: 1; display: flex; flex-direction: column; }
         #conv-view { display: none; padding: 20px; }
 
-        /* --- DISPLAY --- */
         .display {
             flex: 1; display: flex; flex-direction: column; justify-content: flex-end;
             align-items: flex-end; padding: 20px 30px;
         }
         .current-val { font-size: clamp(40px, 12vh, 80px); font-weight: 300; letter-spacing: -2px; text-align: right; width: 100%; }
 
-        /* --- CONVERTER UI --- */
         .conv-card { background: var(--surface); padding: 25px; border-radius: 24px; margin-top: 40px; }
         .currency-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .currency-code { font-size: 24px; font-weight: 600; }
-        .currency-amt { font-size: 32px; font-weight: 300; color: var(--orange); }
 
         /* --- GRID --- */
         .grid-container { padding: 10px; padding-bottom: 40px; display: grid; gap: 12px; }
@@ -84,7 +99,6 @@
         @media screen and (min-width: 768px), screen and (orientation: landscape) {
             .grid-container { grid-template-columns: repeat(10, 1fr); gap: 10px; max-width: 1000px; margin: 0 auto; width: 95%; }
             .sci-only { display: flex; }
-            .double { grid-column: span 1; }
             .btn { border-radius: 40px !important; height: 46px !important; font-size: 15px !important; aspect-ratio: auto !important; }
         }
 
@@ -94,22 +108,32 @@
         }
         .btn.op { background: var(--orange); color: white; }
         .btn.sys { background: var(--gray); color: black; font-size: 18px; }
-        .btn.sci { background: var(--surface); font-size: 14px; }
         .btn:active { opacity: 0.6; transform: scale(0.95); }
         
-        .mic-btn { color: var(--orange); cursor: pointer; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; transition: 0.2s; }
-        .mic-btn:active { background: var(--dark-gray); transform: scale(1.1); }
+        .mic-btn { color: var(--orange); cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
-    <div id="overlay" onclick="toggleMenu()"></div>
+    <div id="overlay" onclick="closeAllPanels()"></div>
     
     <nav id="sidebar">
         <div class="menu-item" onclick="alert('News Loading...')"><i data-lucide="trending-up"></i> Live News</div>
         <div class="menu-item" onclick="toggleTheme()"><i data-lucide="sun"></i> Theme</div>
-        <div class="menu-item" onclick="alert('History Empty')"><i data-lucide="history"></i> History</div>
+        <div class="menu-item" onclick="toggleHistory()"><i data-lucide="history"></i> History Settings</div>
     </nav>
+
+    <div id="history-panel">
+        <div class="history-header">
+            <span style="font-weight: 700;">History</span>
+            <span class="clear-btn" onclick="clearHistory()">Clear History</span>
+        </div>
+        <div class="history-list" id="hist-list">
+            </div>
+        <div style="text-align: center; padding-top: 15px;" onclick="toggleHistory()">
+            <i data-lucide="chevron-down" style="color:var(--gray); cursor:pointer"></i>
+        </div>
+    </div>
 
     <div class="tab-container">
         <div class="tab active" id="tab-calc" onclick="switchView('calc')">CALC</div>
@@ -118,8 +142,7 @@
 
     <header>
         <div style="color:var(--orange); cursor:pointer" onclick="toggleMenu()"><i data-lucide="menu"></i></div>
-        <div></div>
-        <div class="mic-btn" onclick="handleMicClick()"><i data-lucide="mic"></i></div>
+        <div class="mic-btn"><i data-lucide="mic"></i></div>
     </header>
 
     <main id="calc-view">
@@ -130,69 +153,63 @@
 
     <main id="conv-view">
         <div class="conv-card">
-            <div class="currency-row">
-                <span class="currency-code">USD</span>
-                <span id="from-val" class="currency-amt">1.00</span>
-            </div>
+            <div class="currency-row"><span>USD</span><span id="from-val" class="currency-amt">1.00</span></div>
             <div style="height:1px; background:var(--dark-gray); margin: 15px 0;"></div>
-            <div class="currency-row">
-                <span class="currency-code">EUR</span>
-                <span id="to-val" class="currency-amt">0.92</span>
-            </div>
+            <div class="currency-row"><span>EUR</span><span id="to-val" class="currency-amt">0.92</span></div>
         </div>
     </main>
 
     <div class="grid-container">
-        <button class="btn sci sci-only" onclick="sci('(')">(</button>
-        <button class="btn sci sci-only" onclick="sci(')')">)</button>
-        <button class="btn sci sci-only" onclick="mem('mc')">mc</button>
-        <button class="btn sci sci-only" onclick="mem('m+')">m+</button>
-        <button class="btn sci sci-only" onclick="mem('m-')">m-</button>
-        <button class="btn sci sci-only" onclick="mem('mr')">mr</button>
+        <button class="btn sci sci-only">(</button>
+        <button class="btn sci sci-only">)</button>
+        <button class="btn sci sci-only">mc</button>
+        <button class="btn sci sci-only">m+</button>
+        <button class="btn sci sci-only">m-</button>
+        <button class="btn sci sci-only">mr</button>
         <button class="btn sys" id="ac-btn" onclick="clearAll()">AC</button>
         <button class="btn sys" onclick="negate()">+/-</button>
         <button class="btn sys" onclick="perc()">%</button>
         <button class="btn op" onclick="op('/')">÷</button>
 
-        <button class="btn sci sci-only" onclick="sci('sin')">sin</button>
-        <button class="btn sci sci-only" onclick="sci('cos')">cos</button>
-        <button class="btn sci sci-only" onclick="sci('tan')">tan</button>
-        <button class="btn sci sci-only" onclick="op('**')">xʸ</button>
-        <button class="btn sci sci-only" onclick="sci('ex')">eˣ</button>
-        <button class="btn sci sci-only" onclick="sci('log')">log</button>
+        <button class="btn sci sci-only">sin</button>
+        <button class="btn sci sci-only">cos</button>
+        <button class="btn sci sci-only">tan</button>
+        <button class="btn sci sci-only">xʸ</button>
+        <button class="btn sci sci-only">eˣ</button>
+        <button class="btn sci sci-only">log</button>
         <button class="btn" onclick="num('7')">7</button>
         <button class="btn" onclick="num('8')">8</button>
         <button class="btn" onclick="num('9')">9</button>
         <button class="btn op" onclick="op('*')">×</button>
 
-        <button class="btn sci sci-only" onclick="sci('sinh')">sinh</button>
-        <button class="btn sci sci-only" onclick="sci('cosh')">cosh</button>
-        <button class="btn sci sci-only" onclick="sci('tanh')">tanh</button>
-        <button class="btn sci sci-only" onclick="sci('sqrt')">√</button>
-        <button class="btn sci sci-only" onclick="sci('ln')">ln</button>
-        <button class="btn sci sci-only" onclick="sci('fact')">x!</button>
+        <button class="btn sci sci-only">sinh</button>
+        <button class="btn sci sci-only">cosh</button>
+        <button class="btn sci sci-only">tanh</button>
+        <button class="btn sci sci-only">√</button>
+        <button class="btn sci sci-only">ln</button>
+        <button class="btn sci sci-only">x!</button>
         <button class="btn" onclick="num('4')">4</button>
         <button class="btn" onclick="num('5')">5</button>
         <button class="btn" onclick="num('6')">6</button>
         <button class="btn op" onclick="op('-')">−</button>
 
-        <button class="btn sci sci-only" onclick="num('Math.PI')">π</button>
-        <button class="btn sci sci-only" onclick="num('Math.E')">e</button>
-        <button class="btn sci sci-only" onclick="sci('rand')">Rand</button>
-        <button class="btn sci sci-only" onclick="sci('1x')">1/x</button>
-        <button class="btn sci sci-only" onclick="sci('EE')">EE</button>
-        <button class="btn sci sci-only" onclick="toggleRad()">Rad</button>
+        <button class="btn sci sci-only">π</button>
+        <button class="btn sci sci-only">e</button>
+        <button class="btn sci sci-only">Rand</button>
+        <button class="btn sci sci-only">1/x</button>
+        <button class="btn sci sci-only">EE</button>
+        <button class="btn sci sci-only">Rad</button>
         <button class="btn" onclick="num('1')">1</button>
         <button class="btn" onclick="num('2')">2</button>
         <button class="btn" onclick="num('3')">3</button>
         <button class="btn op" onclick="op('+')">+</button>
 
-        <button class="btn sci sci-only" onclick="sci('asin')">sin⁻¹</button>
-        <button class="btn sci sci-only" onclick="sci('acos')">cos⁻¹</button>
-        <button class="btn sci sci-only" onclick="sci('atan')">tan⁻¹</button>
-        <button class="btn sci sci-only" onclick="sci('pow2')">x²</button>
-        <button class="btn sci sci-only" onclick="sci('pow3')">x³</button>
-        <button class="btn sci sci-only" onclick="sci('yroot')">ʸ√x</button>
+        <button class="btn sci sci-only">sin⁻¹</button>
+        <button class="btn sci sci-only">cos⁻¹</button>
+        <button class="btn sci sci-only">tan⁻¹</button>
+        <button class="btn sci sci-only">x²</button>
+        <button class="btn sci sci-only">x³</button>
+        <button class="btn sci sci-only">ʸ√x</button>
         <button class="btn double" onclick="num('0')">0</button>
         <button class="btn" onclick="num('.')">.</button>
         <button class="btn op" onclick="solve()">=</button>
@@ -202,9 +219,74 @@
         lucide.createIcons();
         let current = '0';
         let view = 'calc';
+        let history = [];
+        let lastEq = '';
 
-        function handleMicClick() {
-            alert("Voice command active. Say your calculation...");
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('show');
+        }
+
+        function toggleHistory() {
+            document.getElementById('history-panel').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('show');
+            document.getElementById('sidebar').classList.remove('open');
+            renderHistory();
+        }
+
+        function closeAllPanels() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('history-panel').classList.remove('open');
+            document.getElementById('overlay').classList.remove('show');
+        }
+
+        function num(v) {
+            current = (current === '0') ? v : current + v;
+            update();
+        }
+
+        function op(o) {
+            lastEq = current + ' ' + o;
+            current = '0';
+            update();
+        }
+
+        function solve() {
+            try {
+                let fullEq = lastEq + ' ' + current;
+                let result = eval(fullEq.replace('×','*').replace('÷','/'));
+                history.unshift({ eq: fullEq, res: result });
+                current = String(result);
+                lastEq = '';
+                update();
+            } catch { current = 'Error'; update(); }
+        }
+
+        function update() {
+            document.getElementById('main-display').innerText = current;
+            document.getElementById('from-val').innerText = current;
+            document.getElementById('to-val').innerText = (parseFloat(current) * 0.92).toFixed(2);
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('hist-list');
+            list.innerHTML = history.map((h, i) => `
+                <div class="history-entry" onclick="restoreHist('${h.res}')">
+                    <span class="hist-eq">${h.eq} =</span>
+                    <span class="hist-res">${h.res}</span>
+                </div>
+            `).join('');
+        }
+
+        function restoreHist(val) {
+            current = val;
+            update();
+            closeAllPanels();
+        }
+
+        function clearHistory() {
+            history = [];
+            renderHistory();
         }
 
         function switchView(v) {
@@ -215,34 +297,12 @@
             document.getElementById('tab-conv').classList.toggle('active', v === 'conv');
         }
 
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('overlay').classList.toggle('show');
-        }
-
-        function num(v) {
-            current = (current === '0') ? v : current + v;
-            update();
-        }
-
-        function update() {
-            if(view === 'calc') {
-                document.getElementById('main-display').innerText = current;
-            } else {
-                document.getElementById('from-val').innerText = current;
-                document.getElementById('to-val').innerText = (parseFloat(current) * 0.92).toFixed(2);
-            }
-        }
-
-        function clearAll() { current = '0'; update(); }
+        function clearAll() { current = '0'; lastEq = ''; update(); }
         function toggleTheme() {
             const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', t);
-            toggleMenu();
+            closeAllPanels();
         }
-
-        function op(o) { current += ' ' + o + ' '; update(); }
-        function solve() { try { current = String(eval(current)); update(); } catch { current = 'Error'; update(); } }
     </script>
 </body>
 </html>
