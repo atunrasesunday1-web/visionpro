@@ -36,7 +36,7 @@
             display: flex; align-items: center; gap: 14px; text-decoration: none; 
             color: var(--text); font-weight: 800; font-size: 11px; letter-spacing: 1.5px; margin-bottom: 30px;
         }
-        .insight-logo { width: 24px; height: 24px; fill: none; stroke: var(--insight-green); stroke-width: 3; }
+        .insight-logo { width: 22px; height: 22px; fill: none; stroke: var(--insight-green); stroke-width: 3; }
 
         /* --- NAVIGATION --- */
         .top-nav { position: fixed; top: 0; width: 100%; height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; z-index: 2000; }
@@ -44,12 +44,27 @@
         .tab { font-size: 10px; font-weight: 800; opacity: 0.3; cursor: pointer; letter-spacing: 2px; }
         .tab.active { opacity: 1; color: var(--accent); }
 
-        /* --- DISPLAY --- */
+        /* --- DISPLAY ROOM --- */
         .stage { display: flex; width: 200vw; height: 100%; transition: 0.6s cubic-bezier(0.2, 0, 0, 1); }
-        .room { width: 100vw; height: 100%; padding: 100px 25px 25px; display: flex; flex-direction: column; max-width: 480px; margin: 0 auto; }
-        .val { font-size: clamp(45px, 9svh, 85px); font-weight: 400; color: var(--accent); text-align: right; width: 100%; margin-bottom: 10px; }
+        .room { width: 100vw; height: 100%; padding: 100px 25px 25px; display: flex; flex-direction: column; max-width: 480px; margin: 0 auto; position: relative; }
+        
+        /* THE DISPLAY PANEL */
+        .display-container { position: relative; margin-bottom: 15px; }
+        .val { font-size: clamp(45px, 9svh, 85px); font-weight: 400; color: var(--accent); text-align: right; width: 100%; padding-right: 10px; }
 
-        /* --- STABLE GRID --- */
+        /* --- WHATSAPP STYLE MIC --- */
+        .wa-mic-btn {
+            position: absolute; bottom: 5px; right: 0;
+            width: 45px; height: 45px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s; z-index: 10;
+        }
+        .wa-mic-btn svg { width: 20px; height: 20px; stroke: var(--insight-green); stroke-width: 2.5; fill: none; }
+        .wa-mic-btn.listening { background: var(--insight-green); box-shadow: 0 0 20px var(--insight-green); transform: scale(1.1); }
+        .wa-mic-btn.listening svg { stroke: #000; }
+
+        /* --- GRID --- */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; }
         .grid-landscape { display: none; grid-template-columns: repeat(10, 1fr); gap: 10px; }
 
@@ -57,28 +72,26 @@
             .grid { display: none; }
             .grid-landscape { display: grid; }
             .room { max-width: 95%; padding-top: 50px; }
+            .wa-mic-btn { bottom: 65px; } /* Adjust for landscape room */
         }
 
         button { 
             height: clamp(55px, 7.5svh, 85px); border-radius: 100px; border: none; 
             background: var(--btn-num); color: var(--btn-text); 
             font-size: 24px; font-weight: 600; cursor: pointer; transition: 0.1s; 
-            display: flex; align-items: center; justify-content: center; position: relative;
         }
         button:active { filter: brightness(1.6); transform: scale(0.92); }
         .op { background: var(--op-orange); color: white; font-size: 28px; }
         .fn { background: var(--fn-grey); color: black; font-weight: 800; font-size: 16px; }
         
+        /* SCIENTIFIC ICONS BOLD */
         .sci { 
-            background: #1a1a1a; font-size: 14px; font-weight: 900; 
+            background: #1a1a1a; font-size: 13px; font-weight: 900; 
             color: var(--accent); border: 1.5px solid var(--border); 
         }
 
-        /* --- ZERO-MIC COMBO --- */
-        .zero-mic-btn { grid-column: span 2; justify-content: space-between; padding: 0 35px; }
-        .mic-icon { stroke: var(--insight-green); stroke-width: 3; fill: none; width: 24px; height: 24px; transition: 0.3s; }
-        .listening-active .mic-icon { stroke: #fff; transform: scale(1.2); }
-        .listening-active { background: var(--insight-green) !important; color: #000 !important; }
+        /* --- HISTORY LOG --- */
+        #hist-log { font-size: 11px; opacity: 0.5; max-height: 150px; overflow-y: auto; }
 
         /* --- THEMES --- */
         .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; }
@@ -98,20 +111,20 @@
         <h2 style="font-weight: 800; font-size: 22px; margin-bottom: 30px;">Vision Elite</h2>
         <a href="https://finance.yahoo.com/currencies" target="_blank" class="market-btn">
             <svg class="insight-logo" viewBox="0 0 24 24"><path d="M7 6v11h11M10 12l3-3 5 5m0 0v-4.5m0 4.5h-4.5" /></svg>
-            Live Market Feed
+            Market Feed
         </a>
         
-        <p style="font-size: 10px; font-weight: 800; color: var(--accent); letter-spacing: 2px; margin-bottom: 10px;">SESSION HISTORY</p>
-        <div id="hist-log" style="font-size: 11px; opacity: 0.5; margin-bottom: 30px;">No records.</div>
+        <p style="font-size: 10px; font-weight: 800; color: var(--accent); letter-spacing: 2px; margin-bottom: 10px;">HISTORY</p>
+        <div id="hist-log">No records.</div>
 
-        <p style="font-size: 10px; font-weight: 800; color: var(--accent); letter-spacing: 2px; margin-bottom: 10px;">THEME</p>
+        <p style="font-size: 10px; font-weight: 800; color: var(--accent); letter-spacing: 2px; margin-top: 30px; margin-bottom: 10px;">THEME</p>
         <div class="theme-grid">
             <div class="theme-btn active" id="t-dark" onclick="setTheme('dark')">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
                 <span style="font-size: 9px; font-weight: 800;">NIGHT</span>
             </div>
             <div class="theme-btn" id="t-light" onclick="setTheme('light')">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line></svg>
                 <span style="font-size: 9px; font-weight: 800;">DAY</span>
             </div>
         </div>
@@ -121,10 +134,9 @@
         <div class="menu-btn" onclick="toggleSide()" style="cursor:pointer; display:flex; flex-direction:column; gap:6px; width:30px;">
             <span style="height:2px; background:var(--text); width:100%"></span>
             <span style="height:2px; background:var(--text); width:60%"></span>
-            <span style="height:2px; background:var(--text); width:85%"></span>
         </div>
         <div class="tab-bar">
-            <div class="tab active" id="tab0" onclick="move(0)">CALCULATOR</div>
+            <div class="tab active" id="tab0" onclick="move(0)">CALC</div>
             <div class="tab" id="tab1" onclick="move(1)">TRADE</div>
         </div>
         <div style="width: 30px"></div>
@@ -132,34 +144,30 @@
 
     <div class="stage" id="stage">
         <div class="room">
-            <div class="val" id="disp">0</div>
+            <div class="display-container">
+                <div class="val" id="disp">0</div>
+                <div class="wa-mic-btn" id="wa-mic" onclick="runVoice()">
+                    <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                </div>
+            </div>
+            
             <div class="grid">
                 <button class="fn" onclick="clr()">AC</button><button class="fn" onclick="sciOp('pm')">+/-</button><button class="fn" onclick="sciOp('pct')">%</button><button class="op" onclick="inp('/')">÷</button>
                 <button onclick="inp('7')">7</button><button onclick="inp('8')">8</button><button onclick="inp('9')">9</button><button class="op" onclick="inp('*')">×</button>
                 <button onclick="inp('4')">4</button><button onclick="inp('5')">5</button><button onclick="inp('6')">6</button><button class="op" onclick="inp('-')">−</button>
                 <button onclick="inp('1')">1</button><button onclick="inp('2')">2</button><button onclick="inp('3')">3</button><button class="op" onclick="inp('+')">+</button>
-                
-                <button id="zero-btn" class="zero-mic-btn" onclick="handleZero(event)">
-                    <span>0</span>
-                    <div id="mic-trigger" onclick="runVoice(event)" style="padding: 10px;">
-                        <svg viewBox="0 0 24 24" class="mic-icon"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-                    </div>
-                </button>
-                
-                <button onclick="inp('.')">.</button>
-                <button class="op" onclick="solve()">=</button>
+                <button style="grid-column: span 2; text-align:left; padding-left: 35px;" onclick="inp('0')">0</button><button onclick="inp('.')">.</button><button class="op" onclick="solve()">=</button>
             </div>
 
             <div class="grid-landscape">
                 <button class="sci" onclick="inp('(')">(</button><button class="sci" onclick="inp(')')">)</button><button class="sci">mc</button><button class="sci">m+</button><button class="sci">m-</button><button class="sci">mr</button>
                 <button class="fn" onclick="clr()">AC</button><button class="fn" onclick="sciOp('pm')">+/-</button><button class="fn" onclick="sciOp('pct')">%</button><button class="op" onclick="inp('/')">÷</button>
-                <button class="sci">2nd</button><button class="sci" onclick="sciOp('x2')">X²</button><button class="sci" onclick="sciOp('x3')">X³</button><button class="sci" onclick="sciOp('xy')">Xʸ</button><button class="sci">Eˣ</button><button class="sci">10ˣ</button>
+                <button class="sci" onclick="sciOp('x2')">X²</button><button class="sci" onclick="sciOp('x3')">X³</button><button class="sci" onclick="sciOp('xy')">Xʸ</button><button class="sci">Eˣ</button><button class="sci">10ˣ</button>
                 <button onclick="inp('7')">7</button><button onclick="inp('8')">8</button><button onclick="inp('9')">9</button><button class="op" onclick="inp('*')">×</button>
-                <button class="sci">1/X</button><button class="sci" onclick="sciOp('sqrt')">√X</button><button class="sci">³√</button><button class="sci">ʸ√X</button><button class="sci">LN</button><button class="sci">LOG₁₀</button>
+                <button class="sci">1/X</button><button class="sci" onclick="sciOp('sqrt')">√X</button><button class="sci">³√</button><button class="sci">LN</button><button class="sci">LOG</button>
                 <button onclick="inp('4')">4</button><button onclick="inp('5')">5</button><button onclick="inp('6')">6</button><button class="op" onclick="inp('-')">−</button>
-                <button class="sci">X!</button><button class="sci" onclick="sciOp('sin')">SIN</button><button class="sci" onclick="sciOp('cos')">COS</button><button class="sci" onclick="sciOp('tan')">TAN</button><button class="sci" onclick="inp('2.718')">e</button><button class="sci">EE</button>
+                <button class="sci" onclick="sciOp('sin')">SIN</button><button class="sci" onclick="sciOp('cos')">COS</button><button class="sci" onclick="sciOp('tan')">TAN</button><button class="sci" onclick="inp('3.141')">π</button><button class="sci">EE</button>
                 <button onclick="inp('1')">1</button><button onclick="inp('2')">2</button><button onclick="inp('3')">3</button><button class="op" onclick="inp('+')">+</button>
-                <button class="sci">RAD</button><button class="sci">SINH</button><button class="sci">COSH</button><button class="sci">TANH</button><button class="sci" onclick="inp('3.141')">π</button><button class="sci">RAND</button>
                 <button style="grid-column: span 2" onclick="inp('0')">0</button><button onclick="inp('.')">.</button><button class="op" onclick="solve()">=</button>
             </div>
         </div>
@@ -184,7 +192,11 @@
         let d = "", td = "", hist = [];
         const disp = document.getElementById('disp');
 
-        function toggleSide() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').style.display = document.getElementById('sidebar').classList.contains('open') ? 'block' : 'none'; }
+        function toggleSide() { 
+            const s = document.getElementById('sidebar');
+            s.classList.toggle('open'); 
+            document.getElementById('overlay').style.display = s.classList.contains('open') ? 'block' : 'none'; 
+        }
         
         function setTheme(m) { 
             document.body.className = m + '-mode'; 
@@ -200,10 +212,17 @@
 
         function inp(v) { d += v; disp.innerText = d; }
         function clr() { d = ""; disp.innerText = "0"; }
-        function solve() { try { let res = eval(d.replace('×','*').replace('÷','/')); addHist(d + "=" + res); d = res.toString(); disp.innerText = d; } catch { clr(); } }
-        function addHist(e) { hist.unshift(e); if(hist.length > 5) hist.pop(); document.getElementById('hist-log').innerHTML = hist.map(h => `<div style="padding:5px 0; border-bottom:1px solid var(--border)">${h}</div>`).join(''); }
-
-        function handleZero(e) { if(e.target.id !== 'mic-trigger' && !document.getElementById('mic-trigger').contains(e.target)) inp('0'); }
+        function solve() { 
+            try { 
+                let res = eval(d.replace('×','*').replace('÷','/')); 
+                addHist(d + "=" + res);
+                d = res.toString(); disp.innerText = d; 
+            } catch { clr(); } 
+        }
+        function addHist(e) { 
+            hist.unshift(e); if(hist.length > 5) hist.pop(); 
+            document.getElementById('hist-log').innerHTML = hist.map(h => `<div style="padding:8px 0; border-bottom:1px solid var(--border)">${h}</div>`).join(''); 
+        }
 
         function sciOp(t) {
             let n = parseFloat(d || "0");
@@ -218,15 +237,14 @@
         function tBack() { td = td.slice(0,-1); tUp(); }
         function tUp() { document.getElementById('t-in').innerText = td || "0"; document.getElementById('t-out').innerText = (parseFloat(td||0)*0.94).toFixed(2); }
 
-        function runVoice(e) {
-            e.stopPropagation();
+        function runVoice() {
             const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
             if(!Rec) return;
             const r = new Rec();
-            const btn = document.getElementById('zero-btn');
+            const mic = document.getElementById('wa-mic');
             
-            r.onstart = () => btn.classList.add('listening-active');
-            r.onend = () => btn.classList.remove('listening-active');
+            r.onstart = () => mic.classList.add('listening');
+            r.onend = () => mic.classList.remove('listening');
             r.onresult = (e) => {
                 let s = e.results[0][0].transcript.toLowerCase();
                 if(s.includes("clear")) clr();
