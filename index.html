@@ -23,7 +23,7 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
         html, body { background: var(--bg); color: var(--text); overflow: hidden; height: 100svh; transition: 0.3s ease; }
 
-        /* --- SIDEBAR & MENU --- */
+        /* --- SIDEBAR --- */
         #sidebar { 
             position: fixed; top: 0; left: -320px; width: 320px; height: 100%; 
             background: var(--bg); z-index: 3000; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -46,18 +46,17 @@
         .tab { font-size: 10px; font-weight: 800; opacity: 0.3; cursor: pointer; letter-spacing: 2px; }
         .tab.active { opacity: 1; color: var(--accent); }
 
-        /* --- ROOMS --- */
+        /* --- DISPLAY & ROOMS --- */
         .stage { display: flex; width: 200vw; height: 100%; transition: 0.6s cubic-bezier(0.2, 0, 0, 1); }
         .room { width: 100vw; height: 100%; padding: 100px 25px 25px; display: flex; flex-direction: column; max-width: 480px; margin: 0 auto; }
         .val { font-size: clamp(45px, 9svh, 85px); font-weight: 400; color: var(--accent); text-align: right; width: 100%; margin-bottom: 10px; }
 
-        /* --- GRIDS --- */
-        .grid { display: grid; gap: 12px; width: 100%; }
-        .grid-portrait { grid-template-columns: repeat(4, 1fr); display: grid; }
+        /* --- FIXED GRID LOGIC --- */
+        .grid { display: grid; gap: 12px; width: 100%; grid-template-columns: repeat(4, 1fr); }
         .grid-landscape { display: none; grid-template-columns: repeat(10, 1fr); }
 
         @media (orientation: landscape) {
-            .grid-portrait { display: none; }
+            .grid { display: none; }
             .grid-landscape { display: grid; }
             .room { max-width: 95%; padding-top: 50px; }
         }
@@ -77,12 +76,13 @@
             color: var(--accent); border: 1.5px solid var(--border); 
         }
 
-        /* --- MIC ICON STYLING --- */
-        .mic-icon { stroke: var(--insight-green); stroke-width: 3; fill: none; transition: 0.3s; }
+        /* --- INTEGRATED MIC ICON --- */
+        .mic-btn { background: var(--btn-num); }
+        .mic-icon { stroke: var(--insight-green); stroke-width: 3; fill: none; width: 28px; height: 28px; }
         .listening-btn { background: var(--insight-green) !important; }
         .listening-btn .mic-icon { stroke: #000 !important; }
 
-        /* --- PREMIUM THEMES --- */
+        /* --- THEMES --- */
         .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; }
         .theme-btn { 
             height: 90px; border-radius: 20px; border: 1px solid var(--border);
@@ -90,7 +90,6 @@
             flex-direction: column; align-items: center; justify-content: center; gap: 10px;
         }
         .theme-btn.active { border-color: var(--accent); background: rgba(29, 155, 240, 0.1); }
-        .theme-btn.active svg { stroke: var(--accent); opacity: 1; }
     </style>
 </head>
 <body class="dark-mode">
@@ -132,20 +131,21 @@
     <div class="stage" id="stage">
         <div class="room">
             <div class="val" id="disp">0</div>
-            <div class="grid grid-portrait">
+            <div class="grid">
                 <button class="fn" onclick="clr()">AC</button><button class="fn" onclick="sciOp('pm')">+/-</button><button class="fn" onclick="sciOp('pct')">%</button><button class="op" onclick="inp('/')">÷</button>
                 <button onclick="inp('7')">7</button><button onclick="inp('8')">8</button><button onclick="inp('9')">9</button><button class="op" onclick="inp('*')">×</button>
                 <button onclick="inp('4')">4</button><button onclick="inp('5')">5</button><button onclick="inp('6')">6</button><button class="op" onclick="inp('-')">−</button>
                 <button onclick="inp('1')">1</button><button onclick="inp('2')">2</button><button onclick="inp('3')">3</button><button class="op" onclick="inp('+')">+</button>
                 
                 <button onclick="inp('0')">0</button>
-                <button id="calc-mic" onclick="runVoice()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" class="mic-icon"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                <button id="calc-mic" class="mic-btn" onclick="runVoice()">
+                    <svg viewBox="0 0 24 24" class="mic-icon"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
                 </button>
-                <button onclick="inp('.')">.</button><button class="op" onclick="solve()">=</button>
+                <button onclick="inp('.')">.</button>
+                <button class="op" onclick="solve()">=</button>
             </div>
 
-            <div class="grid grid-landscape">
+            <div class="grid-landscape">
                 <button class="sci" onclick="inp('(')">(</button><button class="sci" onclick="inp(')')">)</button><button class="sci">mc</button><button class="sci">m+</button><button class="sci">m-</button><button class="sci">mr</button>
                 <button class="fn" onclick="clr()">AC</button><button class="fn" onclick="sciOp('pm')">+/-</button><button class="fn" onclick="sciOp('pct')">%</button><button class="op" onclick="inp('/')">÷</button>
                 <button class="sci">2nd</button><button class="sci" onclick="sciOp('x2')">X²</button><button class="sci" onclick="sciOp('x3')">X³</button><button class="sci" onclick="sciOp('xy')">Xʸ</button><button class="sci">Eˣ</button><button class="sci">10ˣ</button>
@@ -166,7 +166,7 @@
             <div style="background:var(--card); border-radius:24px; padding:25px; border:1px solid var(--border); margin-bottom:20px; text-align:center;">
                 <p style="font-size:10px; opacity:0.4; letter-spacing:2px; margin-bottom:10px;">EUR</p><h2 id="t-out" style="font-size:38px; color:var(--accent); font-weight:300;">0.00</h2>
             </div>
-            <div class="grid grid-portrait">
+            <div class="grid">
                 <button onclick="tIn('7')">7</button><button onclick="tIn('8')">8</button><button onclick="tIn('9')">9</button>
                 <button onclick="tIn('4')">4</button><button onclick="tIn('5')">5</button><button onclick="tIn('6')">6</button>
                 <button onclick="tIn('1')">1</button><button onclick="tIn('2')">2</button><button onclick="tIn('3')">3</button>
