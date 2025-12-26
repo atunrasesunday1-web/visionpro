@@ -10,52 +10,54 @@
         :root {
             --bg: #000; --surface: #111; --text: #fff; --accent: #1d9bf0;
             --border: #222; --low-white: rgba(255, 255, 255, 0.6); --green: #00ff88;
-            --danger: #ff453a;
+            --danger: #ff453a; --glass: rgba(255, 255, 255, 0.05);
         }
         [data-theme="light"] {
             --bg: #f5f5f7; --surface: #ffffff; --text: #1d1d1f; --accent: #007aff;
             --border: #d2d2d7; --low-white: rgba(0, 0, 0, 0.5); --green: #1d9b40;
-            --danger: #ff3b30;
+            --danger: #ff3b30; --glass: rgba(0, 0, 0, 0.03);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; height: 100svh; overflow: hidden; display: flex; flex-direction: column; transition: background 0.4s ease; }
 
-        /* --- SIDEBAR & MODALS --- */
+        /* --- SIDEBAR & SHEETS --- */
         #sidebar { position: fixed; left: -280px; top: 0; width: 280px; height: 100%; background: var(--surface); border-right: 1px solid var(--border); z-index: 1000; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); padding: 60px 24px; display: flex; flex-direction: column; gap: 32px; }
         .sidebar-active #sidebar { transform: translateX(280px); }
         .menu-item { display: flex; align-items: center; gap: 16px; font-size: 14px; font-weight: 600; color: var(--low-white); cursor: pointer; }
-        .menu-item:hover { color: var(--text); }
         
         .sheet { position: fixed; bottom: -100%; left: 0; width: 100%; height: 85%; background: var(--surface); border-radius: 32px 32px 0 0; z-index: 2000; transition: bottom 0.5s cubic-bezier(0.16, 1, 0.3, 1); padding: 30px; overflow-y: auto; border-top: 1px solid var(--border); }
         .sheet.active { bottom: 0; }
-        .sheet-header { position: sticky; top: 0; background: var(--surface); padding-bottom: 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; }
-        .sheet-title { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
-
-        .btn-clear { background: rgba(255, 69, 58, 0.1); color: var(--danger); border: none; padding: 8px 16px; border-radius: 100px; font-size: 11px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.2s; }
-
-        /* --- NEWS LIST SYSTEM --- */
-        .news-link { text-decoration: none; color: inherit; display: block; transition: 0.2s; }
-        .news-link:active { opacity: 0.6; transform: scale(0.98); }
-        .news-item { padding: 20px 0; border-bottom: 1px solid var(--border); position: relative; }
-        .news-title { font-weight: 600; margin-bottom: 8px; font-size: 15px; line-height: 1.4; padding-right: 25px; }
-        .news-meta { font-size: 11px; color: var(--low-white); text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
-        .news-item i.external { position: absolute; right: 0; top: 22px; color: var(--low-white); opacity: 0.5; }
-        
-        .btn-read-more { display: block; width: 100%; padding: 18px; margin-top: 20px; border-radius: 16px; border: 1px solid var(--border); color: var(--text); text-align: center; font-size: 13px; font-weight: 600; text-decoration: none; background: rgba(255,255,255,0.03); }
 
         /* --- UI COMPONENTS --- */
         header { padding: 20px; display: flex; align-items: center; justify-content: space-between; z-index: 100; }
         .switcher-container { background: var(--surface); border: 1px solid var(--border); border-radius: 100px; padding: 4px; display: flex; }
-        .switch-btn { padding: 8px 20px; border-radius: 100px; font-size: 10px; font-weight: 800; cursor: pointer; transition: 0.3s; color: var(--low-white); text-transform: uppercase; }
+        .switch-btn { padding: 8px 16px; border-radius: 100px; font-size: 10px; font-weight: 800; cursor: pointer; transition: 0.3s; color: var(--low-white); text-transform: uppercase; }
         .switch-btn.active { background: var(--accent); color: #fff; }
 
         #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; z-index: 900; backdrop-filter: blur(8px); }
         .overlay-active #overlay { display: block; }
 
+        /* --- CALCULATOR GRID --- */
         .viewport { width: 100%; flex-grow: 1; display: flex; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        .section { min-width: 100%; padding: 20px; }
-        .display-box { height: 120px; display: flex; align-items: center; justify-content: flex-end; font-size: 48px; font-weight: 600; border-bottom: 1px solid var(--border); letter-spacing: -1px; }
+        .section { min-width: 100%; padding: 20px; display: flex; flex-direction: column; }
+        .display-box { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; padding: 20px 0; }
+        .main-val { font-size: 56px; font-weight: 700; letter-spacing: -2px; }
+        
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
+        .key { aspect-ratio: 1; background: var(--glass); border: 1px solid var(--border); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 600; cursor: pointer; transition: 0.1s; }
+        .key:active { transform: scale(0.95); background: var(--border); }
+        .key.equal { background: var(--accent); color: #fff; border: none; }
+        .key.operator { color: var(--accent); }
+
+        /* --- CONVERTER STYLES --- */
+        .converter-card { background: var(--glass); border: 1px solid var(--border); border-radius: 24px; padding: 24px; margin-bottom: 15px; }
+        .input-group { margin-bottom: 20px; }
+        .label { font-size: 11px; font-weight: 800; color: var(--low-white); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .currency-row { display: flex; align-items: center; gap: 15px; }
+        select { background: none; border: none; color: var(--text); font-size: 18px; font-weight: 700; cursor: pointer; outline: none; }
+        .amount-input { background: none; border: none; color: var(--text); font-size: 24px; font-weight: 700; width: 100%; text-align: right; outline: none; }
+        .convert-btn { width: 100%; padding: 18px; border-radius: 16px; background: var(--accent); color: white; border: none; font-weight: 700; margin-top: 10px; cursor: pointer; }
     </style>
 </head>
 <body id="app-body">
@@ -72,124 +74,163 @@
         </div>
     </nav>
 
-    <div id="insights-sheet" class="sheet">
-        <div class="sheet-header">
-            <span class="sheet-title">Insights</span>
-            <div onclick="closeAll()" style="cursor:pointer"><i data-lucide="x" size="20"></i></div>
-        </div>
-        <div id="news-feed">Fetching secure data...</div>
-    </div>
-
-    <div id="history-sheet" class="sheet">
-        <div class="sheet-header">
-            <span class="sheet-title">History</span>
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <button class="btn-clear" onclick="clearHistory()">Clear All</button>
-                <div onclick="closeAll()" style="cursor:pointer"><i data-lucide="x" size="20"></i></div>
-            </div>
-        </div>
-        <div id="history-list"></div>
-    </div>
-
     <header>
-        <div class="menu-trigger" onclick="toggleMenu()"><i data-lucide="menu"></i></div>
+        <div onclick="toggleMenu()"><i data-lucide="menu"></i></div>
         <div class="switcher-container">
-            <div id="btn-calc" class="switch-btn active" onclick="setView(0)">Calculator</div>
-            <div id="btn-trade" class="switch-btn" onclick="setView(1)">Trade</div>
+            <div id="tab-0" class="switch-btn active" onclick="setView(0)">Calculator</div>
+            <div id="tab-1" class="switch-btn" onclick="setView(1)">Currency Converter</div>
         </div>
-        <div style="width: 24px;"></div>
+        <div style="width:24px;"></div>
     </header>
 
     <div class="viewport" id="viewport">
         <div class="section">
-            <div class="display-box" id="calc-display" onclick="testCalc()">0</div>
-            <p style="font-size: 11px; color: var(--low-white); margin-top: 15px; text-align: center; opacity: 0.5;">CALCULATOR ENGINE READY</p>
+            <div class="display-box">
+                <div style="font-size:16px; color:var(--low-white); margin-bottom:5px;" id="sub-display"></div>
+                <div class="main-val" id="main-display">0</div>
+            </div>
+            <div class="grid">
+                <div class="key" style="color:var(--danger)" onclick="clearCalc()">AC</div>
+                <div class="key" onclick="deleteLast()"><i data-lucide="delete"></i></div>
+                <div class="key operator" onclick="appendOp('%')">%</div>
+                <div class="key operator" onclick="appendOp('/')">÷</div>
+                <div class="key" onclick="appendNum('7')">7</div>
+                <div class="key" onclick="appendNum('8')">8</div>
+                <div class="key" onclick="appendNum('9')">9</div>
+                <div class="key operator" onclick="appendOp('*')">×</div>
+                <div class="key" onclick="appendNum('4')">4</div>
+                <div class="key" onclick="appendNum('5')">5</div>
+                <div class="key" onclick="appendNum('6')">6</div>
+                <div class="key operator" onclick="appendOp('-')">−</div>
+                <div class="key" onclick="appendNum('1')">1</div>
+                <div class="key" onclick="appendNum('2')">2</div>
+                <div class="key" onclick="appendNum('3')">3</div>
+                <div class="key operator" onclick="appendOp('+')">+</div>
+                <div class="key" style="grid-column: span 2; aspect-ratio: auto;" onclick="appendNum('0')">0</div>
+                <div class="key" onclick="appendNum('.')">.</div>
+                <div class="key equal" onclick="calculate()">=</div>
+            </div>
         </div>
+
         <div class="section">
-            <div class="display-box" style="color: var(--accent);">$0.00</div>
+            <div style="margin-top:20px;">
+                <div class="converter-card">
+                    <div class="input-group">
+                        <div class="label">From</div>
+                        <div class="currency-row">
+                            <select id="from-currency">
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                                <option value="GBP">GBP</option>
+                                <option value="JPY">JPY</option>
+                                <option value="NGN">NGN</option>
+                            </select>
+                            <input type="number" id="from-amount" class="amount-input" value="100">
+                        </div>
+                    </div>
+                    <div style="height:1px; background:var(--border); margin:20px 0;"></div>
+                    <div class="input-group">
+                        <div class="label">To</div>
+                        <div class="currency-row">
+                            <select id="to-currency">
+                                <option value="EUR">EUR</option>
+                                <option value="USD" selected>USD</option>
+                                <option value="GBP">GBP</option>
+                                <option value="JPY">JPY</option>
+                                <option value="NGN">NGN</option>
+                            </select>
+                            <div id="to-amount" class="amount-input">0.00</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="convert-btn" onclick="convertCurrency()">Convert Live</button>
+                <p id="rate-info" style="text-align:center; font-size:11px; color:var(--low-white); margin-top:15px;">Official Market Rates</p>
+            </div>
         </div>
+    </div>
+
+    <div id="history-sheet" class="sheet">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <span style="font-weight:800">HISTORY</span>
+            <button onclick="clearHistory()" style="color:var(--danger); background:none; border:none; font-weight:700">CLEAR</button>
+        </div>
+        <div id="history-list"></div>
+    </div>
+
+    <div id="insights-sheet" class="sheet">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <span style="font-weight:800">MARKET INSIGHTS</span>
+            <div onclick="closeAll()"><i data-lucide="x"></i></div>
+        </div>
+        <div id="news-feed">Loading News...</div>
     </div>
 
     <script>
         lucide.createIcons();
-        const body = document.body;
+        let currentInput = '0';
+        let equation = '';
 
-        function toggleMenu() { body.classList.toggle('sidebar-active'); body.classList.toggle('overlay-active'); }
-        function closeAll() { body.classList.remove('sidebar-active', 'overlay-active'); document.querySelectorAll('.sheet').forEach(s => s.classList.remove('active')); }
+        function toggleMenu() { document.body.classList.toggle('sidebar-active'); document.body.classList.toggle('overlay-active'); }
+        function closeAll() { document.body.classList.remove('sidebar-active', 'overlay-active'); document.querySelectorAll('.sheet').forEach(s => s.classList.remove('active')); }
         function setView(i) { 
-            document.getElementById('viewport').style.transform = `translateX(-${i * 100}%)`; 
+            document.getElementById('viewport').style.transform = `translateX(-${i * 100}%)`;
             document.querySelectorAll('.switch-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.switch-btn')[i].classList.add('active');
+            document.getElementById('tab-'+i).classList.add('active');
+        }
+        function toggleTheme() { document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
+
+        // CALC
+        function appendNum(n) { if(currentInput === '0' && n !== '.') currentInput = n; else currentInput += n; updateDisplay(); }
+        function appendOp(op) { equation = currentInput + ' ' + op + ' '; currentInput = '0'; updateDisplay(); }
+        function clearCalc() { currentInput = '0'; equation = ''; updateDisplay(); }
+        function deleteLast() { currentInput = currentInput.slice(0,-1) || '0'; updateDisplay(); }
+        function updateDisplay() { document.getElementById('main-display').innerText = currentInput; document.getElementById('sub-display').innerText = equation; }
+        function calculate() {
+            try {
+                let res = eval((equation + currentInput).replace('×', '*').replace('÷', '/'));
+                saveToHistory(equation + currentInput + ' = ' + res);
+                currentInput = res.toString(); equation = ''; updateDisplay();
+            } catch(e) { currentInput = 'Error'; updateDisplay(); }
         }
 
-        function toggleTheme() {
-            const current = document.documentElement.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', next);
+        // CONVERTER
+        async function convertCurrency() {
+            const from = document.getElementById('from-currency').value;
+            const to = document.getElementById('to-currency').value;
+            const amt = document.getElementById('from-amount').value;
+            const display = document.getElementById('to-amount');
+            display.innerText = "Updating...";
+            try {
+                const res = await fetch(`https://open.er-api.com/v6/latest/${from}`);
+                const data = await res.json();
+                const rate = data.rates[to];
+                display.innerText = (amt * rate).toLocaleString(undefined, {minimumFractionDigits: 2});
+                document.getElementById('rate-info').innerText = `1 ${from} = ${rate.toFixed(4)} ${to}`;
+            } catch(e) { display.innerText = "Error"; }
         }
+
+        // PORTALS
+        function saveToHistory(entry) {
+            let h = JSON.parse(localStorage.getItem('vh') || '[]');
+            h.unshift({entry, time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})});
+            localStorage.setItem('vh', JSON.stringify(h.slice(0,10)));
+        }
+        function openHistory() { closeAll(); document.getElementById('history-sheet').classList.add('active'); renderH(); }
+        function renderH() {
+            const l = document.getElementById('history-list');
+            const h = JSON.parse(localStorage.getItem('vh') || '[]');
+            l.innerHTML = h.map(i => `<div style="padding:15px 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between"><span>${i.entry}</span><span style="color:var(--low-white); font-size:12px">${i.time}</span></div>`).join('') || "No History";
+        }
+        function clearHistory() { localStorage.removeItem('vh'); renderH(); }
 
         async function openInsights() {
-            closeAll();
-            document.getElementById('insights-sheet').classList.add('active');
-            const feed = document.getElementById('news-feed');
-            feed.innerHTML = "<p style='color:var(--low-white); font-size:13px;'>Connecting to Yahoo Finance...</p>";
-            
+            closeAll(); document.getElementById('insights-sheet').classList.add('active');
+            const f = document.getElementById('news-feed');
             try {
                 const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=https://finance.yahoo.com/rss/forex`);
-                const data = await res.json();
-                
-                let html = data.items.map(item => `
-                    <a href="${item.link}" target="_blank" class="news-link">
-                        <div class="news-item">
-                            <i data-lucide="external-link" class="external" size="14"></i>
-                            <div class="news-title">${item.title}</div>
-                            <div class="news-meta">
-                                <span>MARKET NEWS</span> • 
-                                <span>${new Date(item.pubDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                            </div>
-                        </div>
-                    </a>
-                `).join('');
-
-                html += `<a href="https://finance.yahoo.com/forex" target="_blank" class="btn-read-more">View All on Yahoo Finance</a>`;
-                
-                feed.innerHTML = html;
-                lucide.createIcons();
-            } catch (e) { feed.innerHTML = "Unable to load market data. Check your connection."; }
-        }
-
-        function openHistory() {
-            closeAll();
-            document.getElementById('history-sheet').classList.add('active');
-            renderHistory();
-        }
-
-        function saveCalc(val) {
-            let history = JSON.parse(localStorage.getItem('vision_history') || '[]');
-            history.unshift({ val, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
-            localStorage.setItem('vision_history', JSON.stringify(history.slice(0, 15)));
-        }
-
-        function renderHistory() {
-            const list = document.getElementById('history-list');
-            const history = JSON.parse(localStorage.getItem('vision_history') || '[]');
-            list.innerHTML = history.length ? history.map(h => `
-                <div class="history-item">
-                    <span class="hist-val">${h.val}</span>
-                    <span style="font-size:12px; color:var(--low-white)">${h.time}</span>
-                </div>
-            `).join('') : '<p style="color:var(--low-white); text-align:center; margin-top:40px;">No history to show.</p>';
-        }
-
-        function clearHistory() {
-            localStorage.removeItem('vision_history');
-            renderHistory();
-        }
-
-        function testCalc() { 
-            const v = (Math.random() * 100).toFixed(2); 
-            document.getElementById('calc-display').innerText = v; 
-            saveCalc(v); 
+                const d = await res.json();
+                f.innerHTML = d.items.slice(0,6).map(i => `<a href="${i.link}" target="_blank" style="text-decoration:none; color:inherit"><div style="padding:15px 0; border-bottom:1px solid var(--border)"><div style="font-weight:600; font-size:14px; margin-bottom:4px">${i.title}</div><div style="font-size:10px; color:var(--low-white)">YAHOO • ${new Date(i.pubDate).toLocaleTimeString()}</div></div></a>`).join('');
+            } catch(e) { f.innerText = "Offline"; }
         }
     </script>
 </body>
