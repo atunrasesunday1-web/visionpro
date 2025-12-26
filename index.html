@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Vision Elite | Dual Pro + History</title>
+    <title>Vision Elite | Dual Pro + Dynamic Grid</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -25,19 +25,13 @@
             transition: background 0.3s ease;
         }
 
-        /* --- SIDEBAR --- */
+        /* --- SIDEBAR & PANELS --- */
         #sidebar {
             position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
             background: var(--surface); z-index: 3000; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             padding: 60px 20px;
         }
         #sidebar.open { left: 0; }
-        .menu-item {
-            display: flex; align-items: center; gap: 15px; padding: 15px;
-            border-radius: 12px; margin-bottom: 8px; cursor: pointer; color: var(--text);
-        }
-
-        /* --- HISTORY PANEL --- */
         #history-panel {
             position: fixed; bottom: -100%; left: 0; width: 100%; height: 80%;
             background: var(--surface); z-index: 4000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -45,16 +39,7 @@
             display: flex; flex-direction: column; padding: 25px;
         }
         #history-panel.open { bottom: 0; }
-        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .clear-btn { color: var(--red); font-weight: 600; cursor: pointer; font-size: 14px; padding: 8px; }
-        .history-list { flex: 1; overflow-y: auto; }
-        .history-entry { 
-            padding: 15px 0; border-bottom: 1px solid var(--dark-gray); cursor: pointer;
-            display: flex; flex-direction: column; align-items: flex-end;
-        }
-        .hist-eq { font-size: 14px; color: var(--gray); margin-bottom: 4px; }
-        .hist-res { font-size: 20px; font-weight: 500; color: var(--orange); }
-
+        .clear-btn { color: var(--red); font-weight: 600; cursor: pointer; }
         #overlay {
             position: fixed; inset: 0; background: var(--overlay); visibility: hidden; opacity: 0;
             z-index: 2500; transition: 0.3s; backdrop-filter: blur(4px);
@@ -74,21 +59,22 @@
 
         header { padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; }
 
-        /* --- VIEWS --- */
-        #calc-view, #conv-view { flex: 1; display: flex; flex-direction: column; }
+        /* --- DISPLAY --- */
+        .display { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; padding: 20px 30px; }
+        .current-val { font-size: clamp(40px, 10vh, 80px); font-weight: 300; letter-spacing: -2px; text-align: right; width: 100%; }
+
+        /* --- CONVERTER UI --- */
         #conv-view { display: none; padding: 20px; }
-
-        .display {
-            flex: 1; display: flex; flex-direction: column; justify-content: flex-end;
-            align-items: flex-end; padding: 20px 30px;
-        }
-        .current-val { font-size: clamp(40px, 12vh, 80px); font-weight: 300; letter-spacing: -2px; text-align: right; width: 100%; }
-
-        .conv-card { background: var(--surface); padding: 25px; border-radius: 24px; margin-top: 40px; }
-        .currency-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .conv-card { background: var(--surface); padding: 25px; border-radius: 24px; margin-top: 20px; }
+        .currency-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .currency-amt { font-size: 32px; font-weight: 300; color: var(--orange); }
 
         /* --- GRID --- */
-        .grid-container { padding: 10px; padding-bottom: 40px; display: grid; gap: 12px; }
+        .grid-container { padding: 10px; padding-bottom: 40px; display: grid; gap: 12px; transition: all 0.3s ease; }
+        
+        /* Dynamic Grid logic */
+        .grid-container.conv-mode { grid-template-columns: repeat(4, 1fr) !important; max-width: 450px; margin: 0 auto; }
+        .grid-container.conv-mode .sci-only { display: none !important; }
 
         @media screen and (orientation: portrait) {
             .grid-container { grid-template-columns: repeat(4, 1fr); }
@@ -97,8 +83,8 @@
         }
 
         @media screen and (min-width: 768px), screen and (orientation: landscape) {
-            .grid-container { grid-template-columns: repeat(10, 1fr); gap: 10px; max-width: 1000px; margin: 0 auto; width: 95%; }
-            .sci-only { display: flex; }
+            .grid-container:not(.conv-mode) { grid-template-columns: repeat(10, 1fr); gap: 10px; max-width: 1000px; margin: 0 auto; width: 95%; }
+            .grid-container:not(.conv-mode) .sci-only { display: flex; }
             .btn { border-radius: 40px !important; height: 46px !important; font-size: 15px !important; aspect-ratio: auto !important; }
         }
 
@@ -109,8 +95,6 @@
         .btn.op { background: var(--orange); color: white; }
         .btn.sys { background: var(--gray); color: black; font-size: 18px; }
         .btn:active { opacity: 0.6; transform: scale(0.95); }
-        
-        .mic-btn { color: var(--orange); cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
@@ -124,15 +108,12 @@
     </nav>
 
     <div id="history-panel">
-        <div class="history-header">
-            <span style="font-weight: 700;">History</span>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <span style="font-weight:700;">History</span>
             <span class="clear-btn" onclick="clearHistory()">Clear History</span>
         </div>
-        <div class="history-list" id="hist-list">
-            </div>
-        <div style="text-align: center; padding-top: 15px;" onclick="toggleHistory()">
-            <i data-lucide="chevron-down" style="color:var(--gray); cursor:pointer"></i>
-        </div>
+        <div id="hist-list" style="flex:1; overflow-y:auto;"></div>
+        <div style="text-align:center; padding:15px;" onclick="toggleHistory()"><i data-lucide="chevron-down"></i></div>
     </div>
 
     <div class="tab-container">
@@ -142,13 +123,11 @@
 
     <header>
         <div style="color:var(--orange); cursor:pointer" onclick="toggleMenu()"><i data-lucide="menu"></i></div>
-        <div class="mic-btn"><i data-lucide="mic"></i></div>
+        <div style="color:var(--orange); cursor:pointer"><i data-lucide="mic"></i></div>
     </header>
 
     <main id="calc-view">
-        <div class="display">
-            <div id="main-display" class="current-val">0</div>
-        </div>
+        <div class="display"><div id="main-display" class="current-val">0</div></div>
     </main>
 
     <main id="conv-view">
@@ -159,57 +138,39 @@
         </div>
     </main>
 
-    <div class="grid-container">
-        <button class="btn sci sci-only">(</button>
-        <button class="btn sci sci-only">)</button>
-        <button class="btn sci sci-only">mc</button>
-        <button class="btn sci sci-only">m+</button>
-        <button class="btn sci sci-only">m-</button>
-        <button class="btn sci sci-only">mr</button>
+    <div id="main-grid" class="grid-container">
+        <button class="btn sci sci-only">(</button><button class="btn sci sci-only">)</button>
+        <button class="btn sci sci-only">mc</button><button class="btn sci sci-only">m+</button>
+        <button class="btn sci sci-only">m-</button><button class="btn sci sci-only">mr</button>
         <button class="btn sys" id="ac-btn" onclick="clearAll()">AC</button>
         <button class="btn sys" onclick="negate()">+/-</button>
         <button class="btn sys" onclick="perc()">%</button>
         <button class="btn op" onclick="op('/')">÷</button>
 
-        <button class="btn sci sci-only">sin</button>
-        <button class="btn sci sci-only">cos</button>
-        <button class="btn sci sci-only">tan</button>
-        <button class="btn sci sci-only">xʸ</button>
-        <button class="btn sci sci-only">eˣ</button>
-        <button class="btn sci sci-only">log</button>
-        <button class="btn" onclick="num('7')">7</button>
-        <button class="btn" onclick="num('8')">8</button>
+        <button class="btn sci sci-only">sin</button><button class="btn sci sci-only">cos</button>
+        <button class="btn sci sci-only">tan</button><button class="btn sci sci-only">xʸ</button>
+        <button class="btn sci sci-only">eˣ</button><button class="btn sci sci-only">log</button>
+        <button class="btn" onclick="num('7')">7</button><button class="btn" onclick="num('8')">8</button>
         <button class="btn" onclick="num('9')">9</button>
         <button class="btn op" onclick="op('*')">×</button>
 
-        <button class="btn sci sci-only">sinh</button>
-        <button class="btn sci sci-only">cosh</button>
-        <button class="btn sci sci-only">tanh</button>
-        <button class="btn sci sci-only">√</button>
-        <button class="btn sci sci-only">ln</button>
-        <button class="btn sci sci-only">x!</button>
-        <button class="btn" onclick="num('4')">4</button>
-        <button class="btn" onclick="num('5')">5</button>
+        <button class="btn sci sci-only">sinh</button><button class="btn sci sci-only">cosh</button>
+        <button class="btn sci sci-only">tanh</button><button class="btn sci sci-only">√</button>
+        <button class="btn sci sci-only">ln</button><button class="btn sci sci-only">x!</button>
+        <button class="btn" onclick="num('4')">4</button><button class="btn" onclick="num('5')">5</button>
         <button class="btn" onclick="num('6')">6</button>
         <button class="btn op" onclick="op('-')">−</button>
 
-        <button class="btn sci sci-only">π</button>
-        <button class="btn sci sci-only">e</button>
-        <button class="btn sci sci-only">Rand</button>
-        <button class="btn sci sci-only">1/x</button>
-        <button class="btn sci sci-only">EE</button>
-        <button class="btn sci sci-only">Rad</button>
-        <button class="btn" onclick="num('1')">1</button>
-        <button class="btn" onclick="num('2')">2</button>
+        <button class="btn sci sci-only">π</button><button class="btn sci sci-only">e</button>
+        <button class="btn sci sci-only">Rand</button><button class="btn sci sci-only">1/x</button>
+        <button class="btn sci sci-only">EE</button><button class="btn sci sci-only">Rad</button>
+        <button class="btn" onclick="num('1')">1</button><button class="btn" onclick="num('2')">2</button>
         <button class="btn" onclick="num('3')">3</button>
         <button class="btn op" onclick="op('+')">+</button>
 
-        <button class="btn sci sci-only">sin⁻¹</button>
-        <button class="btn sci sci-only">cos⁻¹</button>
-        <button class="btn sci sci-only">tan⁻¹</button>
-        <button class="btn sci sci-only">x²</button>
-        <button class="btn sci sci-only">x³</button>
-        <button class="btn sci sci-only">ʸ√x</button>
+        <button class="btn sci sci-only">sin⁻¹</button><button class="btn sci sci-only">cos⁻¹</button>
+        <button class="btn sci sci-only">tan⁻¹</button><button class="btn sci sci-only">x²</button>
+        <button class="btn sci sci-only">x³</button><button class="btn sci sci-only">ʸ√x</button>
         <button class="btn double" onclick="num('0')">0</button>
         <button class="btn" onclick="num('.')">.</button>
         <button class="btn op" onclick="solve()">=</button>
@@ -217,91 +178,47 @@
 
     <script>
         lucide.createIcons();
-        let current = '0';
-        let view = 'calc';
-        let history = [];
-        let lastEq = '';
-
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('overlay').classList.toggle('show');
-        }
-
-        function toggleHistory() {
-            document.getElementById('history-panel').classList.toggle('open');
-            document.getElementById('overlay').classList.toggle('show');
-            document.getElementById('sidebar').classList.remove('open');
-            renderHistory();
-        }
-
-        function closeAllPanels() {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('history-panel').classList.remove('open');
-            document.getElementById('overlay').classList.remove('show');
-        }
-
-        function num(v) {
-            current = (current === '0') ? v : current + v;
-            update();
-        }
-
-        function op(o) {
-            lastEq = current + ' ' + o;
-            current = '0';
-            update();
-        }
-
-        function solve() {
-            try {
-                let fullEq = lastEq + ' ' + current;
-                let result = eval(fullEq.replace('×','*').replace('÷','/'));
-                history.unshift({ eq: fullEq, res: result });
-                current = String(result);
-                lastEq = '';
-                update();
-            } catch { current = 'Error'; update(); }
-        }
-
-        function update() {
-            document.getElementById('main-display').innerText = current;
-            document.getElementById('from-val').innerText = current;
-            document.getElementById('to-val').innerText = (parseFloat(current) * 0.92).toFixed(2);
-        }
-
-        function renderHistory() {
-            const list = document.getElementById('hist-list');
-            list.innerHTML = history.map((h, i) => `
-                <div class="history-entry" onclick="restoreHist('${h.res}')">
-                    <span class="hist-eq">${h.eq} =</span>
-                    <span class="hist-res">${h.res}</span>
-                </div>
-            `).join('');
-        }
-
-        function restoreHist(val) {
-            current = val;
-            update();
-            closeAllPanels();
-        }
-
-        function clearHistory() {
-            history = [];
-            renderHistory();
-        }
+        let current = '0', view = 'calc', history = [], lastEq = '';
 
         function switchView(v) {
             view = v;
             document.getElementById('calc-view').style.display = v === 'calc' ? 'flex' : 'none';
             document.getElementById('conv-view').style.display = v === 'conv' ? 'block' : 'none';
+            document.getElementById('main-grid').classList.toggle('conv-mode', v === 'conv');
             document.getElementById('tab-calc').classList.toggle('active', v === 'calc');
             document.getElementById('tab-conv').classList.toggle('active', v === 'conv');
         }
 
+        function num(v) { current = (current === '0') ? v : current + v; update(); }
         function clearAll() { current = '0'; lastEq = ''; update(); }
+        function update() {
+            document.getElementById('main-display').innerText = current;
+            document.getElementById('from-val').innerText = current;
+            document.getElementById('to-val').innerText = (parseFloat(current) * 0.92).toFixed(2);
+        }
+        function op(o) { lastEq = current + ' ' + o; current = '0'; update(); }
+        function solve() {
+            if (view === 'conv') return;
+            try {
+                let res = eval(lastEq.replace('×','*').replace('÷','/') + current);
+                history.unshift({ eq: lastEq + ' ' + current, res: res });
+                current = String(res); lastEq = ''; update();
+            } catch { current = 'Error'; update(); }
+        }
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); }
+        function toggleHistory() { document.getElementById('history-panel').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); renderHistory(); }
+        function closeAllPanels() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('history-panel').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
+        function clearHistory() { history = []; renderHistory(); }
+        function renderHistory() {
+            document.getElementById('hist-list').innerHTML = history.map(h => `
+                <div style="padding:15px 0; border-bottom:1px solid var(--dark-gray); text-align:right;">
+                    <div style="font-size:12px; color:var(--gray);">${h.eq} =</div>
+                    <div style="font-size:20px; color:var(--orange);">${h.res}</div>
+                </div>`).join('');
+        }
         function toggleTheme() {
             const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', t);
-            closeAllPanels();
+            document.documentElement.setAttribute('data-theme', t); closeAllPanels();
         }
     </script>
 </body>
