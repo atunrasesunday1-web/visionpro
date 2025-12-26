@@ -3,84 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Vision Elite Neon 2025</title>
+    <title>Vision Elite Industrial 2025</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { 
             --accent: #1d9bf0; --bg: #000; --text: #f7f9f9;
             --card: #16181c; --border: #2f3336;
-            --btn-num: #1a1a1a; --btn-text: #fff;
-            --op-orange: #ff9f0a; --fn-grey: #3d3d3d;
+            --btn-num: #121212; --btn-text: #fff;
+            --op-orange: #ff9f0a; --fn-grey: #2a2a2a;
             --insight-green: #00ff88;
         }
 
-        body.light-mode {
-            --bg: #ffffff; --text: #0f1419;
-            --card: #f7f9f9; --border: #eff3f4;
-            --btn-num: #f0f0f0; --btn-text: #000;
-        }
-
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
-        html, body { background: var(--bg); color: var(--text); overflow: hidden; height: 100svh; transition: 0.3s ease; }
+        html, body { background: var(--bg); color: var(--text); overflow: hidden; height: 100svh; }
 
         /* --- NAVIGATION --- */
         .top-nav { position: fixed; top: 0; width: 100%; height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 2000; }
-        .tab-bar { display: flex; background: var(--card); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
-        .tab { font-size: 10px; font-weight: 900; padding: 10px 20px; opacity: 0.4; cursor: pointer; letter-spacing: 1px; }
-        .tab.active { opacity: 1; color: var(--accent); background: rgba(29, 155, 240, 0.1); }
+        .tab-bar { display: flex; background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        .tab { font-size: 10px; font-weight: 900; padding: 12px 22px; opacity: 0.4; cursor: pointer; letter-spacing: 1.5px; }
+        .tab.active { opacity: 1; color: var(--accent); background: rgba(29, 155, 240, 0.15); }
 
         /* --- DISPLAY AREA --- */
         .stage { display: flex; width: 200vw; height: 100%; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-        .room { width: 100vw; height: 100%; padding: 80px 15px 15px; display: flex; flex-direction: column; max-width: 500px; margin: 0 auto; position: relative; }
+        .room { width: 100vw; height: 100%; padding: 80px 20px 20px; display: flex; flex-direction: column; max-width: 480px; margin: 0 auto; position: relative; }
         
-        .display-container { position: relative; margin-bottom: 10px; min-height: 120px; display: flex; align-items: flex-end; border-bottom: 1px solid var(--border); }
-        .val { font-size: clamp(45px, 10svh, 90px); font-weight: 700; color: var(--text); text-align: right; width: 100%; padding: 10px; line-height: 1; }
+        .display-container { position: relative; margin-bottom: 25px; min-height: 140px; display: flex; align-items: flex-end; border-bottom: 2px solid var(--border); }
+        .val { font-size: clamp(50px, 11svh, 95px); font-weight: 700; color: var(--text); text-align: right; width: 100%; padding: 10px; line-height: 1; }
 
-        /* --- NEON RECTANGLE MIC --- */
+        /* --- PREMIUM SQUARE MIC --- */
         .wa-mic-btn {
-            position: absolute; bottom: 10px; left: 0;
-            width: 45px; height: 45px;
+            position: absolute; bottom: 12px; left: 0;
+            width: 48px; height: 48px;
             background: rgba(0, 255, 136, 0.05);
-            border: 1px solid var(--insight-green);
-            border-radius: 4px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.2s; z-index: 10;
+            border: 2px solid var(--insight-green);
+            border-radius: 8px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s; z-index: 10;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
         }
-        .wa-mic-btn svg { width: 22px; height: 22px; stroke: var(--insight-green); stroke-width: 2.5; fill: none; }
-        .wa-mic-btn.listening { background: var(--insight-green); box-shadow: 0 0 15px var(--insight-green); }
+        .wa-mic-btn svg { width: 24px; height: 24px; stroke: var(--insight-green); stroke-width: 2.5; fill: none; }
+        .wa-mic-btn.listening { background: var(--insight-green); box-shadow: 0 0 25px var(--insight-green); transform: scale(1.05); }
         .wa-mic-btn.listening svg { stroke: #000; }
 
-        /* --- MASTER RECTANGLE GRID --- */
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; flex-grow: 1; padding-bottom: 10px; }
+        /* --- PREMIUM BOX GRID --- */
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; flex-grow: 1; padding-bottom: 20px; }
 
         button { 
-            width: 100%; height: 100%; border-radius: 4px; border: 1px solid var(--border); 
+            width: 100%; aspect-ratio: 1/1; border-radius: 8px; border: 1.5px solid var(--border); 
             background: var(--btn-num); color: var(--btn-text); 
-            font-size: 22px; font-weight: 700; cursor: pointer; transition: 0.1s; 
+            font-size: 26px; font-weight: 700; cursor: pointer; transition: 0.15s; 
+            display: flex; align-items: center; justify-content: center;
         }
-        button:active { background: var(--border); transform: scale(0.98); }
+        button:active { background: #222; transform: scale(0.95); }
         
+        /* THE NEON OPERATORS */
         .op { 
-            background: rgba(255, 159, 10, 0.1); 
+            background: rgba(255, 159, 10, 0.05); 
             color: var(--op-orange); 
-            border: 1px solid var(--op-orange); 
-            font-size: 26px; 
+            border: 2px solid var(--op-orange); 
+            box-shadow: 0 0 15px rgba(255, 159, 10, 0.2);
         }
-        .op:active { background: var(--op-orange); color: #000; }
+        .op:active { background: var(--op-orange); color: #000; box-shadow: 0 0 30px var(--op-orange); }
         
-        .fn { background: var(--fn-grey); color: #fff; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+        .fn { background: var(--fn-grey); color: #fff; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; border: none; }
+
+        /* Special wide 0 is the only non-square */
+        .wide-btn { grid-column: span 2; aspect-ratio: auto; height: 100%; }
 
         /* SIDEBAR */
         #sidebar { 
             position: fixed; top: 0; left: -320px; width: 320px; height: 100%; 
             background: var(--bg); z-index: 3000; transition: 0.4s;
-            border-right: 1px solid var(--border); padding: 40px; 
+            border-right: 2px solid var(--border); padding: 40px; 
         }
-        #sidebar.open { left: 0; box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 2900; display: none; }
+        #sidebar.open { left: 0; box-shadow: 20px 0 60px rgba(0,0,0,0.8); }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2900; display: none; backdrop-filter: blur(4px); }
 
         @media (orientation: landscape) {
             .room { padding-top: 40px; }
-            .grid { gap: 5px; }
+            button { aspect-ratio: auto; height: 50px; }
         }
     </style>
 </head>
@@ -89,14 +89,14 @@
     <div class="overlay" id="overlay" onclick="toggleSide()"></div>
     
     <div id="sidebar">
-        <h2 style="font-weight: 900; letter-spacing: -1px; margin-bottom: 40px;">VISION ELITE</h2>
-        <div id="hist-log" style="font-size: 12px; opacity: 0.6;">No History Recorded</div>
+        <h2 style="font-weight: 900; letter-spacing: -1px; margin-bottom: 40px; color: var(--accent);">VISION ELITE</h2>
+        <div id="hist-log" style="font-size: 13px; opacity: 0.6; line-height: 2;">No History Recorded</div>
     </div>
 
     <nav class="top-nav">
         <div onclick="toggleSide()" style="cursor:pointer; padding: 10px;">
-            <div style="width:20px; height:2px; background:var(--text); margin-bottom:4px"></div>
-            <div style="width:20px; height:2px; background:var(--text)"></div>
+            <div style="width:24px; height:2px; background:var(--accent); margin-bottom:5px"></div>
+            <div style="width:16px; height:2px; background:var(--accent)"></div>
         </div>
         <div class="tab-bar">
             <div class="tab active" id="tab0" onclick="move(0)">CALC</div>
@@ -129,19 +129,19 @@
                 <button onclick="inp('1')">1</button><button onclick="inp('2')">2</button><button onclick="inp('3')">3</button>
                 <button class="op" onclick="inp('+')">+</button>
                 
-                <button style="grid-column: span 2" onclick="inp('0')">0</button>
+                <button class="wide-btn" onclick="inp('0')">0</button>
                 <button onclick="inp('.')">.</button>
-                <button class="op" style="background:var(--accent); border-color:var(--accent); color:#fff;" onclick="solve()">=</button>
+                <button class="op" onclick="solve()">=</button>
             </div>
         </div>
 
         <div class="room">
-            <div style="background:var(--card); border:1px solid var(--border); padding:30px; margin-bottom:10px; text-align:right;">
-                <p style="font-size:10px; opacity:0.5;">USD INPUT</p>
+            <div style="background:var(--card); border:2px solid var(--border); border-radius:12px; padding:30px; margin-bottom:12px; text-align:right;">
+                <p style="font-size:10px; opacity:0.5; letter-spacing:1px;">USD INPUT</p>
                 <h2 id="t-in" style="font-size:45px; color:var(--accent);">0</h2>
             </div>
-            <div style="background:var(--card); border:1px solid var(--border); padding:30px; margin-bottom:20px; text-align:right;">
-                <p style="font-size:10px; opacity:0.5;">EUR RESULT</p>
+            <div style="background:var(--card); border:2px solid var(--border); border-radius:12px; padding:30px; margin-bottom:25px; text-align:right;">
+                <p style="font-size:10px; opacity:0.5; letter-spacing:1px;">EUR RESULT</p>
                 <h2 id="t-out" style="font-size:45px; color:var(--insight-green);">0.00</h2>
             </div>
             <div class="grid">
@@ -175,13 +175,13 @@
         function solve() { 
             try { 
                 let res = eval(d.replace('×','*').replace('÷','/')); 
-                addHist(d + "=" + res);
+                addHist(d + " = " + res);
                 d = res.toString(); disp.innerText = d; 
             } catch { clr(); } 
         }
         function addHist(e) { 
-            hist.unshift(e); if(hist.length > 5) hist.pop(); 
-            document.getElementById('hist-log').innerHTML = hist.map(h => `<div style="padding:12px 0; border-bottom:1px solid var(--border)">${h}</div>`).join(''); 
+            hist.unshift(e); if(hist.length > 8) hist.pop(); 
+            document.getElementById('hist-log').innerHTML = hist.map(h => `<div style="padding:10px 0; border-bottom:1px solid var(--border)">${h}</div>`).join(''); 
         }
 
         function sciOp(t) {
