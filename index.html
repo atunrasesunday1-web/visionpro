@@ -3,77 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Vision Elite Master 2025</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>Vision Elite Neon 2025</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { 
             --accent: #1d9bf0; --bg: #000; --text: #f7f9f9;
             --card: #16181c; --border: #2f3336;
-            --btn-num: #333333; --btn-text: #fff;
-            --op-orange: #ff9f0a; --fn-grey: #a5a5a5;
+            --btn-num: #1a1a1a; --btn-text: #fff;
+            --op-orange: #ff9f0a; --fn-grey: #3d3d3d;
             --insight-green: #00ff88;
         }
 
         body.light-mode {
             --bg: #ffffff; --text: #0f1419;
             --card: #f7f9f9; --border: #eff3f4;
-            --btn-num: #e5e5ea; --btn-text: #000;
+            --btn-num: #f0f0f0; --btn-text: #000;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
         html, body { background: var(--bg); color: var(--text); overflow: hidden; height: 100svh; transition: 0.3s ease; }
 
-        /* --- SIDEBAR --- */
-        #sidebar { 
-            position: fixed; top: 0; left: -320px; width: 320px; height: 100%; 
-            background: var(--bg); z-index: 3000; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            border-right: 1px solid var(--border); padding: 50px 30px; display: flex; flex-direction: column;
-        }
-        #sidebar.open { left: 0; box-shadow: 40px 0 100px rgba(0,0,0,0.9); }
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2900; display: none; backdrop-filter: blur(8px); }
-
         /* --- NAVIGATION --- */
-        .top-nav { position: fixed; top: 0; width: 100%; height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; z-index: 2000; }
-        .tab-bar { display: flex; gap: 20px; background: var(--card); padding: 10px 25px; border-radius: 100px; border: 1px solid var(--border); }
-        .tab { font-size: 10px; font-weight: 800; opacity: 0.3; cursor: pointer; letter-spacing: 2px; }
-        .tab.active { opacity: 1; color: var(--accent); }
+        .top-nav { position: fixed; top: 0; width: 100%; height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 2000; }
+        .tab-bar { display: flex; background: var(--card); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+        .tab { font-size: 10px; font-weight: 900; padding: 10px 20px; opacity: 0.4; cursor: pointer; letter-spacing: 1px; }
+        .tab.active { opacity: 1; color: var(--accent); background: rgba(29, 155, 240, 0.1); }
 
-        /* --- ROOMS --- */
-        .stage { display: flex; width: 200vw; height: 100%; transition: 0.6s cubic-bezier(0.2, 0, 0, 1); }
-        .room { width: 100vw; height: 100%; padding: 100px 25px 25px; display: flex; flex-direction: column; max-width: 480px; margin: 0 auto; position: relative; }
+        /* --- DISPLAY AREA --- */
+        .stage { display: flex; width: 200vw; height: 100%; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .room { width: 100vw; height: 100%; padding: 80px 15px 15px; display: flex; flex-direction: column; max-width: 500px; margin: 0 auto; position: relative; }
         
-        /* DISPLAY AREA */
-        .display-container { position: relative; margin-bottom: 20px; min-height: 100px; display: flex; align-items: flex-end; }
-        .val { font-size: clamp(45px, 9svh, 85px); font-weight: 400; color: var(--accent); text-align: right; width: 100%; padding-right: 10px; line-height: 1; }
+        .display-container { position: relative; margin-bottom: 10px; min-height: 120px; display: flex; align-items: flex-end; border-bottom: 1px solid var(--border); }
+        .val { font-size: clamp(45px, 10svh, 90px); font-weight: 700; color: var(--text); text-align: right; width: 100%; padding: 10px; line-height: 1; }
 
-        /* --- WHATSAPP STYLE MIC (LEFT-EDGE UP) --- */
+        /* --- NEON RECTANGLE MIC --- */
         .wa-mic-btn {
-            position: absolute; 
-            bottom: 5px; /* Sits slightly up from the buttons */
-            left: 0;    /* Locked to the left edge */
-            width: 42px; height: 42px;
-            background: rgba(0, 255, 136, 0.1);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.3s; z-index: 10;
+            position: absolute; bottom: 10px; left: 0;
+            width: 45px; height: 45px;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid var(--insight-green);
+            border-radius: 4px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.2s; z-index: 10;
         }
-        .wa-mic-btn svg { width: 20px; height: 20px; stroke: var(--insight-green); stroke-width: 2.5; fill: none; }
-        .wa-mic-btn.listening { background: var(--insight-green); box-shadow: 0 0 20px var(--insight-green); transform: scale(1.1); }
+        .wa-mic-btn svg { width: 22px; height: 22px; stroke: var(--insight-green); stroke-width: 2.5; fill: none; }
+        .wa-mic-btn.listening { background: var(--insight-green); box-shadow: 0 0 15px var(--insight-green); }
         .wa-mic-btn.listening svg { stroke: #000; }
 
-        /* --- STABLE GRID --- */
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; }
+        /* --- MASTER RECTANGLE GRID --- */
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; flex-grow: 1; padding-bottom: 10px; }
 
         button { 
-            height: clamp(55px, 7.5svh, 85px); border-radius: 100px; border: none; 
+            width: 100%; height: 100%; border-radius: 4px; border: 1px solid var(--border); 
             background: var(--btn-num); color: var(--btn-text); 
-            font-size: 24px; font-weight: 600; cursor: pointer; transition: 0.1s; 
+            font-size: 22px; font-weight: 700; cursor: pointer; transition: 0.1s; 
         }
-        button:active { filter: brightness(1.6); transform: scale(0.92); }
-        .op { background: var(--op-orange); color: white; font-size: 28px; }
-        .fn { background: var(--fn-grey); color: black; font-weight: 800; font-size: 16px; }
+        button:active { background: var(--border); transform: scale(0.98); }
+        
+        .op { 
+            background: rgba(255, 159, 10, 0.1); 
+            color: var(--op-orange); 
+            border: 1px solid var(--op-orange); 
+            font-size: 26px; 
+        }
+        .op:active { background: var(--op-orange); color: #000; }
+        
+        .fn { background: var(--fn-grey); color: #fff; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* SIDEBAR */
+        #sidebar { 
+            position: fixed; top: 0; left: -320px; width: 320px; height: 100%; 
+            background: var(--bg); z-index: 3000; transition: 0.4s;
+            border-right: 1px solid var(--border); padding: 40px; 
+        }
+        #sidebar.open { left: 0; box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 2900; display: none; }
 
         @media (orientation: landscape) {
-            .room { max-width: 95%; padding-top: 50px; }
+            .room { padding-top: 40px; }
+            .grid { gap: 5px; }
         }
     </style>
 </head>
@@ -82,57 +89,67 @@
     <div class="overlay" id="overlay" onclick="toggleSide()"></div>
     
     <div id="sidebar">
-        <h2 style="font-weight: 800; font-size: 22px; margin-bottom: 30px;">Vision Elite</h2>
-        <a href="https://finance.yahoo.com/currencies" target="_blank" style="text-decoration:none; color:var(--text); font-size:11px; font-weight:800; display:flex; align-items:center; gap:12px; margin-bottom:30px;">
-            <svg style="width:24px; height:24px; stroke:var(--insight-green); fill:none; stroke-width:3" viewBox="0 0 24 24"><path d="M7 6v11h11M10 12l3-3 5 5"/></svg>
-            MARKET FEED
-        </a>
-        <p style="font-size: 10px; font-weight: 800; color: var(--accent); letter-spacing: 2px;">HISTORY</p>
-        <div id="hist-log" style="font-size: 11px; opacity: 0.5; margin-top: 10px;">No records.</div>
+        <h2 style="font-weight: 900; letter-spacing: -1px; margin-bottom: 40px;">VISION ELITE</h2>
+        <div id="hist-log" style="font-size: 12px; opacity: 0.6;">No History Recorded</div>
     </div>
 
     <nav class="top-nav">
-        <div onclick="toggleSide()" style="cursor:pointer; display:flex; flex-direction:column; gap:6px; width:30px;">
-            <span style="height:2px; background:var(--text); width:100%"></span>
-            <span style="height:2px; background:var(--text); width:60%"></span>
+        <div onclick="toggleSide()" style="cursor:pointer; padding: 10px;">
+            <div style="width:20px; height:2px; background:var(--text); margin-bottom:4px"></div>
+            <div style="width:20px; height:2px; background:var(--text)"></div>
         </div>
         <div class="tab-bar">
             <div class="tab active" id="tab0" onclick="move(0)">CALC</div>
             <div class="tab" id="tab1" onclick="move(1)">TRADE</div>
         </div>
-        <div style="width: 30px"></div>
+        <div style="width: 40px"></div>
     </nav>
 
     <div class="stage" id="stage">
         <div class="room">
             <div class="display-container">
                 <div class="wa-mic-btn" id="wa-mic" onclick="runVoice()">
-                    <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                    <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
                 </div>
                 <div class="val" id="disp">0</div>
             </div>
             
             <div class="grid">
-                <button class="fn" onclick="clr()">AC</button><button class="fn" onclick="sciOp('pm')">+/-</button><button class="fn" onclick="sciOp('pct')">%</button><button class="op" onclick="inp('/')">÷</button>
-                <button onclick="inp('7')">7</button><button onclick="inp('8')">8</button><button onclick="inp('9')">9</button><button class="op" onclick="inp('*')">×</button>
-                <button onclick="inp('4')">4</button><button onclick="inp('5')">5</button><button onclick="inp('6')">6</button><button class="op" onclick="inp('-')">−</button>
-                <button onclick="inp('1')">1</button><button onclick="inp('2')">2</button><button onclick="inp('3')">3</button><button class="op" onclick="inp('+')">+</button>
-                <button style="grid-column: span 2; text-align:left; padding-left: 35px;" onclick="inp('0')">0</button><button onclick="inp('.')">.</button><button class="op" onclick="solve()">=</button>
+                <button class="fn" onclick="clr()">AC</button>
+                <button class="fn" onclick="sciOp('pm')">+/-</button>
+                <button class="fn" onclick="sciOp('pct')">%</button>
+                <button class="op" onclick="inp('/')">÷</button>
+                
+                <button onclick="inp('7')">7</button><button onclick="inp('8')">8</button><button onclick="inp('9')">9</button>
+                <button class="op" onclick="inp('*')">×</button>
+                
+                <button onclick="inp('4')">4</button><button onclick="inp('5')">5</button><button onclick="inp('6')">6</button>
+                <button class="op" onclick="inp('-')">−</button>
+                
+                <button onclick="inp('1')">1</button><button onclick="inp('2')">2</button><button onclick="inp('3')">3</button>
+                <button class="op" onclick="inp('+')">+</button>
+                
+                <button style="grid-column: span 2" onclick="inp('0')">0</button>
+                <button onclick="inp('.')">.</button>
+                <button class="op" style="background:var(--accent); border-color:var(--accent); color:#fff;" onclick="solve()">=</button>
             </div>
         </div>
 
         <div class="room">
-            <div style="background:var(--card); border-radius:24px; padding:25px; border:1px solid var(--border); margin-bottom:15px; text-align:center;">
-                <p style="font-size:10px; opacity:0.4; letter-spacing:2px; margin-bottom:10px;">USD</p><h2 id="t-in" style="font-size:38px; color:var(--accent);">0</h2>
+            <div style="background:var(--card); border:1px solid var(--border); padding:30px; margin-bottom:10px; text-align:right;">
+                <p style="font-size:10px; opacity:0.5;">USD INPUT</p>
+                <h2 id="t-in" style="font-size:45px; color:var(--accent);">0</h2>
             </div>
-            <div style="background:var(--card); border-radius:24px; padding:25px; border:1px solid var(--border); margin-bottom:20px; text-align:center;">
-                <p style="font-size:10px; opacity:0.4; letter-spacing:2px; margin-bottom:10px;">EUR</p><h2 id="t-out" style="font-size:38px; color:var(--insight-green);">0.00</h2>
+            <div style="background:var(--card); border:1px solid var(--border); padding:30px; margin-bottom:20px; text-align:right;">
+                <p style="font-size:10px; opacity:0.5;">EUR RESULT</p>
+                <h2 id="t-out" style="font-size:45px; color:var(--insight-green);">0.00</h2>
             </div>
             <div class="grid">
                 <button onclick="tIn('7')">7</button><button onclick="tIn('8')">8</button><button onclick="tIn('9')">9</button>
                 <button onclick="tIn('4')">4</button><button onclick="tIn('5')">5</button><button onclick="tIn('6')">6</button>
                 <button onclick="tIn('1')">1</button><button onclick="tIn('2')">2</button><button onclick="tIn('3')">3</button>
-                <button class="fn" onclick="tClr()">AC</button><button onclick="tIn('0')">0</button><button class="fn" onclick="tBack()">⌫</button>
+                <button class="fn" onclick="tClr()">CLR</button><button onclick="tIn('0')">0</button>
+                <button class="fn" onclick="tBack()">DEL</button>
             </div>
         </div>
     </div>
@@ -164,7 +181,7 @@
         }
         function addHist(e) { 
             hist.unshift(e); if(hist.length > 5) hist.pop(); 
-            document.getElementById('hist-log').innerHTML = hist.map(h => `<div style="padding:8px 0; border-bottom:1px solid var(--border)">${h}</div>`).join(''); 
+            document.getElementById('hist-log').innerHTML = hist.map(h => `<div style="padding:12px 0; border-bottom:1px solid var(--border)">${h}</div>`).join(''); 
         }
 
         function sciOp(t) {
@@ -176,7 +193,10 @@
         function tIn(v) { td += v; tUp(); }
         function tClr() { td = ""; tUp(); }
         function tBack() { td = td.slice(0,-1); tUp(); }
-        function tUp() { document.getElementById('t-in').innerText = td || "0"; document.getElementById('t-out').innerText = (parseFloat(td||0)*0.94).toFixed(2); }
+        function tUp() { 
+            document.getElementById('t-in').innerText = td || "0"; 
+            document.getElementById('t-out').innerText = (parseFloat(td||0)*0.94).toFixed(2); 
+        }
 
         function runVoice() {
             const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
