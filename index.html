@@ -14,8 +14,8 @@
         }
         [data-theme="light"] {
             --bg: #fff; --text: #000; --surface: #f2f2f7;
-            --orange: #ff9500; --gray: #8e8e93; --dark-gray: #e5e5ea;
-            --overlay: rgba(0,0,0,0.2);
+            --orange: #ff9500; --gray: #d1d1d6; --light-gray: #8e8e93;
+            --dark-gray: #e5e5ea; --overlay: rgba(0,0,0,0.2);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
@@ -96,6 +96,9 @@
         .btn.sys { background: var(--gray); color: black; font-size: 18px; }
         .btn.sci { background: var(--surface); font-size: 14px; }
         .btn:active { opacity: 0.6; transform: scale(0.95); }
+        
+        .mic-btn { color: var(--orange); cursor: pointer; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; transition: 0.2s; }
+        .mic-btn:active { background: var(--dark-gray); transform: scale(1.1); }
     </style>
 </head>
 <body>
@@ -116,7 +119,7 @@
     <header>
         <div style="color:var(--orange); cursor:pointer" onclick="toggleMenu()"><i data-lucide="menu"></i></div>
         <div></div>
-        <div style="color:var(--orange); cursor:pointer" onclick="location.reload()"><i data-lucide="rotate-ccw"></i></div>
+        <div class="mic-btn" onclick="handleMicClick()"><i data-lucide="mic"></i></div>
     </header>
 
     <main id="calc-view">
@@ -200,6 +203,10 @@
         let current = '0';
         let view = 'calc';
 
+        function handleMicClick() {
+            alert("Voice command active. Say your calculation...");
+        }
+
         function switchView(v) {
             view = v;
             document.getElementById('calc-view').style.display = v === 'calc' ? 'flex' : 'none';
@@ -234,7 +241,6 @@
             toggleMenu();
         }
 
-        // Calculator placeholders
         function op(o) { current += ' ' + o + ' '; update(); }
         function solve() { try { current = String(eval(current)); update(); } catch { current = 'Error'; update(); } }
     </script>
